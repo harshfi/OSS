@@ -21,13 +21,20 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-24 pb-24">
+      {/* Animated Glowing Orbs Background */}
+      <div className="absolute top-0 left-0 w-full h-[600px] overflow-hidden -z-10 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/30 blur-[120px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[35%] h-[35%] rounded-full bg-cyan-600/30 blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-pink-600/20 blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
+      </div>
+
       {/* 1. Hero */}
-      <section className="container mx-auto px-4 pt-20 md:pt-32 pb-16 flex flex-col lg:flex-row items-center gap-12">
-        <div className="flex-1 space-y-8 text-center lg:text-left">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
+      <section className="container mx-auto px-4 pt-20 md:pt-32 pb-16 flex flex-col lg:flex-row items-center gap-12 relative">
+        <div className="flex-1 space-y-8 text-center lg:text-left z-10">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent drop-shadow-sm">
             Make your first open-source contribution
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-[600px] mx-auto lg:mx-0">
+          <p className="text-xl md:text-2xl text-foreground/80 max-w-[600px] mx-auto lg:mx-0 font-medium">
             A guided, animated, hands-on path from "what is a fork?" to your first merged PR.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -42,23 +49,30 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <div className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-muted/30 rounded-3xl border border-border/50 overflow-hidden flex items-center justify-center">
-          <GridBeam className="opacity-40" />
+        <div className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-gradient-to-br from-gray-900 to-black rounded-3xl border border-purple-500/30 shadow-[0_0_40px_-10px_rgba(168,85,247,0.4)] overflow-hidden flex items-center justify-center">
+          <GridBeam className="opacity-60" />
           {/* Decorative mini Git Graph Hero Animation */}
-          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
              <motion.svg className="w-full h-full" viewBox="0 0 400 300">
                <motion.path 
                  d="M 50 250 L 50 150 C 50 100, 150 100, 150 50 L 350 50" 
                  fill="transparent" 
-                 stroke="currentColor" 
-                 strokeWidth="4" 
+                 stroke="url(#gradient)" 
+                 strokeWidth="6" 
                  strokeDasharray="10 10"
-                 className="text-primary/30"
+                 className="opacity-80"
                />
-               <motion.circle cx="50" cy="250" r="10" className="fill-primary" />
-               <motion.circle cx="50" cy="150" r="10" className="fill-primary" />
-               <motion.circle cx="150" cy="50" r="10" className="fill-blue-500" />
-               <motion.circle cx="350" cy="50" r="10" className="fill-green-500" />
+               <defs>
+                 <linearGradient id="gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                   <stop offset="0%" stopColor="#ec4899" />
+                   <stop offset="50%" stopColor="#a855f7" />
+                   <stop offset="100%" stopColor="#06b6d4" />
+                 </linearGradient>
+               </defs>
+               <motion.circle cx="50" cy="250" r="12" className="fill-pink-500" />
+               <motion.circle cx="50" cy="150" r="12" className="fill-purple-500" />
+               <motion.circle cx="150" cy="50" r="12" className="fill-cyan-500" />
+               <motion.circle cx="350" cy="50" r="12" className="fill-green-400" />
              </motion.svg>
           </div>
         </div>
@@ -70,53 +84,58 @@ export default function Home() {
           <h2 className="text-3xl font-bold">Choose your starting point</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          <Card className="hover:border-primary/50 transition-colors cursor-pointer group relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <CardHeader>
-              <CardTitle>Never used Git?</CardTitle>
-              <CardDescription>Start from the very beginning</CardDescription>
+          <Card className="hover:border-pink-500/60 hover:shadow-[0_0_30px_-5px_rgba(236,72,153,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="relative z-10">
+              <CardTitle className="text-pink-500 group-hover:text-pink-400 transition-colors">Never used Git?</CardTitle>
+              <CardDescription className="text-foreground/80 font-medium">Start from the very beginning</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative z-10">
               <p className="text-sm text-muted-foreground mb-4">Learn what version control is, how to install Git, and the basic commands.</p>
-              <Button variant="secondary" className="w-full" onClick={() => navigate("/learn/01")}>Start Module 1</Button>
+              <Button className="w-full bg-pink-500/20 text-pink-400 hover:bg-pink-500 hover:text-white border border-pink-500/50" onClick={() => navigate("/learn/01")}>Start Module 1</Button>
             </CardContent>
           </Card>
-          <Card className="hover:border-primary/50 transition-colors cursor-pointer group relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <CardHeader>
-              <CardTitle>Know Git, never contributed?</CardTitle>
-              <CardDescription>Learn the open source workflow</CardDescription>
+          
+          <Card className="hover:border-purple-500/60 hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="relative z-10">
+              <CardTitle className="text-purple-500 group-hover:text-purple-400 transition-colors">Know Git, never contributed?</CardTitle>
+              <CardDescription className="text-foreground/80 font-medium">Learn the open source workflow</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative z-10">
               <p className="text-sm text-muted-foreground mb-4">Master forks, upstream remotes, branching, and pull requests.</p>
-              <Button variant="secondary" className="w-full" onClick={() => navigate("/workflow")}>See the workflow</Button>
+              <Button className="w-full bg-purple-500/20 text-purple-400 hover:bg-purple-500 hover:text-white border border-purple-500/50" onClick={() => navigate("/workflow")}>See the workflow</Button>
             </CardContent>
           </Card>
-          <Card className="hover:border-primary/50 transition-colors cursor-pointer group relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <CardHeader>
-              <CardTitle>Ready for programs?</CardTitle>
-              <CardDescription>Find a mentorship program</CardDescription>
+
+          <Card className="hover:border-cyan-500/60 hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="relative z-10">
+              <CardTitle className="text-cyan-500 group-hover:text-cyan-400 transition-colors">Ready for programs?</CardTitle>
+              <CardDescription className="text-foreground/80 font-medium">Find a mentorship program</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative z-10">
               <p className="text-sm text-muted-foreground mb-4">Explore GSoC, LFX, MLH Fellowship and prepare your application.</p>
-              <Button variant="secondary" className="w-full" onClick={() => navigate("/programs")}>Explore programs</Button>
+              <Button className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500 hover:text-white border border-cyan-500/50" onClick={() => navigate("/programs")}>Explore programs</Button>
             </CardContent>
           </Card>
         </div>
       </section>
 
       {/* 4. Three-copies explainer (Workflow Visualizer) */}
-      <section className="container mx-auto px-4 py-12 bg-muted/20 rounded-3xl border border-border/50">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">How open source actually works</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            You don't edit the original project directly. You make your own copy, change it, and politely ask them to include your changes.
-          </p>
-        </div>
-        <WorkflowVisualizer compact={true} />
-        <div className="mt-8 flex justify-center">
-          <Button onClick={() => navigate("/workflow")}>See the full interactive walkthrough</Button>
+      <section className="container mx-auto px-4 py-16 relative overflow-hidden rounded-3xl border border-primary/20 shadow-[0_0_50px_-15px_rgba(var(--primary),0.15)] bg-gradient-to-b from-primary/5 to-transparent">
+        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px_32px] pointer-events-none" />
+        <div className="relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">How open source actually works</h2>
+            <p className="text-foreground/80 max-w-2xl mx-auto font-medium">
+              You don't edit the original project directly. You make your own copy, change it, and politely ask them to include your changes.
+            </p>
+          </div>
+          <WorkflowVisualizer compact={true} />
+          <div className="mt-8 flex justify-center">
+            <Button onClick={() => navigate("/workflow")} className="bg-indigo-500 hover:bg-indigo-600 text-white border-0 shadow-lg shadow-indigo-500/30">See the full interactive walkthrough</Button>
+          </div>
         </div>
       </section>
 
@@ -152,31 +171,32 @@ export default function Home() {
       </section>
 
       {/* 6. Numbers Stats */}
-      <section className="container mx-auto px-4 py-16 border-y border-border/50">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="container mx-auto px-4 py-20 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl blur-2xl -z-10" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-background/60 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-xl">
           <div className="space-y-2">
-            <h3 className="text-4xl md:text-5xl font-extrabold text-primary">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-pink-400 to-pink-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={100} />+
             </h3>
-            <p className="text-sm text-muted-foreground uppercase tracking-wider">Open Source Orgs</p>
+            <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Open Source Orgs</p>
           </div>
           <div className="space-y-2">
-            <h3 className="text-4xl md:text-5xl font-extrabold text-blue-500">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-blue-400 to-blue-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={36} />
             </h3>
-            <p className="text-sm text-muted-foreground uppercase tracking-wider">Programs Tracked</p>
+            <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Programs Tracked</p>
           </div>
           <div className="space-y-2">
-            <h3 className="text-4xl md:text-5xl font-extrabold text-green-500">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-green-400 to-green-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={12} />
             </h3>
-            <p className="text-sm text-muted-foreground uppercase tracking-wider">Interactive Modules</p>
+            <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Interactive Modules</p>
           </div>
           <div className="space-y-2">
-            <h3 className="text-4xl md:text-5xl font-extrabold text-accent">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={10} />
             </h3>
-            <p className="text-sm text-muted-foreground uppercase tracking-wider">Lab Scenarios</p>
+            <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Lab Scenarios</p>
           </div>
         </div>
       </section>
@@ -226,12 +246,21 @@ export default function Home() {
 
       {/* 10. Final CTA */}
       <section className="container mx-auto px-4 text-center">
-        <div className="bg-primary/10 border border-primary/20 rounded-3xl p-12 md:p-20">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to make your mark?</h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+        <div className="relative rounded-3xl p-12 md:p-24 overflow-hidden shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-600 -z-20" />
+          {/* Animated meshes */}
+          <div className="absolute top-[-50%] left-[-50%] w-[100%] h-[100%] bg-white/20 blur-[100px] rounded-full animate-pulse pointer-events-none -z-10" />
+          <div className="absolute bottom-[-50%] right-[-50%] w-[100%] h-[100%] bg-cyan-400/30 blur-[100px] rounded-full animate-pulse pointer-events-none -z-10" style={{ animationDelay: '1s' }} />
+          
+          <h2 className="text-4xl md:text-6xl font-black mb-6 text-white drop-shadow-md tracking-tight">Ready to make your mark?</h2>
+          <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-medium drop-shadow-sm">
             Join thousands of students who made their first open source contribution this year.
           </p>
-          <Button size="lg" onClick={() => navigate("/learn/01")} className="rounded-full px-12 h-14 text-xl">
+          <Button 
+            size="lg" 
+            onClick={() => navigate("/learn/01")} 
+            className="rounded-full px-12 h-16 text-xl bg-white text-purple-700 hover:bg-gray-100 shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:shadow-[0_0_60px_rgba(255,255,255,0.6)] transition-all font-bold"
+          >
             Start your first module
           </Button>
         </div>
