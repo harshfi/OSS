@@ -317,11 +317,10 @@ export default function Home() {
 
       {/* 10. Final CTA */}
       <section className="container mx-auto px-4 text-center">
-        <div className="relative rounded-3xl p-12 md:p-24 overflow-hidden shadow-2xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-600 -z-20" />
+        <div className="relative rounded-3xl p-12 md:p-24 overflow-hidden shadow-2xl bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-600">
           {/* Animated meshes */}
-          <div className="absolute top-[-50%] left-[-50%] w-[100%] h-[100%] bg-white/20 blur-[100px] rounded-full animate-pulse pointer-events-none -z-10" />
-          <div className="absolute bottom-[-50%] right-[-50%] w-[100%] h-[100%] bg-cyan-400/30 blur-[100px] rounded-full animate-pulse pointer-events-none -z-10" style={{ animationDelay: '1s' }} />
+          <div className="absolute inset-0 bg-white/10 blur-[100px] rounded-full animate-pulse pointer-events-none" />
+          <div className="absolute inset-0 bg-cyan-400/20 blur-[100px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: '1s' }} />
           
           <h2 className="text-4xl md:text-6xl font-black mb-6 text-white drop-shadow-md tracking-tight">Ready to make your mark?</h2>
           <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-medium drop-shadow-sm">
