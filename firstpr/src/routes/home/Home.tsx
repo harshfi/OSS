@@ -9,6 +9,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
+import { GridBeam } from "@/components/ui/grid-beam";
+import { NumberTicker } from "@/components/ui/number-ticker";
+import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
+import { Marquee } from "@/components/ui/marquee";
+import { ShinyButton } from "@/components/ui/shiny-button";
+import { TerminalSquare, BookOpen, Layers, ShieldQuestion, Briefcase, Search } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -25,17 +31,21 @@ export default function Home() {
             A guided, animated, hands-on path from "what is a fork?" to your first merged PR.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <Button size="lg" onClick={() => navigate("/learn/01")} className="rounded-full px-8 h-12 text-lg">
+            <ShinyButton 
+              onClick={() => navigate("/learn/01")} 
+              className="bg-primary text-primary-foreground hover:bg-primary/90 h-12"
+            >
               Start the journey
-            </Button>
+            </ShinyButton>
             <Button size="lg" variant="outline" onClick={() => navigate("/lab")} className="rounded-full px-8 h-12 text-lg">
               Try the terminal
             </Button>
           </div>
         </div>
         <div className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-muted/30 rounded-3xl border border-border/50 overflow-hidden flex items-center justify-center">
+          <GridBeam className="opacity-40" />
           {/* Decorative mini Git Graph Hero Animation */}
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
              <motion.svg className="w-full h-full" viewBox="0 0 400 300">
                <motion.path 
                  d="M 50 250 L 50 150 C 50 100, 150 100, 150 50 L 350 50" 
@@ -108,6 +118,83 @@ export default function Home() {
         <div className="mt-8 flex justify-center">
           <Button onClick={() => navigate("/workflow")}>See the full interactive walkthrough</Button>
         </div>
+      </section>
+
+      {/* 5. Feature grid (Bento Grid) */}
+      <section className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold">Everything you need to succeed</h2>
+        </div>
+        <BentoGrid className="max-w-4xl mx-auto">
+          <BentoGridItem 
+            title="Terminal Lab" 
+            description="Practice safely in our virtual terminal before touching real code." 
+            icon={<TerminalSquare className="w-6 h-6 text-accent" />} 
+            className="md:col-span-2 cursor-pointer"
+          />
+          <BentoGridItem 
+            title="Issue Finder" 
+            description="Find beginner-friendly good first issues live from GitHub." 
+            icon={<Search className="w-6 h-6 text-blue-500" />} 
+          />
+          <BentoGridItem 
+            title="Mentorship Programs" 
+            description="Prepare for GSoC, LFX, and MLH Fellowship." 
+            icon={<Briefcase className="w-6 h-6 text-green-500" />} 
+          />
+          <BentoGridItem 
+            title="Rescue Guide" 
+            description="Messed up your git? Pick a mistake and we'll show you how to fix it." 
+            icon={<ShieldQuestion className="w-6 h-6 text-destructive" />} 
+            className="md:col-span-2"
+          />
+        </BentoGrid>
+      </section>
+
+      {/* 6. Numbers Stats */}
+      <section className="container mx-auto px-4 py-16 border-y border-border/50">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="space-y-2">
+            <h3 className="text-4xl md:text-5xl font-extrabold text-primary">
+              <NumberTicker value={100} />+
+            </h3>
+            <p className="text-sm text-muted-foreground uppercase tracking-wider">Open Source Orgs</p>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-4xl md:text-5xl font-extrabold text-blue-500">
+              <NumberTicker value={36} />
+            </h3>
+            <p className="text-sm text-muted-foreground uppercase tracking-wider">Programs Tracked</p>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-4xl md:text-5xl font-extrabold text-green-500">
+              <NumberTicker value={12} />
+            </h3>
+            <p className="text-sm text-muted-foreground uppercase tracking-wider">Interactive Modules</p>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-4xl md:text-5xl font-extrabold text-accent">
+              <NumberTicker value={10} />
+            </h3>
+            <p className="text-sm text-muted-foreground uppercase tracking-wider">Lab Scenarios</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Marquee for Orgs */}
+      <section className="container mx-auto px-4 overflow-hidden border-b border-border/50 pb-16">
+        <div className="text-center mb-8">
+          <p className="text-muted-foreground uppercase tracking-wider text-sm font-semibold">
+            Contribute to amazing organizations
+          </p>
+        </div>
+        <Marquee className="max-w-5xl mx-auto" pauseOnHover>
+          {["React", "Vue", "Mozilla", "Linux Foundation", "Apache", "CNCF", "Python", "Kubernetes", "Node.js"].map((org) => (
+            <div key={org} className="mx-8 px-6 py-3 rounded-full bg-muted/50 border border-border/50 text-foreground font-semibold">
+              {org}
+            </div>
+          ))}
+        </Marquee>
       </section>
 
       {/* 9. FAQ Accordion */}
