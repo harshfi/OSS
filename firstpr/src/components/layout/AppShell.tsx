@@ -1,8 +1,10 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePrefs } from "@/stores/prefs";
 import { Moon, Sun, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
 
 function ThemeToggle() {
   const { theme, setTheme } = usePrefs();
@@ -23,6 +25,20 @@ function ThemeToggle() {
 }
 
 export function AppShell() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const navItems = [
+    { name: "Learn", path: "/learn" },
+    { name: "Lab", path: "/lab" },
+    { name: "Rescue", path: "/rescue" },
+    { name: "Issues", path: "/issues" },
+    { name: "Explore", path: "/orgs" },
+    { name: "GSoC", path: "/gsoc" },
+    { name: "Plan", path: "/programs" },
+    { name: "AI Policy", path: "/ai-policy" },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,15 +47,30 @@ export function AppShell() {
             <Link to="/" className="flex items-center space-x-2">
               <span className="font-bold sm:inline-block">FirstPR</span>
             </Link>
-            <nav className="hidden md:flex gap-6">
-              <Link to="/learn" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Learn</Link>
-              <Link to="/lab" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Lab</Link>
-              <Link to="/rescue" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Rescue</Link>
-              <Link to="/issues" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Issues</Link>
-              <Link to="/orgs" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Explore</Link>
-              <Link to="/gsoc" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">GSoC</Link>
-              <Link to="/programs" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Plan</Link>
-              <Link to="/ai-policy" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">AI Policy</Link>
+            <nav className="hidden md:flex gap-2">
+              {navItems.map((item) => {
+                const isActive = currentPath.startsWith(item.path);
+                return (
+                  <Link 
+                    key={item.path}
+                    to={item.path} 
+                    className={cn(
+                      "relative flex items-center px-3 py-2 text-sm font-medium transition-colors hover:text-foreground",
+                      isActive ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {item.name}
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
           <div className="flex items-center gap-2">
@@ -60,10 +91,34 @@ export function AppShell() {
       
       {/* Mobile Bottom Nav */}
       <nav className="md:hidden sticky bottom-0 z-50 w-full border-t bg-background flex justify-around p-2">
-        <Link to="/learn" className="text-xs flex flex-col items-center p-2 text-muted-foreground hover:text-foreground">Learn</Link>
-        <Link to="/lab" className="text-xs flex flex-col items-center p-2 text-muted-foreground hover:text-foreground">Lab</Link>
-        <Link to="/orgs" className="text-xs flex flex-col items-center p-2 text-muted-foreground hover:text-foreground">Explore</Link>
-        <Link to="/progress" className="text-xs flex flex-col items-center p-2 text-muted-foreground hover:text-foreground">Me</Link>
+        {[
+          { name: "Learn", path: "/learn" },
+          { name: "Lab", path: "/lab" },
+          { name: "Explore", path: "/orgs" },
+          { name: "Me", path: "/progress" },
+        ].map((item) => {
+          const isActive = currentPath.startsWith(item.path);
+          return (
+            <Link 
+              key={item.path}
+              to={item.path} 
+              className={cn(
+                "relative text-xs flex flex-col items-center p-2 transition-colors hover:text-foreground",
+                isActive ? "text-foreground font-semibold" : "text-muted-foreground"
+              )}
+            >
+              {item.name}
+              {isActive && (
+                <motion.div
+                  layoutId="mobile-nav-indicator"
+                  className="absolute top-0 left-2 right-2 h-[2px] bg-primary rounded-full"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </Link>
+          );
+        })}
       </nav>
       
       <CommandPalette />
