@@ -90,7 +90,7 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 1, type: "spring", bounce: 0.4 }}
-          className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-gradient-to-br from-gray-900 to-black rounded-3xl border border-purple-500/30 shadow-[0_0_40px_-10px_rgba(168,85,247,0.4)] overflow-hidden flex items-center justify-center group"
+          className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-black rounded-3xl border border-purple-500/30 shadow-[0_0_40px_-10px_rgba(168,85,247,0.4)] overflow-hidden flex items-center justify-center group"
         >
           <GridBeam className="opacity-60 transition-opacity duration-700 group-hover:opacity-100" />
           {/* Decorative mini Git Graph Hero Animation */}
@@ -156,38 +156,38 @@ export default function Home() {
         </div>
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           <Card className="hover:border-pink-500/60 hover:shadow-[0_0_30px_-5px_rgba(236,72,153,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
-            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 dark:from-pink-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
             <CardHeader className="relative z-10">
-              <CardTitle className="text-pink-500 group-hover:text-pink-400 transition-colors">Never used Git?</CardTitle>
+              <CardTitle className="text-pink-600 dark:text-pink-500 group-hover:text-pink-700 dark:group-hover:text-pink-400 transition-colors">Never used Git?</CardTitle>
               <CardDescription className="text-foreground/80 font-medium">Start from the very beginning</CardDescription>
             </CardHeader>
             <CardContent className="relative z-10">
               <p className="text-sm text-muted-foreground mb-4">Learn what version control is, how to install Git, and the basic commands.</p>
-              <Button className="w-full bg-pink-500/20 text-pink-400 hover:bg-pink-500 hover:text-white border border-pink-500/50" onClick={() => navigate("/learn/01")}>Start Module 1</Button>
+              <Button className="w-full bg-pink-500/10 dark:bg-pink-500/20 text-pink-700 dark:text-pink-400 hover:bg-pink-500 hover:text-white border border-pink-500/30 dark:border-pink-500/50 transition-colors" onClick={() => navigate("/learn/01")}>Start Module 1</Button>
             </CardContent>
           </Card>
           
           <Card className="hover:border-purple-500/60 hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 dark:from-purple-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
             <CardHeader className="relative z-10">
-              <CardTitle className="text-purple-500 group-hover:text-purple-400 transition-colors">Know Git, never contributed?</CardTitle>
+              <CardTitle className="text-purple-600 dark:text-purple-500 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">Know Git, never contributed?</CardTitle>
               <CardDescription className="text-foreground/80 font-medium">Learn the open source workflow</CardDescription>
             </CardHeader>
             <CardContent className="relative z-10">
               <p className="text-sm text-muted-foreground mb-4">Master forks, upstream remotes, branching, and pull requests.</p>
-              <Button className="w-full bg-purple-500/20 text-purple-400 hover:bg-purple-500 hover:text-white border border-purple-500/50" onClick={() => navigate("/workflow")}>See the workflow</Button>
+              <Button className="w-full bg-purple-500/10 dark:bg-purple-500/20 text-purple-700 dark:text-purple-400 hover:bg-purple-500 hover:text-white border border-purple-500/30 dark:border-purple-500/50 transition-colors" onClick={() => navigate("/workflow")}>See the workflow</Button>
             </CardContent>
           </Card>
 
           <Card className="hover:border-cyan-500/60 hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 dark:from-cyan-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
             <CardHeader className="relative z-10">
-              <CardTitle className="text-cyan-500 group-hover:text-cyan-400 transition-colors">Ready for programs?</CardTitle>
+              <CardTitle className="text-cyan-600 dark:text-cyan-500 group-hover:text-cyan-700 dark:group-hover:text-cyan-400 transition-colors">Ready for programs?</CardTitle>
               <CardDescription className="text-foreground/80 font-medium">Find a mentorship program</CardDescription>
             </CardHeader>
             <CardContent className="relative z-10">
               <p className="text-sm text-muted-foreground mb-4">Explore GSoC, LFX, MLH Fellowship and prepare your application.</p>
-              <Button className="w-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500 hover:text-white border border-cyan-500/50" onClick={() => navigate("/programs")}>Explore programs</Button>
+              <Button className="w-full bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-500 hover:text-white border border-cyan-500/30 dark:border-cyan-500/50 transition-colors" onClick={() => navigate("/programs")}>Explore programs</Button>
             </CardContent>
           </Card>
         </div>
@@ -195,10 +195,10 @@ export default function Home() {
 
       {/* 4. Three-copies explainer (Workflow Visualizer) */}
       <section className="container mx-auto px-4 py-16 relative overflow-hidden rounded-3xl border border-primary/20 shadow-[0_0_50px_-15px_rgba(var(--primary),0.15)] bg-gradient-to-b from-primary/5 to-transparent">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px_32px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
         <div className="relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">How open source actually works</h2>
+            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">How open source actually works</h2>
             <p className="text-foreground/80 max-w-2xl mx-auto font-medium">
               You don't edit the original project directly. You make your own copy, change it, and politely ask them to include your changes.
             </p>
@@ -246,25 +246,25 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl blur-2xl -z-10" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-background/60 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-xl">
           <div className="space-y-2">
-            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-pink-400 to-pink-600 bg-clip-text text-transparent drop-shadow-sm">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-pink-500 to-pink-700 dark:from-pink-400 dark:to-pink-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={100} />+
             </h3>
             <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Open Source Orgs</p>
           </div>
           <div className="space-y-2">
-            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-blue-400 to-blue-600 bg-clip-text text-transparent drop-shadow-sm">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-blue-500 to-blue-700 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={36} />
             </h3>
             <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Programs Tracked</p>
           </div>
           <div className="space-y-2">
-            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-green-400 to-green-600 bg-clip-text text-transparent drop-shadow-sm">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-green-500 to-green-700 dark:from-green-400 dark:to-green-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={12} />
             </h3>
             <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Interactive Modules</p>
           </div>
           <div className="space-y-2">
-            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+            <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-yellow-500 to-orange-600 dark:from-yellow-400 dark:to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={10} />
             </h3>
             <p className="text-sm font-bold text-foreground/80 uppercase tracking-widest">Lab Scenarios</p>
