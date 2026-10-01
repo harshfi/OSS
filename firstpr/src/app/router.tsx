@@ -3,6 +3,8 @@ import { AppShell } from "@/components/layout/AppShell";
 import Home from "@/routes/home/Home";
 import ModulePage from "@/routes/learn/ModulePage";
 import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
+import LabPage from "@/routes/lab/LabPage";
+import RescuePage from "@/routes/rescue/RescuePage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +24,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "lab",
-        element: <div className="p-4">Terminal Lab (Coming soon)</div>,
+        element: <LabPage />,
       },
       {
         path: "workflow",
@@ -32,6 +34,10 @@ export const router = createBrowserRouter([
             <WorkflowVisualizer />
           </div>
         ),
+      },
+      {
+        path: "rescue",
+        element: <RescuePage />,
       },
       {
         path: "issues",
