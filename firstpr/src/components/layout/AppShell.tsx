@@ -35,6 +35,7 @@ export function AppShell() {
               <Link to="/learn" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Learn</Link>
               <Link to="/lab" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Lab</Link>
               <Link to="/rescue" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Rescue</Link>
+              <Link to="/issues" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Issues</Link>
               <Link to="/orgs" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Explore</Link>
               <Link to="/gsoc" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">GSoC</Link>
               <Link to="/programs" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">Plan</Link>

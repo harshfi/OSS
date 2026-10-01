@@ -9,6 +9,7 @@ import OrgExplorerPage from "@/routes/orgs/OrgExplorerPage";
 import ProgramsPlannerPage from "@/routes/programs/ProgramsPlannerPage";
 import GsocInsightsPage from "@/routes/gsoc/GsocInsightsPage";
 import AiPolicyPage from "@/routes/ai-policy/AiPolicyPage";
+import { IssuesPage } from "@/routes/issues/IssuesPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "issues",
-        element: <div className="p-4">Find an Issue (Coming soon)</div>,
+        element: <IssuesPage />,
       },
       {
         path: "orgs",
