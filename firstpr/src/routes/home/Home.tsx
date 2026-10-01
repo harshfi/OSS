@@ -32,7 +32,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
             <ShinyButton 
-              onClick={() => navigate("/learn/01")} 
+              onClick={() => navigate("/learn")} 
               className="bg-primary text-primary-foreground hover:bg-primary/90 h-12"
             >
               Start the journey

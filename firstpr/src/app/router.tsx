@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AppShell } from "@/components/layout/AppShell";
 import Home from "@/routes/home/Home";
+import LearnHub from "@/routes/learn/LearnHub";
 import ModulePage from "@/routes/learn/ModulePage";
 import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
 import LabPage from "@/routes/lab/LabPage";
@@ -21,7 +22,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "learn",
-        element: <div className="p-4 text-center mt-20 text-muted-foreground">Redirecting to learn hub...</div>,
+        element: <LearnHub />,
       },
       {
         path: "learn/:id",
