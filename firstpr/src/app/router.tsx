@@ -9,6 +9,7 @@ import RescuePage from "@/routes/rescue/RescuePage";
 import OrgExplorerPage from "@/routes/orgs/OrgExplorerPage";
 import ProgramsPlannerPage from "@/routes/programs/ProgramsPlannerPage";
 import GsocInsightsPage from "@/routes/gsoc/GsocInsightsPage";
+import LfxInsightsPage from "@/routes/lfx/LfxInsightsPage";
 import AiPolicyPage from "@/routes/ai-policy/AiPolicyPage";
 import { IssuesPage } from "@/routes/issues/IssuesPage";
 export const router = createBrowserRouter([
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
       {
         path: "gsoc",
         element: <GsocInsightsPage />,
+      },
+      {
+        path: "lfx",
+        element: <LfxInsightsPage />,
       },
       {
         path: "programs",

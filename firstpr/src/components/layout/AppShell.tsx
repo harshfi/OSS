@@ -35,6 +35,7 @@ export function AppShell() {
     { name: "Issues", path: "/issues" },
     { name: "Explore", path: "/orgs" },
     { name: "GSoC", path: "/gsoc" },
+    { name: "LFX", path: "/lfx" },
     { name: "Plan", path: "/programs" },
     { name: "AI Policy", path: "/ai-policy" },
   ];
