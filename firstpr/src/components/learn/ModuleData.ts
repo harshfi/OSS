@@ -119,4 +119,174 @@ export const modules: Module[] = [
       }
     ]
   }
+  {
+    id: "05",
+    title: "Forking a repository",
+    description: "Creating your own personal copy of the project.",
+    blocks: [
+      {
+        id: "m5-1",
+        type: "Prose",
+        content: "A fork is your own copy of the repository that lives on your account. You have full read and write access to your fork."
+      },
+      {
+        id: "m5-2",
+        type: "Code",
+        title: "Clone your fork",
+        language: "bash",
+        content: "git clone https://github.com/YOUR-USERNAME/repository-name.git\ncd repository-name"
+      }
+    ]
+  },
+  {
+    id: "06",
+    title: "Keeping in sync",
+    description: "Adding the original repository as the 'upstream' remote.",
+    blocks: [
+      {
+        id: "m6-1",
+        type: "Prose",
+        content: "The original project is called the 'upstream'. You need to connect your local clone to it so you can get updates."
+      },
+      {
+        id: "m6-2",
+        type: "Code",
+        title: "Add upstream remote",
+        language: "bash",
+        content: "git remote add upstream https://github.com/ORIGINAL-OWNER/repository-name.git\ngit fetch upstream"
+      }
+    ]
+  },
+  {
+    id: "07",
+    title: "Branching out",
+    description: "Never work on the main branch.",
+    blocks: [
+      {
+        id: "m7-1",
+        type: "Prose",
+        content: "Before making changes, always create a new branch. This keeps your work organized and isolated."
+      },
+      {
+        id: "m7-2",
+        type: "Code",
+        title: "Create and switch to a branch",
+        language: "bash",
+        content: "git checkout -b fix-broken-link"
+      },
+      {
+        id: "m7-3",
+        type: "Callout",
+        variant: "info",
+        title: "Naming conventions",
+        content: "Use descriptive names like 'fix-typo-readme' or 'add-login-button' instead of 'patch-1' or 'my-changes'."
+      }
+    ]
+  },
+  {
+    id: "08",
+    title: "Making changes",
+    description: "Editing code and saving your progress.",
+    blocks: [
+      {
+        id: "m8-1",
+        type: "Prose",
+        content: "Now you can make your changes in your code editor. Once you are done, you need to stage and commit them."
+      },
+      {
+        id: "m8-2",
+        type: "Code",
+        title: "Stage and commit",
+        language: "bash",
+        content: "git add .\ngit commit -m \"Fix broken link in README\""
+      }
+    ]
+  },
+  {
+    id: "09",
+    title: "Writing a good commit message",
+    description: "Communicate clearly what you changed.",
+    blocks: [
+      {
+        id: "m9-1",
+        type: "Prose",
+        content: "A good commit message explains 'what' and 'why', not 'how'."
+      },
+      {
+        id: "m9-2",
+        type: "Cards",
+        title: "Good vs Bad",
+        items: [
+          { myth: "Bad: fixed stuff", fact: "Good: fix(ui): correct alignment in the header" },
+          { myth: "Bad: update readme", fact: "Good: docs: add installation instructions" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "10",
+    title: "Pushing to your fork",
+    description: "Uploading your local changes to GitHub.",
+    blocks: [
+      {
+        id: "m10-1",
+        type: "Prose",
+        content: "Your commits are still only on your local computer. You need to push them to your fork on GitHub (origin)."
+      },
+      {
+        id: "m10-2",
+        type: "Code",
+        title: "Push your branch",
+        language: "bash",
+        content: "git push -u origin fix-broken-link"
+      }
+    ]
+  },
+  {
+    id: "11",
+    title: "Opening a Pull Request",
+    description: "Asking the maintainers to accept your code.",
+    blocks: [
+      {
+        id: "m11-1",
+        type: "Prose",
+        content: "Go to the original repository on GitHub. You should see a green button saying 'Compare & pull request'. Click it!"
+      },
+      {
+        id: "m11-2",
+        type: "Checklist",
+        items: [
+          "Reference the issue number (e.g., 'Fixes #123')",
+          "Fill out the pull request template if there is one",
+          "Include screenshots if it's a visual change"
+        ]
+      }
+    ]
+  },
+  {
+    id: "12",
+    title: "The Code Review",
+    description: "What happens after you open the PR.",
+    blocks: [
+      {
+        id: "m12-1",
+        type: "Prose",
+        content: "Maintainers will review your code. They might ask for changes. This is normal and happens to everyone!"
+      },
+      {
+        id: "m12-2",
+        type: "Code",
+        title: "Updating a PR",
+        language: "bash",
+        content: "# Make the requested changes in your editor\ngit add .\ngit commit -m \"Address review comments\"\ngit push origin fix-broken-link"
+      },
+      {
+        id: "m12-3",
+        type: "Callout",
+        variant: "success",
+        title: "Merge!",
+        content: "Once the maintainer approves, they will merge your PR. Congratulations on your open source contribution!"
+      }
+    ]
+  }
 ];

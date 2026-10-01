@@ -3,11 +3,13 @@ import { modules } from "@/components/learn/ModuleData";
 import type { Block } from "@/components/learn/ModuleData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, ChevronRight, Info, AlertTriangle } from "lucide-react";
+import { CheckCircle2, ChevronRight, Info, AlertTriangle, Play } from "lucide-react";
+import { useProgress } from "@/stores/progress";
 
 export default function ModulePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { completedModules, completeModule } = useProgress();
   
   const moduleIndex = modules.findIndex((m) => m.id === id);
   const mod = modules[moduleIndex];
@@ -28,11 +30,11 @@ export default function ModulePage() {
           <div className="space-y-2 relative before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-border before:-z-10">
             {modules.map((m, idx) => {
               const isActive = m.id === id;
-              const isPast = idx < moduleIndex;
+              const isPast = completedModules.includes(m.id);
               return (
                 <div key={m.id} className="flex items-start gap-4">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${isActive ? 'bg-primary text-primary-foreground' : isPast ? 'bg-primary text-primary-foreground' : 'bg-muted border border-border'}`}>
-                    {isPast ? <CheckCircle2 className="w-4 h-4" /> : <span className="text-xs">{idx + 1}</span>}
+                    {isPast && !isActive ? <CheckCircle2 className="w-4 h-4" /> : <span className="text-xs">{idx + 1}</span>}
                   </div>
                   <div className="flex flex-col pb-6">
                     <button onClick={() => navigate(`/learn/${m.id}`)} className={`text-sm font-medium text-left ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
@@ -49,7 +51,12 @@ export default function ModulePage() {
       {/* Main content */}
       <div className="flex-1 max-w-2xl">
         <div className="mb-8">
-          <div className="text-primary font-mono text-sm mb-2">Module {mod.id}</div>
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-primary font-mono text-sm">Module {mod.id}</div>
+            <div className="md:hidden text-muted-foreground text-xs font-mono">
+              {moduleIndex + 1} of {modules.length}
+            </div>
+          </div>
           <h1 className="text-4xl font-extrabold tracking-tight mb-4">{mod.title}</h1>
           <p className="text-xl text-muted-foreground">{mod.description}</p>
         </div>
@@ -63,11 +70,25 @@ export default function ModulePage() {
         {/* Footer / Next Button */}
         <div className="mt-16 pt-8 border-t border-border flex justify-end">
           {nextMod ? (
-            <Button size="lg" onClick={() => navigate(`/learn/${nextMod.id}`)} className="gap-2">
-              Next: {nextMod.title} <ChevronRight className="w-4 h-4" />
+            <Button 
+              size="lg" 
+              onClick={() => {
+                completeModule(mod.id);
+                navigate(`/learn/${nextMod.id}`);
+              }} 
+              className="gap-2"
+            >
+              Complete & Continue <ChevronRight className="w-4 h-4" />
             </Button>
           ) : (
-            <Button size="lg" onClick={() => navigate("/")} variant="secondary">
+            <Button 
+              size="lg" 
+              onClick={() => {
+                completeModule(mod.id);
+                navigate("/learn");
+              }} 
+              variant="secondary"
+            >
               Finish Course
             </Button>
           )}
