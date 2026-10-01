@@ -40,9 +40,9 @@ export default function Home() {
     <div className="flex flex-col gap-24 pb-24">
       {/* Animated Glowing Orbs Background */}
       <div className="absolute top-0 left-0 w-full h-[600px] overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/30 blur-[120px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[35%] h-[35%] rounded-full bg-cyan-600/30 blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-pink-600/20 blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500/40 mix-blend-multiply dark:mix-blend-screen dark:bg-purple-600/30 blur-[120px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[35%] h-[35%] rounded-full bg-cyan-400/50 mix-blend-multiply dark:mix-blend-screen dark:bg-cyan-600/30 blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-pink-400/40 mix-blend-multiply dark:mix-blend-screen dark:bg-pink-600/20 blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
       </div>
 
       {/* 1. Hero */}
@@ -58,7 +58,7 @@ export default function Home() {
               <span key={index} className="overflow-hidden inline-block pb-2">
                 <motion.span 
                   variants={textRevealVariants}
-                  className="inline-block bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent"
+                  className="inline-block bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 dark:from-pink-500 dark:via-purple-500 dark:to-cyan-500 bg-clip-text text-transparent"
                 >
                   {word}
                 </motion.span>
@@ -155,7 +155,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold">Choose your starting point</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          <Card className="hover:border-pink-500/60 hover:shadow-[0_0_30px_-5px_rgba(236,72,153,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
+          <Card className="hover:border-pink-500/60 hover:shadow-[0_0_30px_-5px_rgba(236,72,153,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-white/60 shadow-lg dark:shadow-none dark:bg-background/50 backdrop-blur-sm border-border/50">
             <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 dark:from-pink-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
             <CardHeader className="relative z-10">
               <CardTitle className="text-pink-600 dark:text-pink-500 group-hover:text-pink-700 dark:group-hover:text-pink-400 transition-colors">Never used Git?</CardTitle>
@@ -167,7 +167,7 @@ export default function Home() {
             </CardContent>
           </Card>
           
-          <Card className="hover:border-purple-500/60 hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
+          <Card className="hover:border-purple-500/60 hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-white/60 shadow-lg dark:shadow-none dark:bg-background/50 backdrop-blur-sm border-border/50">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 dark:from-purple-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
             <CardHeader className="relative z-10">
               <CardTitle className="text-purple-600 dark:text-purple-500 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">Know Git, never contributed?</CardTitle>
@@ -179,7 +179,7 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card className="hover:border-cyan-500/60 hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-background/50 backdrop-blur-sm border-border/50">
+          <Card className="hover:border-cyan-500/60 hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer group relative overflow-hidden bg-white/60 shadow-lg dark:shadow-none dark:bg-background/50 backdrop-blur-sm border-border/50">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 dark:from-cyan-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
             <CardHeader className="relative z-10">
               <CardTitle className="text-cyan-600 dark:text-cyan-500 group-hover:text-cyan-700 dark:group-hover:text-cyan-400 transition-colors">Ready for programs?</CardTitle>
@@ -244,7 +244,7 @@ export default function Home() {
       {/* 6. Numbers Stats */}
       <section className="container mx-auto px-4 py-20 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl blur-2xl -z-10" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-background/60 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-white/60 dark:bg-background/60 backdrop-blur-xl border border-border/50 dark:border-white/10 p-8 rounded-3xl shadow-xl">
           <div className="space-y-2">
             <h3 className="text-5xl md:text-6xl font-black bg-gradient-to-br from-pink-500 to-pink-700 dark:from-pink-400 dark:to-pink-600 bg-clip-text text-transparent drop-shadow-sm">
               <NumberTicker value={100} />+
