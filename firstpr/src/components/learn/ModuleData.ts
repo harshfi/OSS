@@ -118,7 +118,7 @@ export const modules: Module[] = [
         content: "Instead of just asking to be assigned, mention how you plan to solve the issue. Maintainers love initiative!"
       }
     ]
-  }
+  },
   {
     id: "05",
     title: "Forking a repository",
