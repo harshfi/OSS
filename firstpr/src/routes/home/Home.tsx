@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
+import { motion, useAnimation, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
@@ -19,6 +20,22 @@ import { TerminalSquare, BookOpen, Layers, ShieldQuestion, Briefcase, Search } f
 export default function Home() {
   const navigate = useNavigate();
 
+  // Animation for staggered text reveal
+  const textRevealVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] } }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    }
+  };
+
+  const heroHeadline = "Make your first open-source contribution".split(" ");
+
   return (
     <div className="flex flex-col gap-24 pb-24">
       {/* Animated Glowing Orbs Background */}
@@ -30,27 +47,52 @@ export default function Home() {
 
       {/* 1. Hero */}
       <section className="container mx-auto px-4 pt-20 md:pt-32 pb-16 flex flex-col lg:flex-row items-center gap-12 relative">
-        <div className="flex-1 space-y-8 text-center lg:text-left z-10">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent drop-shadow-sm">
-            Make your first open-source contribution
+        <motion.div 
+          className="flex-1 space-y-8 text-center lg:text-left z-10"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight drop-shadow-sm flex flex-wrap justify-center lg:justify-start gap-x-4 gap-y-2">
+            {heroHeadline.map((word, index) => (
+              <span key={index} className="overflow-hidden inline-block pb-2">
+                <motion.span 
+                  variants={textRevealVariants}
+                  className="inline-block bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent"
+                >
+                  {word}
+                </motion.span>
+              </span>
+            ))}
           </h1>
-          <p className="text-xl md:text-2xl text-foreground/80 max-w-[600px] mx-auto lg:mx-0 font-medium">
+          <motion.p 
+            variants={textRevealVariants}
+            className="text-xl md:text-2xl text-foreground/80 max-w-[600px] mx-auto lg:mx-0 font-medium"
+          >
             A guided, animated, hands-on path from "what is a fork?" to your first merged PR.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+          </motion.p>
+          <motion.div 
+            variants={textRevealVariants}
+            className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+          >
             <ShinyButton 
               onClick={() => navigate("/learn")} 
-              className="bg-primary text-primary-foreground hover:bg-primary/90 h-12"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 transform transition-transform hover:scale-105 active:scale-95"
             >
               Start the journey
             </ShinyButton>
-            <Button size="lg" variant="outline" onClick={() => navigate("/lab")} className="rounded-full px-8 h-12 text-lg">
+            <Button size="lg" variant="outline" onClick={() => navigate("/lab")} className="rounded-full px-8 h-12 text-lg transform transition-transform hover:scale-105 hover:bg-foreground hover:text-background active:scale-95">
               Try the terminal
             </Button>
-          </div>
-        </div>
-        <div className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-gradient-to-br from-gray-900 to-black rounded-3xl border border-purple-500/30 shadow-[0_0_40px_-10px_rgba(168,85,247,0.4)] overflow-hidden flex items-center justify-center">
-          <GridBeam className="opacity-60" />
+          </motion.div>
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 1, type: "spring", bounce: 0.4 }}
+          className="flex-1 w-full max-w-lg lg:max-w-none relative aspect-square lg:aspect-video bg-gradient-to-br from-gray-900 to-black rounded-3xl border border-purple-500/30 shadow-[0_0_40px_-10px_rgba(168,85,247,0.4)] overflow-hidden flex items-center justify-center group"
+        >
+          <GridBeam className="opacity-60 transition-opacity duration-700 group-hover:opacity-100" />
           {/* Decorative mini Git Graph Hero Animation */}
           <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
              <motion.svg className="w-full h-full" viewBox="0 0 400 300">
@@ -61,6 +103,9 @@ export default function Home() {
                  strokeWidth="6" 
                  strokeDasharray="10 10"
                  className="opacity-80"
+                 initial={{ pathLength: 0 }}
+                 animate={{ pathLength: 1 }}
+                 transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
                />
                <defs>
                  <linearGradient id="gradient" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -69,13 +114,39 @@ export default function Home() {
                    <stop offset="100%" stopColor="#06b6d4" />
                  </linearGradient>
                </defs>
-               <motion.circle cx="50" cy="250" r="12" className="fill-pink-500" />
-               <motion.circle cx="50" cy="150" r="12" className="fill-purple-500" />
-               <motion.circle cx="150" cy="50" r="12" className="fill-cyan-500" />
-               <motion.circle cx="350" cy="50" r="12" className="fill-green-400" />
+               
+               <motion.circle cx="50" cy="250" r="12" className="fill-pink-500" 
+                 initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5, type: "spring" }} 
+                 whileHover={{ scale: 1.5 }}
+               />
+               <motion.circle cx="50" cy="150" r="12" className="fill-purple-500" 
+                 initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1, type: "spring" }} 
+               />
+               <motion.circle cx="150" cy="50" r="12" className="fill-cyan-500" 
+                 initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1.5, type: "spring" }} 
+               />
+               <motion.circle cx="350" cy="50" r="12" className="fill-green-400" 
+                 initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2, type: "spring" }} 
+               />
              </motion.svg>
           </div>
-        </div>
+          
+          {/* Floating animated elements */}
+          <motion.div 
+            className="absolute top-10 left-10 w-16 h-16 bg-pink-500/10 rounded-xl backdrop-blur-xl border border-pink-500/30 flex items-center justify-center text-pink-500"
+            animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <TerminalSquare />
+          </motion.div>
+          <motion.div 
+            className="absolute bottom-10 right-10 w-20 h-20 bg-cyan-500/10 rounded-full backdrop-blur-xl border border-cyan-500/30 flex items-center justify-center text-cyan-500"
+            animate={{ y: [0, 30, 0], rotate: [0, -20, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          >
+            <BookOpen />
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* 2. "Where are you?" selector */}
