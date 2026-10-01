@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePrefs } from "@/stores/prefs";
+import { useCommand } from "@/stores/command";
 import { Moon, Sun, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
@@ -27,6 +28,7 @@ function ThemeToggle() {
 export function AppShell() {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { setOpen } = useCommand();
 
   const navItems = [
     { name: "Learn", path: "/learn" },
@@ -75,7 +77,7 @@ export function AppShell() {
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" className="hidden md:flex relative h-8 w-full justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-64" onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}>
+            <Button variant="outline" className="hidden md:flex relative h-8 w-full justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-64" onClick={() => setOpen(true)}>
               <span className="hidden lg:inline-flex">Search documentation...</span>
               <span className="inline-flex lg:hidden">Search...</span>
               <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">

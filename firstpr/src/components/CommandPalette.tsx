@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,17 +9,19 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { useNavigate } from "react-router-dom";
-import { Book, Terminal, Settings, GitPullRequest, Search } from "lucide-react";
+import { Book, Terminal, Settings, GitPullRequest, Search, Play, FileCode, CheckCircle } from "lucide-react";
+import { useCommand } from "@/stores/command";
+import { modules } from "@/components/learn/ModuleData";
 
 export function CommandPalette() {
-  const [open, setOpen] = useState(false);
+  const { isOpen, setOpen, toggle } = useCommand();
   const navigate = useNavigate();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        toggle();
       }
     };
 
@@ -33,8 +35,8 @@ export function CommandPalette() {
   };
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Type a command or search..." />
+    <CommandDialog open={isOpen} onOpenChange={setOpen}>
+      <CommandInput placeholder="Type a command or search modules..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Navigation">
@@ -58,6 +60,15 @@ export function CommandPalette() {
             <Search className="mr-2 h-4 w-4" />
             <span>Find an Issue</span>
           </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Learning Modules">
+          {modules.map((mod) => (
+            <CommandItem key={mod.id} onSelect={() => runCommand(() => navigate(`/learn/${mod.id}`))}>
+              <Play className="mr-2 h-4 w-4" />
+              <span>{mod.title}</span>
+            </CommandItem>
+          ))}
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
