@@ -5,6 +5,10 @@ import ModulePage from "@/routes/learn/ModulePage";
 import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
 import LabPage from "@/routes/lab/LabPage";
 import RescuePage from "@/routes/rescue/RescuePage";
+import OrgExplorerPage from "@/routes/orgs/OrgExplorerPage";
+import ProgramsPlannerPage from "@/routes/programs/ProgramsPlannerPage";
+import GsocInsightsPage from "@/routes/gsoc/GsocInsightsPage";
+import AiPolicyPage from "@/routes/ai-policy/AiPolicyPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -45,11 +49,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "orgs",
-        element: <div className="p-4">Org Explorer (Coming soon)</div>,
+        element: <OrgExplorerPage />,
+      },
+      {
+        path: "gsoc",
+        element: <GsocInsightsPage />,
       },
       {
         path: "programs",
-        element: <div className="p-4">Programs & Planner (Coming soon)</div>,
+        element: <ProgramsPlannerPage />,
+      },
+      {
+        path: "ai-policy",
+        element: <AiPolicyPage />,
       },
       {
         path: "progress",
