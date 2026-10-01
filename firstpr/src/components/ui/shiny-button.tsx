@@ -20,7 +20,7 @@ export const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>
         whileTap={{ scale: 0.95 }}
       >
         <span
-          className="relative block h-full w-full text-sm uppercase tracking-wide dark:font-light dark:text-[rgb(255,255,255,90%)] text-lg"
+          className="relative block h-full w-full text-sm uppercase tracking-wide text-lg"
           style={{
             maskImage:
               "linear-gradient(-75deg,hsl(var(--primary)) calc(var(--x) + 20%),transparent calc(var(--x) + 30%),hsl(var(--primary)) calc(var(--x) + 100%))",
