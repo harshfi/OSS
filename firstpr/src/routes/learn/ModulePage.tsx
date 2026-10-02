@@ -3,7 +3,7 @@ import { modules } from "@/components/learn/ModuleData";
 import type { Block } from "@/components/learn/ModuleData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, ChevronRight, Info, AlertTriangle, Play } from "lucide-react";
+import { CheckCircle2, ChevronRight, Info, AlertTriangle } from "lucide-react";
 import { useProgress } from "@/stores/progress";
 
 export default function ModulePage() {

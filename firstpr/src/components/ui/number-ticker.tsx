@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useInView, useMotionValue, useSpring } from "motion/react";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ export function NumberTicker({
     springValue.on("change", (latest) => {
       if (ref.current) {
         ref.current.textContent = Intl.NumberFormat("en-US").format(
-          latest.toFixed(0)
+          Math.round(latest)
         );
       }
     });
