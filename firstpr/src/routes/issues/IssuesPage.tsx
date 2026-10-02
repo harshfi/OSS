@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, ExternalLink, MessageCircle, Clock, CheckSquare, Copy, AlertCircle } from "lucide-react";
+import { Search, ExternalLink, MessageCircle, Clock, CheckSquare, Copy, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -14,20 +15,20 @@ type Issue = {
   id: number;
   title: string;
   html_url: string;
-  repository_url: string;
+  repo: string;
   comments: number;
-  created_at: string;
+  createdAt: string;
   labels: { name: string; color: string }[];
 };
 
+type FetchError = {
+  status: number;
+  message: string;
+  retryAfter?: number;
+};
+
 function IssueCard({ issue }: { issue: Issue }) {
-  const repoName = issue.repository_url.split('/').slice(-2).join('/');
-  
-  const claimComment = `I'd like to work on this issue. Plan: 
-1. Reproduce/Understand the problem.
-2. Draft a fix and write tests.
-3. Submit a PR.
-Could you please assign this to me?`;
+  const claimComment = `Hi! I'd like to work on this. Plan: `;
 
   const copyClaim = () => {
     navigator.clipboard.writeText(claimComment);
@@ -39,10 +40,10 @@ Could you please assign this to me?`;
       <Card className="flex flex-col h-full">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start gap-2">
-            <span className="text-sm font-medium text-muted-foreground">{repoName}</span>
+            <span className="text-sm font-medium text-muted-foreground">{issue.repo}</span>
             <Badge variant="outline" className="flex items-center gap-1 shrink-0">
               <Clock className="w-3 h-3" />
-              {new Date(issue.created_at).toLocaleDateString()}
+              {new Date(issue.createdAt).toLocaleDateString()}
             </Badge>
           </div>
           <CardTitle className="text-lg leading-tight mt-2 line-clamp-2" title={issue.title}>
@@ -71,7 +72,7 @@ Could you please assign this to me?`;
           </div>
         </CardContent>
         <CardFooter className="flex justify-between border-t pt-4">
-          <Button variant="outline" size="sm" onClick={() => window.open(issue.html_url, '_blank')}>
+          <Button variant="outline" size="sm" onClick={() => window.open(issue.html_url, '_blank', 'noopener noreferrer')}>
             View <ExternalLink className="w-3 h-3 ml-2" />
           </Button>
           <Button size="sm" onClick={copyClaim}>
@@ -84,42 +85,89 @@ Could you please assign this to me?`;
 }
 
 export function IssuesPage() {
-  const [issues, setIssues] = useState<Issue[]>([]);
-  const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState("javascript");
   const [label, setLabel] = useState("good first issue");
+  const [qInput, setQInput] = useState("");
   const [q, setQ] = useState("");
-  const [rateLimitedUntil, setRateLimitedUntil] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const perPage = 20;
+  
+  const [rateLimitWait, setRateLimitWait] = useState(0);
 
-  const fetchIssues = async () => {
-    setLoading(true);
+  useEffect(() => {
+    if (rateLimitWait > 0) {
+      const timer = setTimeout(() => setRateLimitWait(r => r - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [rateLimitWait]);
+
+  const fetchIssues = async ({ queryKey }: any) => {
+    const [_key, lang, label, q, page] = queryKey;
+    const url = new URL('/api/issues', window.location.origin);
+    if (lang && lang !== "all") url.searchParams.append('lang', lang);
+    if (label && label !== "all") url.searchParams.append('label', label);
+    if (q) url.searchParams.append('q', q);
+    url.searchParams.append('page', page.toString());
+    url.searchParams.append('perPage', perPage.toString());
+    
+    let res;
     try {
-      const url = new URL('http://localhost:3001/api/issues');
-      if (lang) url.searchParams.append('lang', lang);
-      if (label) url.searchParams.append('label', label);
-      if (q) url.searchParams.append('q', q);
-      
-      const res = await fetch(url.toString());
-      const data = await res.json();
-      
-      if (data.rateLimitedUntil) {
-        setRateLimitedUntil(data.rateLimitedUntil);
-      } else {
-        setRateLimitedUntil(null);
-      }
-
-      setIssues(data.items || []);
+      res = await fetch(url.toString());
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to load issues");
-    } finally {
-      setLoading(false);
+      throw { status: 0, message: "Cannot reach the server. Is the API running?" };
+    }
+    
+    if (!res.ok) {
+      let errData;
+      try {
+        errData = await res.json();
+      } catch (e) {
+        throw { status: 0, message: "Cannot reach the server. Is the API running?" };
+      }
+      throw { status: res.status, message: errData.error || "Unknown error", retryAfter: errData.retryAfter };
+    }
+    
+    return res.json();
+  };
+
+  const { data, isLoading, isError, error, refetch, isFetching } = useQuery<any, FetchError>({
+    queryKey: ['issues', lang, label, q, page],
+    queryFn: fetchIssues,
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error) => {
+      if (error.status === 429) return false;
+      if (error.status === 401 || error.status === 422) return false;
+      return error.status >= 500 && failureCount < 3;
+    }
+  });
+
+  useEffect(() => {
+    if (isError && error?.status === 429 && error.retryAfter) {
+      setRateLimitWait(error.retryAfter);
+    }
+  }, [isError, error]);
+
+  const handleSearch = () => {
+    setQ(qInput);
+    setPage(1);
+  };
+  
+  const handleLangChange = (val: string | null) => {
+    if (val) {
+      setLang(val);
+      setPage(1);
+    }
+  };
+  
+  const handleLabelChange = (val: string | null) => {
+    if (val) {
+      setLabel(val);
+      setPage(1);
     }
   };
 
-  useEffect(() => {
-    fetchIssues();
-  }, [lang, label]);
+  const totalPages = data?.total ? Math.ceil(data.total / perPage) : 0;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -134,50 +182,81 @@ export function IssuesPage() {
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search keyword or org (e.g. facebook)" 
+            placeholder="keyword, org:facebook, or repo:owner/name" 
             className="pl-9"
-            value={q}
-            onChange={e => setQ(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && fetchIssues()}
+            value={qInput}
+            onChange={e => setQInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && rateLimitWait === 0 && handleSearch()}
+            disabled={rateLimitWait > 0}
           />
         </div>
-        <Select value={lang} onValueChange={(val) => setLang(val || "")}>
+        <Select value={lang} onValueChange={handleLangChange} disabled={rateLimitWait > 0}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Language" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">Any Language</SelectItem>
             <SelectItem value="javascript">JavaScript</SelectItem>
             <SelectItem value="typescript">TypeScript</SelectItem>
             <SelectItem value="python">Python</SelectItem>
             <SelectItem value="java">Java</SelectItem>
-            <SelectItem value="rust">Rust</SelectItem>
+            <SelectItem value="c++">C++</SelectItem>
+            <SelectItem value="c#">C#</SelectItem>
+            <SelectItem value="php">PHP</SelectItem>
+            <SelectItem value="ruby">Ruby</SelectItem>
             <SelectItem value="go">Go</SelectItem>
+            <SelectItem value="rust">Rust</SelectItem>
+            <SelectItem value="swift">Swift</SelectItem>
+            <SelectItem value="kotlin">Kotlin</SelectItem>
+            <SelectItem value="dart">Dart</SelectItem>
+            <SelectItem value="html">HTML</SelectItem>
+            <SelectItem value="css">CSS</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={label} onValueChange={(val) => setLabel(val || "")}>
+        <Select value={label} onValueChange={handleLabelChange} disabled={rateLimitWait > 0}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Label" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">Any Label</SelectItem>
             <SelectItem value="good first issue">good first issue</SelectItem>
             <SelectItem value="help wanted">help wanted</SelectItem>
             <SelectItem value="first-timers-only">first-timers-only</SelectItem>
+            <SelectItem value="hacktoberfest">hacktoberfest</SelectItem>
+            <SelectItem value="documentation">documentation</SelectItem>
+            <SelectItem value="beginner">beginner</SelectItem>
+            <SelectItem value="easy">easy</SelectItem>
+            <SelectItem value="up-for-grabs">up-for-grabs</SelectItem>
+            <SelectItem value="bug">bug</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={fetchIssues}>Search</Button>
+        <Button onClick={handleSearch} disabled={rateLimitWait > 0 || isFetching}>
+          {rateLimitWait > 0 ? `Wait ${rateLimitWait}s` : "Search"}
+        </Button>
       </div>
 
-      {rateLimitedUntil && (
+      {isError && error?.status === 429 && (
         <Alert variant="destructive" className="mb-8">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Rate Limited</AlertTitle>
           <AlertDescription>
-            The GitHub API limit was reached. You might see cached results or fewer items. Try again in {Math.ceil((rateLimitedUntil - Date.now()) / 1000 / 60)} minutes.
+            GitHub rate limit reached, try again in {rateLimitWait} seconds.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {isError && error?.status !== 429 && (
+        <Alert variant="destructive" className="mb-8">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription className="flex items-center justify-between">
+            <span>{error?.message || "Failed to load issues"}</span>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>Retry</Button>
           </AlertDescription>
         </Alert>
       )}
 
-      {loading ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1,2,3,4,5,6].map(i => (
             <Card key={i} className="flex flex-col h-[300px]">
@@ -187,19 +266,43 @@ export function IssuesPage() {
             </Card>
           ))}
         </div>
-      ) : issues.length === 0 ? (
+      ) : data?.items?.length === 0 ? (
         <div className="text-center py-24 text-muted-foreground">
           <Search className="w-12 h-12 mx-auto opacity-20 mb-4" />
           <p>No open issues found matching your filters.</p>
         </div>
       ) : (
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence>
-            {issues.map(issue => (
-              <IssueCard key={issue.id} issue={issue} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <>
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence>
+              {data?.items?.map((issue: Issue) => (
+                <IssueCard key={issue.id} issue={issue} />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+          
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-8">
+              <Button 
+                variant="outline" 
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1 || rateLimitWait > 0 || isFetching}
+              >
+                <ChevronLeft className="w-4 h-4 mr-2" /> Previous
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Page {page} of {totalPages}
+              </span>
+              <Button 
+                variant="outline" 
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages || rateLimitWait > 0 || isFetching}
+              >
+                Next <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

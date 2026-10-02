@@ -6,12 +6,20 @@ type CacheEntry<T> = {
 class Cache<T> {
   private store: Map<string, CacheEntry<T>> = new Map();
   private ttl: number;
+  private maxSize: number;
 
-  constructor(ttlMs: number) {
+  constructor(ttlMs: number, maxSize: number = 100) {
     this.ttl = ttlMs;
+    this.maxSize = maxSize;
   }
 
   set(key: string, value: T) {
+    if (this.store.size >= this.maxSize) {
+      const oldestKey = this.store.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.store.delete(oldestKey);
+      }
+    }
     this.store.set(key, { data: value, timestamp: Date.now() });
   }
 
