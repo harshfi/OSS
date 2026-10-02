@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { motion, useAnimation, useInView } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+import type { Variants } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
@@ -15,15 +15,15 @@ import { NumberTicker } from "@/components/ui/number-ticker";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { Marquee } from "@/components/ui/marquee";
 import { ShinyButton } from "@/components/ui/shiny-button";
-import { TerminalSquare, BookOpen, Layers, ShieldQuestion, Briefcase, Search } from "lucide-react";
+import { TerminalSquare, BookOpen, ShieldQuestion, Briefcase, Search } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
 
   // Animation for staggered text reveal
-  const textRevealVariants = {
+  const textRevealVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
   };
 
   const containerVariants = {

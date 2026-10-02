@@ -9,7 +9,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { useNavigate } from "react-router-dom";
-import { Book, Terminal, Settings, GitPullRequest, Search, Play, FileCode, CheckCircle } from "lucide-react";
+import { Book, Terminal, Settings, GitPullRequest, Search, Play } from "lucide-react";
 import { useCommand } from "@/stores/command";
 import { modules } from "@/components/learn/ModuleData";
 

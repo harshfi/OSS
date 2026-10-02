@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, TrendingUp, Info, Calendar, DollarSign, Code2, Award, Trophy, Users, ChevronRight, Star, ExternalLink, Target } from "lucide-react";
+import { BarChart3, Info, Calendar, DollarSign, Code2, Award, Trophy, Users, Star, ExternalLink, Target } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { ShinyButton } from "@/components/ui/shiny-button";
