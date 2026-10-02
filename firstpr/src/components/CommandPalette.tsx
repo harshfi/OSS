@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Book, Terminal, Settings, GitPullRequest, Search, Play } from "lucide-react";
 import { useCommand } from "@/stores/command";
 import { modules } from "@/components/learn/ModuleData";
+import { situationsData } from "@/content/rescue";
 
 export function CommandPalette() {
   const { isOpen, setOpen, toggle } = useCommand();
@@ -60,6 +61,10 @@ export function CommandPalette() {
             <Search className="mr-2 h-4 w-4" />
             <span>Find an Issue</span>
           </CommandItem>
+          <CommandItem onSelect={() => runCommand(() => navigate("/rescue"))}>
+            <Search className="mr-2 h-4 w-4" />
+            <span>Git Rescue</span>
+          </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Learning Modules">
@@ -67,6 +72,15 @@ export function CommandPalette() {
             <CommandItem key={mod.id} onSelect={() => runCommand(() => navigate(`/learn/${mod.id}`))}>
               <Play className="mr-2 h-4 w-4" />
               <span>{mod.title}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Git Rescue">
+          {situationsData.map((sit) => (
+            <CommandItem key={`rescue-${sit.id}`} onSelect={() => runCommand(() => navigate(`/rescue?issue=${sit.id}`))}>
+              <Search className="mr-2 h-4 w-4 text-red-500" />
+              <span>Rescue: {sit.title}</span>
             </CommandItem>
           ))}
         </CommandGroup>
