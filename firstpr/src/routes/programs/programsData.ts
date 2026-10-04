@@ -109,7 +109,7 @@ export const ALL_OSS_PROGRAMS: Program[] = [
       codingPeriod: "June – August (12 weeks full-time or flexible)"
     },
     status: "Upcoming",
-    featured: true,
+    featured: false,
     isEuropean: true,
     website: "https://www.esoc.dev",
     description: "Europe's flagship open source mentorship program focusing on applied AI, decentralized computing, and European digital sovereignty. Connects contributors worldwide with European research labs and open-source companies.",
