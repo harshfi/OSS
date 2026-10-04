@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { workflowSteps } from "./WorkflowData";
-import type { Node, GraphState, Commit } from "./WorkflowData";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -10,14 +9,14 @@ import {
   ChevronLeft, 
   ChevronRight, 
   GitFork, 
-  Server, 
   Laptop, 
-  GitCommit, 
-  GitBranch, 
-  ArrowRight,
-  ArrowLeft,
   Sparkles,
-  Info
+  CheckCircle2,
+  FolderGit2,
+  FileCode2,
+  PackageCheck,
+  ShieldCheck,
+  PartyPopper
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +28,18 @@ export interface WorkflowVisualizerProps {
   showControls?: boolean;
 }
 
+const stepActionDetails: Record<number, { action: string; direction: string }> = {
+  1: { action: "Forking: Creating a safe copy in your GitHub account", direction: "Original ➔ Your Fork" },
+  2: { action: "Cloning: Downloading files to your computer", direction: "Your Fork ➔ Laptop" },
+  3: { action: "Connecting: Linking laptop to original repository", direction: "Laptop ➔ Original (read-only)" },
+  4: { action: "Branching: Creating an isolated draft branch", direction: "Local on Laptop" },
+  5: { action: "Coding: Editing files in your code editor", direction: "Local on Laptop" },
+  6: { action: "Committing: Packaging changes into an atomic snapshot", direction: "Local on Laptop" },
+  7: { action: "Pushing: Uploading saved snapshot to your fork", direction: "Laptop ➔ Your Fork" },
+  8: { action: "Pull Request: Proposing changes to the project maintainers", direction: "Your Fork ➔ Original" },
+  9: { action: "Merged: Maintainers approved and incorporated your code!", direction: "Original ➔ Laptop" },
+};
+
 export function WorkflowVisualizer({
   compact = false,
   stepIndex: controlledStepIndex,
@@ -38,7 +49,6 @@ export function WorkflowVisualizer({
 }: WorkflowVisualizerProps) {
   const [internalStepIndex, setInternalStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(compact);
-  const [selectedCommit, setSelectedCommit] = useState<Commit | null>(null);
 
   const isControlled = controlledStepIndex !== undefined;
   const currentIndex = isControlled ? controlledStepIndex : internalStepIndex;
@@ -57,36 +67,37 @@ export function WorkflowVisualizer({
     const interval = setInterval(() => {
       const nextIndex = (currentIndex + 1) % workflowSteps.length;
       handleStepChange(nextIndex);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(interval);
   }, [isPlaying, currentIndex, handleStepChange]);
 
   const step = workflowSteps[currentIndex];
+  const actionInfo = stepActionDetails[step.id] || { action: step.title, direction: "Active" };
 
   return (
     <div
       className={cn(
-        "flex flex-col space-y-6 w-full rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md p-5 sm:p-7 shadow-xl shadow-black/20 text-card-foreground transition-all duration-300",
+        "flex flex-col space-y-4 w-full rounded-2xl border border-border/80 bg-card/70 backdrop-blur-md p-4 sm:p-6 shadow-lg text-card-foreground transition-all duration-300",
         className
       )}
     >
-      {/* Visual Canvas Header */}
+      {/* Friendly Visual Canvas Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/40">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <Sparkles className="w-4 h-4 animate-pulse" />
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold font-mono uppercase tracking-wider text-muted-foreground">
-                3-Tier Architecture Canvas
+              <h3 className="text-base font-bold text-foreground">
+                The 3 Safe Places in Open Source
               </h3>
               <Badge variant="outline" className="text-[11px] font-mono border-emerald-500/30 text-emerald-400 bg-emerald-500/5">
-                Live State
+                {step.stageBadge} of 9
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground/80 hidden sm:block">
-              Observe how code and reference pointers synchronize across remotes and local workstation
+            <p className="text-xs text-muted-foreground">
+              Watch how your code moves between the original project, your personal copy, and your computer.
             </p>
           </div>
         </div>
@@ -100,127 +111,156 @@ export function WorkflowVisualizer({
               onClick={() => setIsPlaying(!isPlaying)}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
-              <span>{isPlaying ? "Pause" : "Auto-Play"}</span>
+              <span>{isPlaying ? "Pause" : "Play"}</span>
             </Button>
             <div className="text-xs font-mono text-muted-foreground px-2 py-1 rounded bg-muted/40 border border-border/40">
-              {currentIndex + 1}/{workflowSteps.length}
+              {currentIndex + 1}/9
             </div>
           </div>
         )}
       </div>
 
-      {/* Visual Nodes Canvas (Upstream - Origin - Local) */}
-      <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 items-stretch py-2 min-h-[340px]">
-        {/* Connection Edge: Upstream <-> Origin (Top or Left-Center) */}
-        {step.edge && step.edge.from === "upstream" && step.edge.to === "origin" && (
-          <EdgeBadge label={step.edge.label} direction="right" position="upstream-origin" />
-        )}
-        {step.edge && step.edge.from === "origin" && step.edge.to === "upstream" && (
-          <EdgeBadge label={step.edge.label} direction="left" position="upstream-origin" />
-        )}
-
-        {/* Connection Edge: Origin <-> Local */}
-        {step.edge && step.edge.from === "origin" && step.edge.to === "local" && (
-          <EdgeBadge label={step.edge.label} direction="right" position="origin-local" />
-        )}
-        {step.edge && step.edge.from === "local" && step.edge.to === "origin" && (
-          <EdgeBadge label={step.edge.label} direction="left" position="origin-local" />
-        )}
-
-        {/* Direct Upstream <-> Local Edge (e.g. Sync / Add Remote / Pull) */}
-        {step.edge && ((step.edge.from === "local" && step.edge.to === "upstream") || (step.edge.from === "upstream" && step.edge.to === "local")) && (
-          <DirectSyncEdge label={step.edge.label} direction={step.edge.from === "local" ? "up" : "down"} />
-        )}
-
-        {/* 1. UPSTREAM NODE */}
-        <NodeCard
-          type="upstream"
-          title="Upstream"
-          subtitle="Original Maintainer Repo"
-          badgeText="Canonical Remote"
-          badgeColor="border-blue-500/30 text-blue-400 bg-blue-500/10"
-          icon={<Server className="w-4 h-4 text-blue-400" />}
-          state={step.graph.upstream}
-          isHighlighted={step.highlight.includes("upstream")}
-          activeBranch="main"
-          onSelectCommit={setSelectedCommit}
-        />
-
-        {/* 2. ORIGIN NODE */}
-        <NodeCard
-          type="origin"
-          title="Origin"
-          subtitle="Your Fork on GitHub"
-          badgeText="Remote Fork (origin)"
-          badgeColor="border-purple-500/30 text-purple-400 bg-purple-500/10"
-          icon={<GitFork className="w-4 h-4 text-purple-400" />}
-          state={step.graph.origin}
-          isHighlighted={step.highlight.includes("origin")}
-          activeBranch={step.graph.origin?.branches.find(b => b.name !== "main")?.name || "main"}
-          onSelectCommit={setSelectedCommit}
-        />
-
-        {/* 3. LOCAL MACHINE NODE */}
-        <NodeCard
-          type="local"
-          title="Local Workstation"
-          subtitle="Your Computer (SSD)"
-          badgeText="Local Repo & Worktree"
-          badgeColor="border-emerald-500/30 text-emerald-400 bg-emerald-500/10"
-          icon={<Laptop className="w-4 h-4 text-emerald-400" />}
-          state={step.graph.local}
-          isHighlighted={step.highlight.includes("local")}
-          activeBranch={step.localState?.activeBranch || "main"}
-          localWorkingState={step.localState}
-          onSelectCommit={setSelectedCommit}
-        />
+      {/* Prominent Non-Overlapping Action Flow Banner */}
+      <div className="flex items-center justify-center py-1">
+        <motion.div
+          key={step.id}
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500 text-black shadow-md shadow-emerald-500/20 text-xs font-semibold"
+        >
+          <span className="h-2 w-2 rounded-full bg-black animate-ping shrink-0" />
+          <span>{actionInfo.action}</span>
+          <span className="hidden sm:inline text-[11px] opacity-80 font-mono">({actionInfo.direction})</span>
+        </motion.div>
       </div>
 
-      {/* Selected Commit Inspector Popover */}
-      <AnimatePresence>
-        {selectedCommit && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/60 text-xs font-mono"
-          >
-            <div className="flex items-center gap-3">
-              <span className="px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30 font-bold">
-                Commit {selectedCommit.hash}
+      {/* Visual Journey: 3 Welcoming Places */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch py-1">
+        {/* 1. ORIGINAL PROJECT CARD */}
+        <PlaceCard
+          title="1. Original Project"
+          subtitle="Maintainer's GitHub"
+          badge="Protected • Look Only"
+          badgeColor="border-blue-500/30 text-blue-500 dark:text-blue-400 bg-blue-500/10"
+          icon={<FolderGit2 className="w-5 h-5 text-blue-500 dark:text-blue-400" />}
+          isTarget={step.highlight.includes("upstream")}
+          description="The official public codebase. You have read-only access here, so you cannot accidentally break or delete anything."
+        >
+          <div className="mt-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20 text-xs space-y-1.5">
+            <div className="flex items-center justify-between font-mono text-[11px] text-blue-500 dark:text-blue-300 font-semibold">
+              <span>original-owner/project</span>
+              <span className="flex items-center gap-1 text-[10px] text-emerald-500 dark:text-emerald-400">
+                <CheckCircle2 className="w-3 h-3" /> Safe
               </span>
-              <span className="text-foreground font-sans font-medium">{selectedCommit.message}</span>
-              <Badge variant="outline" className="text-[10px] font-mono">
-                branch: {selectedCommit.branch}
-              </Badge>
             </div>
-            <button
-              onClick={() => setSelectedCommit(null)}
-              className="text-muted-foreground hover:text-foreground text-xs px-2 py-0.5"
-            >
-              Dismiss
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+              <span>Official <code className="text-blue-500 dark:text-blue-300">main</code> branch</span>
+            </div>
+            {step.id === 9 && (
+              <div className="pt-1.5 border-t border-blue-500/20 text-emerald-600 dark:text-emerald-300 text-[11px] flex items-center gap-1 font-semibold">
+                <PartyPopper className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                <span>Your PR is merged here!</span>
+              </div>
+            )}
+          </div>
+        </PlaceCard>
 
-      {/* Compact Mode Bottom Bar */}
-      {compact && (
-        <div className="pt-2 border-t border-border/40 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-            <span className="font-semibold text-foreground">{step.stageBadge}:</span>
-            <span className="text-muted-foreground">{step.title}</span>
+        {/* 2. YOUR FORK CARD */}
+        <PlaceCard
+          title="2. Your Cloud Copy"
+          subtitle="Your Personal Fork on GitHub"
+          badge="Your Playground • Full Control"
+          badgeColor="border-purple-500/30 text-purple-600 dark:text-purple-400 bg-purple-500/10"
+          icon={<GitFork className="w-5 h-5 text-purple-600 dark:text-purple-400" />}
+          isTarget={step.highlight.includes("origin")}
+          description="Your personal clone in the cloud. You have 100% write access here to test anything without affecting the original project."
+        >
+          <div className="mt-3 p-3 rounded-lg bg-purple-500/5 border border-purple-500/20 text-xs space-y-1.5">
+            <div className="flex items-center justify-between font-mono text-[11px] text-purple-600 dark:text-purple-300 font-semibold">
+              <span>your-username/project</span>
+              <span className="text-[10px] text-purple-500 dark:text-purple-400">Your Fork</span>
+            </div>
+            <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
+              {step.id >= 7 && step.id <= 8 ? (
+                <span className="text-purple-600 dark:text-purple-300 font-semibold">
+                  Branch: <code className="text-emerald-600 dark:text-emerald-300">feat/fix-nav-contrast</code>
+                </span>
+              ) : (
+                <span>Branch: <code className="text-purple-600 dark:text-purple-300">main</code> (cloud backup)</span>
+              )}
+            </div>
+            {step.id >= 7 && (
+              <div className="pt-1.5 border-t border-purple-500/20 text-emerald-600 dark:text-emerald-300 text-[11px] flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
+                <span>Commits uploaded & ready for PR</span>
+              </div>
+            )}
           </div>
-          <div className="font-mono text-[11px] text-muted-foreground">
-            Active: {step.highlight.join(" ⇄ ")}
+        </PlaceCard>
+
+        {/* 3. YOUR LAPTOP CARD */}
+        <PlaceCard
+          title="3. Your Laptop"
+          subtitle="Your Local Workspace (SSD)"
+          badge="Private • Offline & Safe"
+          badgeColor="border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
+          icon={<Laptop className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />}
+          isTarget={step.highlight.includes("local")}
+          description="Where you open files in your editor, write code, run tests, and save atomic snapshots before uploading."
+        >
+          <div className="mt-3 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-xs space-y-1.5">
+            <div className="flex items-center justify-between font-mono text-[11px] text-emerald-600 dark:text-emerald-300 font-semibold">
+              <span>~/projects/project</span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Local</span>
+            </div>
+
+            {/* Current Stage Status on Laptop */}
+            <div className="text-[11px] text-muted-foreground">
+              {step.id < 2 ? (
+                <span className="text-muted-foreground italic">Waiting to clone...</span>
+              ) : step.id === 2 ? (
+                <span className="text-emerald-600 dark:text-emerald-300 font-medium">📥 Files freshly downloaded</span>
+              ) : step.id === 3 ? (
+                <span className="text-blue-500 dark:text-blue-300 font-medium">🔗 Connected to original project</span>
+              ) : step.id === 4 ? (
+                <span className="text-emerald-600 dark:text-emerald-300 font-medium">🌿 Active branch: <code className="text-emerald-600 dark:text-emerald-400 font-bold">feat/fix-nav-contrast</code></span>
+              ) : step.id === 5 ? (
+                <span className="text-amber-600 dark:text-amber-300 font-medium flex items-center gap-1">
+                  <FileCode2 className="w-3 h-3" /> 2 files edited (in progress)
+                </span>
+              ) : step.id === 6 ? (
+                <span className="text-emerald-600 dark:text-emerald-300 font-medium flex items-center gap-1">
+                  <PackageCheck className="w-3.5 h-3.5" /> 📦 Snapshot created: "fix(nav): ..."
+                </span>
+              ) : step.id === 7 || step.id === 8 ? (
+                <span className="text-emerald-600 dark:text-emerald-300 font-medium">🚀 Uploaded to GitHub</span>
+              ) : (
+                <span className="text-emerald-600 dark:text-emerald-300 font-medium">✨ Clean main branch synced</span>
+              )}
+            </div>
           </div>
+        </PlaceCard>
+      </div>
+
+      {/* Reassuring Beginner Safety Banner */}
+      <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-medium">
+          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+          <span>
+            <strong className="text-foreground">Why you can't break anything: </strong>
+            {step.safetyGuarantee}
+          </span>
         </div>
-      )}
+        <div className="font-mono text-[11px] text-muted-foreground shrink-0 sm:text-right">
+          📍 Code status: <span className="text-emerald-600 dark:text-emerald-400 font-bold">{step.whereIsMyCode.split("(")[0]}</span>
+        </div>
+      </div>
 
-      {/* Non-compact Controls (if requested within visualizer) */}
+      {/* Non-compact Controls */}
       {!compact && showControls && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/60">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border/60">
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               size="sm"
@@ -229,7 +269,7 @@ export function WorkflowVisualizer({
               onClick={() => setIsPlaying(!isPlaying)}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
-              <span className="text-xs">{isPlaying ? "Pause" : "Auto-advance"}</span>
+              <span className="text-xs">{isPlaying ? "Pause Tour" : "Auto-advance Tour"}</span>
             </Button>
             <Button
               size="icon"
@@ -252,11 +292,11 @@ export function WorkflowVisualizer({
               <ChevronRight className="w-4 h-4" />
             </Button>
             <span className="text-xs font-mono text-muted-foreground ml-2">
-              Step {currentIndex + 1} of {workflowSteps.length}
+              Step {currentIndex + 1} of 9
             </span>
           </div>
 
-          {/* Quick step jump indicators */}
+          {/* Quick Step Indicators */}
           <div className="flex items-center gap-1.5 overflow-x-auto py-1 max-w-full">
             {workflowSteps.map((s, idx) => (
               <button
@@ -265,14 +305,15 @@ export function WorkflowVisualizer({
                 className={cn(
                   "h-7 px-2.5 rounded-md text-xs font-mono transition-all flex items-center gap-1 border",
                   idx === currentIndex
-                    ? "bg-emerald-500/15 border-emerald-500 text-emerald-400 font-bold shadow-sm shadow-emerald-500/20"
+                    ? "bg-emerald-500 text-black border-emerald-400 font-bold shadow-sm shadow-emerald-500/20"
                     : idx < currentIndex
-                    ? "bg-muted/40 border-border/60 text-muted-foreground hover:text-foreground"
-                    : "bg-background/40 border-border/30 text-muted-foreground/60 hover:text-foreground"
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
+                    : "bg-background/40 border-border/40 text-muted-foreground hover:text-foreground"
                 )}
-                title={s.title}
+                title={s.beginnerTitle}
               >
                 <span>{s.id}</span>
+                <span className="hidden xl:inline text-[11px] truncate max-w-[80px]">{s.beginnerTitle.split(" ")[0]}</span>
               </button>
             ))}
           </div>
@@ -286,223 +327,68 @@ export function WorkflowVisualizer({
 // SUBCOMPONENTS
 // ---------------------------------------------------------------------------
 
-interface NodeCardProps {
-  type: Node;
+interface PlaceCardProps {
   title: string;
   subtitle: string;
-  badgeText: string;
+  badge: string;
   badgeColor: string;
   icon: React.ReactNode;
-  state: GraphState | null;
-  isHighlighted: boolean;
-  activeBranch?: string;
-  localWorkingState?: {
-    workingDirectory: "Clean" | "Modified" | "Untracked";
-    stagingArea: "Empty" | "Staged Snapshots";
-    activeBranch: string;
-    headCommit: string;
-  };
-  onSelectCommit: (commit: Commit) => void;
+  isTarget: boolean;
+  description: string;
+  children: React.ReactNode;
 }
 
-function NodeCard({
-  type,
+function PlaceCard({
   title,
   subtitle,
-  badgeText,
+  badge,
   badgeColor,
   icon,
-  state,
-  isHighlighted,
-  activeBranch,
-  localWorkingState,
-  onSelectCommit,
-}: NodeCardProps) {
-  if (!state) {
-    return (
-      <div
-        className={cn(
-          "flex flex-col items-center justify-center rounded-xl p-6 border-2 border-dashed border-border/40 bg-muted/10 opacity-40 transition-all min-h-[300px]"
-        )}
-      >
-        <div className="h-10 w-10 rounded-full bg-muted/40 flex items-center justify-center mb-3 text-muted-foreground">
-          {icon}
-        </div>
-        <h4 className="font-mono font-bold text-sm text-foreground/80">{title}</h4>
-        <span className="text-xs text-muted-foreground text-center mt-1">{subtitle}</span>
-        <div className="mt-5 px-3 py-1 rounded-full bg-muted/60 text-[11px] font-mono text-muted-foreground border border-border/30">
-          Uninitialized on local machine
-        </div>
-      </div>
-    );
-  }
-
+  isTarget,
+  description,
+  children,
+}: PlaceCardProps) {
   return (
     <motion.div
       layout
       className={cn(
-        "relative flex flex-col justify-between rounded-xl p-5 border-2 transition-all duration-300 min-h-[300px]",
-        isHighlighted
-          ? "border-emerald-500/80 bg-gradient-to-b from-emerald-500/10 via-card to-card shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/30"
-          : "border-border/60 bg-card/80 hover:border-border"
+        "relative flex flex-col justify-between rounded-xl p-4 sm:p-5 border-2 transition-all duration-300 min-h-[250px]",
+        isTarget
+          ? "border-emerald-500 bg-gradient-to-b from-emerald-500/10 via-card to-card shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/40"
+          : "border-border/60 bg-card/80 opacity-80 hover:opacity-100 hover:border-border"
       )}
     >
       {/* Active Pulse Pill */}
-      {isHighlighted && (
-        <div className="absolute -top-3 right-4 px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[10px] font-mono font-bold uppercase tracking-wider shadow-md shadow-emerald-500/30 flex items-center gap-1">
+      {isTarget && (
+        <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-emerald-500 text-black text-[10px] font-mono font-bold uppercase tracking-wider shadow-md shadow-emerald-500/30 flex items-center gap-1">
           <span className="h-1.5 w-1.5 rounded-full bg-black animate-ping" />
-          Active Target
+          Active Place
         </div>
       )}
 
-      {/* Node Header */}
+      {/* Header */}
       <div>
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-muted/60 border border-border flex items-center justify-center shrink-0">
-              {icon}
-            </div>
-            <div>
-              <h4 className="font-mono font-bold text-sm text-foreground leading-tight">{title}</h4>
-              <p className="text-[11px] text-muted-foreground">{subtitle}</p>
-            </div>
+        <div className="flex items-start gap-2.5 mb-2">
+          <div className="h-9 w-9 rounded-lg bg-muted/60 border border-border flex items-center justify-center shrink-0">
+            {icon}
+          </div>
+          <div>
+            <h4 className="font-bold text-sm text-foreground leading-tight">{title}</h4>
+            <p className="text-[11px] text-muted-foreground">{subtitle}</p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 mt-2">
-          <Badge variant="outline" className={cn("text-[10px] font-mono py-0", badgeColor)}>
-            {badgeText}
-          </Badge>
-          {activeBranch && (
-            <Badge variant="outline" className="text-[10px] font-mono py-0 border-border text-foreground/80 bg-muted/40 flex items-center gap-1">
-              <GitBranch className="w-2.5 h-2.5 text-primary" />
-              {activeBranch}
-            </Badge>
-          )}
-        </div>
+        <Badge variant="outline" className={cn("text-[10px] font-mono py-0 mt-1 mb-2", badgeColor)}>
+          {badge}
+        </Badge>
+
+        <p className="text-xs text-muted-foreground/90 leading-relaxed">
+          {description}
+        </p>
       </div>
 
-      {/* Node Body: Commit Graph Representation */}
-      <div className="my-5 flex flex-col gap-2.5">
-        <div className="text-[11px] font-mono text-muted-foreground flex items-center justify-between">
-          <span>Commit Snapshots</span>
-          <span>{state.commits.length} commits</span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <AnimatePresence mode="popLayout">
-            {state.commits.map((c) => {
-              const isMainBranch = c.branch === "main";
-              const isFeatureCommit = c.branch.startsWith("feat") || c.branch === "feature-branch";
-              return (
-                <motion.button
-                  key={`${type}-${c.id}`}
-                  layoutId={`${type}-${c.id}`}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  onClick={() => onSelectCommit(c)}
-                  className={cn(
-                    "w-full text-left p-2 rounded-lg border text-xs font-mono flex items-center justify-between transition-colors group cursor-pointer",
-                    isFeatureCommit
-                      ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20"
-                      : isMainBranch
-                      ? "bg-blue-500/10 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
-                      : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted"
-                  )}
-                >
-                  <div className="flex items-center gap-2 truncate">
-                    <GitCommit className={cn("w-3.5 h-3.5 shrink-0", isFeatureCommit ? "text-emerald-400" : "text-blue-400")} />
-                    <span className="font-bold text-[11px]">{c.hash}</span>
-                    <span className="truncate text-foreground/80 font-sans text-[11px]">{c.message}</span>
-                  </div>
-                  <span className="text-[10px] opacity-70 group-hover:opacity-100 shrink-0 ml-1">
-                    {c.branch}
-                  </span>
-                </motion.button>
-              );
-            })}
-          </AnimatePresence>
-        </div>
-
-        {/* Remotes indicator for local machine */}
-        {state.remotes && state.remotes.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-border/40 flex flex-wrap gap-1">
-            <span className="text-[10px] font-mono text-muted-foreground w-full">Configured Remotes:</span>
-            {state.remotes.map((r) => (
-              <span key={r.name} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-muted/80 text-foreground/80 border border-border/50">
-                {r.name}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Node Footer: Local Machine Status Inspector */}
-      {localWorkingState && type === "local" ? (
-        <div className="pt-3 border-t border-border/40 grid grid-cols-2 gap-2 text-[11px] font-mono">
-          <div className="p-1.5 rounded bg-muted/30 border border-border/30">
-            <span className="text-muted-foreground block text-[9px] uppercase">Worktree</span>
-            <span className={cn("font-semibold", localWorkingState.workingDirectory === "Modified" ? "text-amber-400" : "text-emerald-400")}>
-              {localWorkingState.workingDirectory}
-            </span>
-          </div>
-          <div className="p-1.5 rounded bg-muted/30 border border-border/30">
-            <span className="text-muted-foreground block text-[9px] uppercase">Staging Area</span>
-            <span className={cn("font-semibold", localWorkingState.stagingArea === "Staged Snapshots" ? "text-emerald-400" : "text-muted-foreground")}>
-              {localWorkingState.stagingArea}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="pt-2 border-t border-border/40 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-          <span>Synced with Git Cloud</span>
-          <span className="text-emerald-400 flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            Online
-          </span>
-        </div>
-      )}
+      {/* Inner preview card */}
+      {children}
     </motion.div>
-  );
-}
-
-// Visual Edge Action Badges
-function EdgeBadge({ label, direction, position }: { label: string; direction: "left" | "right"; position: "upstream-origin" | "origin-local" }) {
-  const isLeftHalf = position === "upstream-origin";
-  return (
-    <div
-      className={cn(
-        "hidden md:flex absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none items-center justify-center",
-        isLeftHalf ? "left-[30%] -translate-x-1/2" : "left-[69%] -translate-x-1/2"
-      )}
-    >
-      <motion.div
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.85, opacity: 0 }}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500 text-black shadow-lg shadow-emerald-500/30 text-xs font-mono font-bold"
-      >
-        {direction === "left" && <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />}
-        <span>{label}</span>
-        {direction === "right" && <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />}
-      </motion.div>
-    </div>
-  );
-}
-
-function DirectSyncEdge({ label, direction }: { label: string; direction: "up" | "down" }) {
-  return (
-    <div className="hidden md:flex absolute -bottom-5 left-1/2 -translate-x-1/2 z-20 pointer-events-none items-center justify-center">
-      <motion.div
-        initial={{ y: 5, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-500 text-white shadow-lg shadow-blue-500/30 text-xs font-mono font-bold"
-      >
-        <Info className="w-3 h-3" />
-        <span>{label}</span>
-        <span className="text-[10px] opacity-80">({direction === "up" ? "Direct Config" : "Fast-forward"})</span>
-      </motion.div>
-    </div>
   );
 }

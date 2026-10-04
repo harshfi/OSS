@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { workflowSteps } from "@/components/workflow/WorkflowData";
 import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
 import { Button } from "@/components/ui/button";
@@ -17,12 +17,13 @@ import {
   Sparkles, 
   AlertTriangle, 
   Lightbulb, 
-  Layers, 
-  ExternalLink,
-  GitBranch,
   ShieldCheck,
-  Cpu,
-  ArrowRight
+  FolderGit2,
+  GitFork,
+  Laptop,
+  ArrowRight,
+  ExternalLink,
+  Code2
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -32,7 +33,7 @@ export default function WorkflowPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"internals" | "protip" | "pitfall">("internals");
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
   const currentStep = workflowSteps[currentStepIndex];
 
@@ -76,77 +77,79 @@ export default function WorkflowPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
-      {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-card/80 via-background to-background py-12 md:py-16">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:36px_36px] pointer-events-none" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* 1. WELCOMING HERO SECTION */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-card/70 via-background to-background py-10 md:py-14">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="container max-w-6xl mx-auto px-4 relative z-10">
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono font-medium">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>INTERACTIVE GIT & GITHUB PIPELINE</span>
+        <div className="container max-w-5xl mx-auto px-4 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono font-medium mb-4">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>BEGINNER-FRIENDLY VISUAL WALKTHROUGH</span>
+          </div>
+
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight font-sans mb-3">
+            How Open Source Contributing <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+              Actually Works
+            </span>
+          </h1>
+
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6">
+            No confusing jargon. See how your code travels safely from a cloud copy on GitHub down to your laptop, and back as a merged Pull Request.
+          </p>
+
+          {/* Action Redirect Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Button
+              onClick={() => navigate("/learn")}
+              className="bg-emerald-500 hover:bg-emerald-600 text-black font-semibold h-11 px-6 shadow-lg shadow-emerald-500/20 gap-2 text-sm transition-all hover:scale-[1.02]"
+            >
+              <BookOpen className="w-4 h-4" />
+              Start Guided Learn Course (Free)
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/lab")}
+              className="h-11 px-5 border-border hover:bg-muted/60 gap-2 text-sm"
+            >
+              <Terminal className="w-4 h-4 text-emerald-400" />
+              Practice in Git Terminal
+            </Button>
+          </div>
+
+          {/* 3 Reassurances for First-Timers */}
+          <div className="pt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left max-w-3xl mx-auto text-xs">
+            <div className="p-3 rounded-xl border border-border/60 bg-card/40 flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-foreground block">Zero Risk to the Project</strong>
+                <span className="text-muted-foreground text-[11px]">You cannot accidentally break or delete the original code.</span>
+              </div>
             </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight font-sans">
-              The Open Source <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                Contribution Workflow
-              </span>
-            </h1>
-
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-              Understand the complete Git lifecycle from your first cloud fork to a merged Pull Request.
-              Visualize how code snapshots, remotes, and branches move between Upstream, Origin, and your local machine.
-            </p>
-
-            {/* Top Action Redirect Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <Button
-                onClick={() => navigate("/learn")}
-                className="bg-emerald-500 hover:bg-emerald-600 text-black font-semibold h-11 px-6 shadow-lg shadow-emerald-500/20 gap-2 text-sm transition-all hover:scale-[1.02]"
-              >
-                <BookOpen className="w-4 h-4" />
-                Go to Guided Learn Curriculum
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/lab")}
-                className="h-11 px-5 border-border hover:bg-muted/60 gap-2 text-sm"
-              >
-                <Terminal className="w-4 h-4 text-emerald-400" />
-                Practice in Git Terminal Lab
-              </Button>
+            <div className="p-3 rounded-xl border border-border/60 bg-card/40 flex items-start gap-2.5">
+              <Laptop className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-foreground block">Private on Your Laptop</strong>
+                <span className="text-muted-foreground text-[11px]">Experiment freely. No one sees your draft until you upload it.</span>
+              </div>
             </div>
-
-            {/* Metric Pills */}
-            <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl text-xs font-mono">
-              <div className="p-2.5 rounded-lg border border-border/50 bg-card/40 flex flex-col items-center">
-                <span className="text-foreground font-bold text-sm">9 Stages</span>
-                <span className="text-muted-foreground text-[11px]">Fork to Merge</span>
-              </div>
-              <div className="p-2.5 rounded-lg border border-border/50 bg-card/40 flex flex-col items-center">
-                <span className="text-emerald-400 font-bold text-sm">3 Tiers</span>
-                <span className="text-muted-foreground text-[11px]">Upstream/Origin/Local</span>
-              </div>
-              <div className="p-2.5 rounded-lg border border-border/50 bg-card/40 flex flex-col items-center">
-                <span className="text-blue-400 font-bold text-sm">12 Modules</span>
-                <span className="text-muted-foreground text-[11px]">Connected Lessons</span>
-              </div>
-              <div className="p-2.5 rounded-lg border border-border/50 bg-card/40 flex flex-col items-center">
-                <span className="text-cyan-400 font-bold text-sm">Zero Risk</span>
-                <span className="text-muted-foreground text-[11px]">Sandboxed Workflow</span>
+            <div className="p-3 rounded-xl border border-border/60 bg-card/40 flex items-start gap-2.5">
+              <Sparkles className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-foreground block">Always Reviewed</strong>
+                <span className="text-muted-foreground text-[11px]">Maintainers check every PR and guide you with friendly tips.</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. PIPELINE STEP SCRUBBER & CONTROLS */}
+      {/* 2. FRIENDLY STEP CONTROLLER */}
       <section className="sticky top-14 z-30 bg-background/95 backdrop-blur-md border-b border-border/50 py-3 shadow-md">
-        <div className="container max-w-6xl mx-auto px-4">
+        <div className="container max-w-5xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-            {/* Playback Buttons */}
+            {/* Play/Pause & Step Count */}
             <div className="flex items-center gap-2 shrink-0">
               <Button
                 size="sm"
@@ -167,8 +170,8 @@ export default function WorkflowPage() {
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <div className="px-2 text-xs font-mono text-muted-foreground border-x border-border">
-                  {currentStepIndex + 1}/{workflowSteps.length}
+                <div className="px-2.5 text-xs font-mono text-muted-foreground border-x border-border">
+                  {currentStepIndex + 1}/9
                 </div>
                 <button
                   disabled={currentStepIndex === workflowSteps.length - 1}
@@ -180,7 +183,7 @@ export default function WorkflowPage() {
                 </button>
               </div>
 
-              {/* Direct Link to Learn Route */}
+              {/* Direct Redirect to Learn Route */}
               <Button
                 size="sm"
                 variant="outline"
@@ -189,16 +192,28 @@ export default function WorkflowPage() {
                 title={`Study ${currentStep.learnModuleTitle}`}
               >
                 <BookOpen className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Learn Mod {currentStep.learnModuleId}</span>
+                <span>Learn Mod {currentStep.learnModuleId}</span>
                 <ArrowRight className="w-3 h-3" />
               </Button>
             </div>
 
-            {/* Step Pills Scrubber */}
+            {/* Friendly Step Scrubber */}
             <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
               {workflowSteps.map((step, idx) => {
                 const isActive = idx === currentStepIndex;
                 const isCompleted = idx < currentStepIndex;
+                const shortLabel = [
+                  "1. Fork",
+                  "2. Clone",
+                  "3. Upstream",
+                  "4. Branch",
+                  "5. Code",
+                  "6. Commit",
+                  "7. Push",
+                  "8. PR",
+                  "9. Merge"
+                ][idx];
+
                 return (
                   <button
                     key={step.id}
@@ -207,7 +222,7 @@ export default function WorkflowPage() {
                       setIsPlaying(false);
                     }}
                     className={cn(
-                      "px-2.5 py-1 rounded-md text-xs font-mono transition-all flex items-center gap-1.5 shrink-0 border",
+                      "px-2.5 py-1 rounded-md text-xs font-sans transition-all flex items-center gap-1 shrink-0 border",
                       isActive
                         ? "bg-emerald-500 text-black border-emerald-400 font-bold shadow-sm shadow-emerald-500/30"
                         : isCompleted
@@ -215,8 +230,7 @@ export default function WorkflowPage() {
                         : "bg-card border-border/60 text-muted-foreground hover:text-foreground"
                     )}
                   >
-                    <span>{step.id}</span>
-                    <span className="hidden lg:inline text-[11px] truncate max-w-[100px]">{step.stageBadge.replace(/Stage \d: /, "")}</span>
+                    <span>{shortLabel}</span>
                   </button>
                 );
               })}
@@ -225,149 +239,163 @@ export default function WorkflowPage() {
         </div>
       </section>
 
-      {/* 3. MAIN WORKFLOW VISUALIZER & INTERACTIVE CONSOLE */}
-      <main className="container max-w-6xl mx-auto px-4 pt-8 space-y-8">
-        {/* Step Banner */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl border border-border/80 bg-card/50 backdrop-blur-sm">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 bg-emerald-500/10 font-mono text-xs">
-                {currentStep.stageBadge}
-              </Badge>
-              <span className="text-xs font-mono text-muted-foreground">
-                Target: {currentStep.highlight.join(" & ")}
-              </span>
+      {/* 3. MAIN WORKFLOW VISUALIZER & EXPLANATION */}
+      <main className="container max-w-5xl mx-auto px-4 pt-6 space-y-7">
+        {/* Active Stage Card & Real-World Analogy */}
+        <div className="p-5 md:p-6 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-sm space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 bg-emerald-500/10 font-mono text-xs">
+                  {currentStep.stageBadge} of 9
+                </Badge>
+                <span className="text-xs text-muted-foreground">
+                  Where: <strong className="text-foreground">{currentStep.whereIsMyCode.split("(")[0]}</strong>
+                </span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
+                {currentStep.beginnerTitle}
+              </h2>
+              <p className="text-sm md:text-base text-muted-foreground">
+                {currentStep.subtitle}
+              </p>
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
-              {currentStep.title}
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-              {currentStep.subtitle}
-            </p>
+
+            {/* Quick Redirect to Matching Learn Module */}
+            <div className="shrink-0">
+              <Button
+                onClick={() => navigate(`/learn/${currentStep.learnModuleId}`)}
+                className="bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 h-10 px-4 text-xs font-mono font-semibold gap-2 shadow-sm transition-all"
+              >
+                <BookOpen className="w-4 h-4 text-emerald-400" />
+                <span>Jump to {currentStep.learnModuleTitle.split(":")[0]}</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Button>
+            </div>
           </div>
 
-          {/* Quick Jump to Related Learn Module Button */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
-            <Button
-              onClick={() => navigate(`/learn/${currentStep.learnModuleId}`)}
-              className="bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 h-10 px-4 text-xs font-mono font-semibold gap-2 shadow-sm transition-all"
-            >
-              <BookOpen className="w-4 h-4 text-emerald-400" />
-              <span>Jump to {currentStep.learnModuleTitle.split(":")[0]}</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Button>
+          {/* REAL WORLD ANALOGY CALLOUT */}
+          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs md:text-sm flex items-start gap-3">
+            <div className="h-6 w-6 rounded-md bg-amber-500/20 flex items-center justify-center shrink-0 text-amber-600 dark:text-amber-400 mt-0.5">
+              <Lightbulb className="w-4 h-4" />
+            </div>
+            <div className="space-y-0.5">
+              <strong className="text-amber-800 dark:text-amber-300 font-bold block text-xs uppercase tracking-wider font-mono">
+                Real-World Analogy
+              </strong>
+              <p className="leading-relaxed text-amber-900 dark:text-amber-200">
+                {currentStep.analogy}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* The 3-Tier Visual Architecture Component */}
+        {/* The Beginner-Friendly 3 Safe Places Visualizer */}
         <WorkflowVisualizer
           stepIndex={currentStepIndex}
           onStepChange={setCurrentStepIndex}
           showControls={false}
         />
 
-        {/* 4. TERMINAL SIMULATOR & STEP EXECUTION PANE */}
+        {/* 4. SIMPLE COMMAND PANE & PROMINENT LEARN REDIRECT */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Command Terminal Box */}
-          <div className="lg:col-span-7 flex flex-col space-y-4">
-            <div className="rounded-xl border border-border/80 bg-black/80 shadow-2xl overflow-hidden">
+          {/* Left Column: Command with Plain English explanation */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="rounded-xl border border-border/80 bg-black/80 shadow-xl overflow-hidden">
               {/* Terminal Titlebar */}
               <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1.5">
-                    <span className="h-3 w-3 rounded-full bg-red-500/80 inline-block" />
-                    <span className="h-3 w-3 rounded-full bg-amber-500/80 inline-block" />
-                    <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500/80 inline-block" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block" />
                   </div>
                   <span className="text-xs font-mono text-muted-foreground ml-2">
-                    zsh — open-source-project ({currentStep.localState?.activeBranch || "main"})
+                    Terminal Command for this step
                   </span>
                 </div>
-                {currentStep.command && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={handleCopyCommand}
-                    className="h-7 px-2 text-xs font-mono text-muted-foreground hover:text-white gap-1"
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
+                    className="text-[11px] font-mono text-muted-foreground hover:text-emerald-400 transition-colors flex items-center gap-1"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copied ? "Copied" : "Copy"}</span>
-                  </Button>
-                )}
+                    <Code2 className="w-3 h-3" />
+                    <span>{showTechnicalDetails ? "Simple View" : "Technical Output"}</span>
+                  </button>
+
+                  {currentStep.command && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleCopyCommand}
+                      className="h-7 px-2 text-xs font-mono text-muted-foreground hover:text-white gap-1"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copied ? "Copied" : "Copy"}</span>
+                    </Button>
+                  )}
+                </div>
               </div>
 
-              {/* Terminal Body */}
-              <div className="p-5 font-mono text-xs space-y-4 overflow-x-auto">
+              {/* Terminal Command */}
+              <div className="p-4 font-mono text-xs space-y-3">
                 {currentStep.command ? (
                   <div>
-                    <div className="text-emerald-400/70 text-[11px] mb-1"># Command executed at this stage:</div>
                     <div className="flex items-start gap-2 text-emerald-300 bg-white/[0.04] p-3 rounded-md border border-white/5">
                       <span className="text-emerald-500 select-none font-bold">$</span>
-                      <code className="text-sm text-emerald-300 font-semibold select-all break-all">
+                      <code className="text-xs sm:text-sm text-emerald-300 font-semibold select-all break-all">
                         {currentStep.command}
                       </code>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-muted-foreground italic p-2">
-                    # No terminal command for this stage — work is conducted in your code editor.
+                  <div className="text-muted-foreground italic p-2 text-xs">
+                    ✏️ No command needed here — work is done directly inside your code editor (like VS Code).
                   </div>
                 )}
 
-                {/* Simulated Command Output */}
-                {currentStep.stdout && currentStep.stdout.length > 0 && (
-                  <div className="space-y-1 pt-2">
-                    <div className="text-muted-foreground text-[10px] uppercase tracking-wider">Simulated Console Output:</div>
-                    <div className="p-3 rounded-md bg-black/60 border border-white/5 space-y-1 text-slate-300">
+                {/* Plain English explanation */}
+                <div className="text-xs font-sans text-muted-foreground pt-1 leading-relaxed">
+                  <strong className="text-foreground">In plain English: </strong>
+                  {currentStep.commandExplanation || currentStep.explain}
+                </div>
+
+                {/* Optional Technical Details Toggle */}
+                {showTechnicalDetails && currentStep.stdout && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="space-y-2 pt-2 border-t border-white/10"
+                  >
+                    <div className="text-[10px] uppercase font-mono text-muted-foreground">Simulated Console Output:</div>
+                    <div className="p-2.5 rounded bg-black/60 border border-white/5 space-y-1 text-slate-300 font-mono text-[11px]">
                       {currentStep.stdout.map((line, i) => (
-                        <div key={i} className="leading-relaxed">
-                          {line.startsWith("✓") ? (
-                            <span className="text-emerald-400 font-bold">{line}</span>
-                          ) : line.startsWith("$") ? (
-                            <span className="text-blue-400 font-bold">{line}</span>
-                          ) : line.includes("Fast-forward") || line.includes("changed") ? (
-                            <span className="text-cyan-300">{line}</span>
-                          ) : (
-                            <span>{line}</span>
-                          )}
-                        </div>
+                        <div key={i}>{line}</div>
                       ))}
                     </div>
-                  </div>
-                )}
-
-                {/* Command Flags Breakdown */}
-                {currentStep.commandFlags && currentStep.commandFlags.length > 0 && (
-                  <div className="pt-2">
-                    <span className="text-[10px] uppercase font-mono text-muted-foreground block mb-2">Flag Breakdown:</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {currentStep.commandFlags.map((cf, i) => (
-                        <div key={i} className="p-2 rounded bg-white/[0.03] border border-white/5 text-[11px]">
-                          <span className="text-emerald-400 font-bold block">{cf.flag}</span>
-                          <span className="text-muted-foreground">{cf.description}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             </div>
 
-            {/* Explanation Prose */}
-            <div className="p-4 rounded-xl border border-border bg-card/40 space-y-2">
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                Stage Explanation
-              </h4>
-              <p className="text-sm text-foreground/90 leading-relaxed">
-                {currentStep.explain}
-              </p>
+            {/* Beginner Pro-Tip Card */}
+            <div className="p-4 rounded-xl border border-border bg-card/40 flex items-start gap-3 text-xs">
+              <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center shrink-0 text-emerald-400 mt-0.5">
+                <Lightbulb className="w-4 h-4" />
+              </div>
+              <div className="space-y-1">
+                <strong className="text-foreground block text-xs">Senior Contributor Tip</strong>
+                <p className="text-muted-foreground leading-relaxed">
+                  {currentStep.proTip}
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Deep Dive Tabs & Learn Module Bridge */}
-          <div className="lg:col-span-5 flex flex-col space-y-4">
-            {/* The Featured LEARN REDIRECT CARD */}
-            <div className="p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-card to-card shadow-lg shadow-emerald-500/10 relative overflow-hidden">
+          {/* Right Column: THE PROMINENT LEARN REDIRECT CARD */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="p-5 md:p-6 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-card to-card shadow-lg shadow-emerald-500/10 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
                 <BookOpen className="w-24 h-24 text-emerald-400" />
               </div>
@@ -379,7 +407,7 @@ export default function WorkflowPage() {
                       <BookOpen className="w-4 h-4" />
                     </div>
                     <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
-                      Learn Path Connection
+                      Learn Course Lesson
                     </span>
                   </div>
                   <Badge variant="outline" className="text-[10px] font-mono border-emerald-500/30 text-emerald-300">
@@ -391,268 +419,119 @@ export default function WorkflowPage() {
                   <h3 className="text-lg font-bold text-foreground">
                     {currentStep.learnModuleTitle}
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                     {currentStep.learnLessonSummary}
                   </p>
                 </div>
 
-                {/* THE REQUESTED PROMINENT REDIRECT BUTTON */}
+                <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-xs text-emerald-300 flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Includes interactive quizzes & checklist validation!</span>
+                </div>
+
+                {/* THE PRIMARY REDIRECT BUTTON */}
                 <div className="pt-2 flex flex-col gap-2">
                   <Button
                     onClick={() => navigate(`/learn/${currentStep.learnModuleId}`)}
-                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-10 shadow-md shadow-emerald-500/20 text-xs font-mono gap-2 transition-all hover:scale-[1.01]"
+                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-11 shadow-md shadow-emerald-500/20 text-xs font-mono gap-2 transition-all hover:scale-[1.01]"
                   >
-                    <span>Open Module {currentStep.learnModuleId} in Learn Hub</span>
+                    <span>Read Module {currentStep.learnModuleId} in Learn Hub</span>
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => navigate("/learn")}
-                    className="w-full text-xs font-mono h-8 border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground"
+                    className="w-full text-xs font-mono h-9 border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground"
                   >
-                    Browse All 12 Learning Modules
+                    Browse Complete Course (12 Modules)
                   </Button>
                 </div>
               </div>
             </div>
 
-            {/* Deep Dive Tabs: Internals, Pro-Tip, Pitfall */}
-            <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-              <div className="flex items-center border-b border-border pb-3 gap-1">
-                <button
-                  onClick={() => setActiveTab("internals")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors flex items-center gap-1.5",
-                    activeTab === "internals"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Cpu className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Git Internals</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("protip")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors flex items-center gap-1.5",
-                    activeTab === "protip"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Pro Tip</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("pitfall")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors flex items-center gap-1.5",
-                    activeTab === "pitfall"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Pitfall</span>
-                </button>
+            {/* Beginner Pitfall to Avoid */}
+            <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/5 text-xs space-y-1.5">
+              <div className="flex items-center gap-1.5 font-bold font-mono text-[11px] text-rose-400">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Common Beginner Trap</span>
               </div>
-
-              {/* Tab Contents */}
-              <AnimatePresence mode="wait">
-                {activeTab === "internals" && (
-                  <motion.div
-                    key="internals"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className="space-y-2 text-xs"
-                  >
-                    <span className="text-muted-foreground font-mono block text-[11px]">
-                      Under the Hood mechanics:
-                    </span>
-                    <ul className="space-y-2">
-                      {currentStep.underTheHood.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-foreground/80 leading-relaxed">
-                          <span className="text-blue-400 font-mono mt-0.5">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                )}
-
-                {activeTab === "protip" && (
-                  <motion.div
-                    key="protip"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs space-y-1.5"
-                  >
-                    <div className="flex items-center gap-1.5 font-bold font-mono text-[11px] text-amber-400">
-                      <Lightbulb className="w-4 h-4" />
-                      <span>Maintainer Advice</span>
-                    </div>
-                    <p className="leading-relaxed font-sans text-amber-200">
-                      {currentStep.proTip}
-                    </p>
-                  </motion.div>
-                )}
-
-                {activeTab === "pitfall" && (
-                  <motion.div
-                    key="pitfall"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-1.5"
-                  >
-                    <div className="flex items-center gap-1.5 font-bold font-mono text-[11px] text-rose-400">
-                      <AlertTriangle className="w-4 h-4" />
-                      <span>Common Beginner Trap</span>
-                    </div>
-                    <p className="leading-relaxed font-sans text-rose-200">
-                      {currentStep.pitfall}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <p className="leading-relaxed text-rose-200">
+                {currentStep.pitfall}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* 5. THE 3-TIER ARCHITECTURE COMPARISON REFERENCE */}
+        {/* 5. THE 3 PLACES EXPLAINED SIMPLY */}
         <section className="pt-8 border-t border-border/60 space-y-6">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <h3 className="text-2xl font-bold tracking-tight">
-              The 3 Tiers of Open Source Development
+          <div className="text-center max-w-xl mx-auto space-y-1.5">
+            <h3 className="text-xl md:text-2xl font-bold tracking-tight">
+              The 3 Safe Places Explained in Simple Terms
             </h3>
-            <p className="text-sm text-muted-foreground">
-              Beginners often confuse the three copies. Here is the mental model senior engineers maintain.
+            <p className="text-xs md:text-sm text-muted-foreground">
+              Why there are three copies and why this protects everyone.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Upstream Card */}
-            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-5 space-y-3">
+            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="border-blue-500/40 text-blue-400 font-mono text-xs">
-                  Tier 1: Upstream
-                </Badge>
-                <ShieldCheck className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-mono font-bold text-blue-400">Place 1: Original Project</span>
+                <FolderGit2 className="w-4 h-4 text-blue-400" />
               </div>
-              <h4 className="text-base font-bold text-foreground">Original Repository</h4>
+              <h4 className="text-sm font-bold text-foreground">Like a Library Book</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                The canonical source of truth on GitHub (e.g. <code className="text-blue-300">facebook/react</code>). You have <strong>read-only</strong> access. You cannot push here directly.
+                Anyone can read it, but nobody can scribble directly on the pages. It stays protected by the authors.
               </p>
-              <div className="pt-2 text-[11px] font-mono text-blue-300/80 border-t border-blue-500/20 space-y-1">
-                <div>• Location: GitHub Cloud</div>
-                <div>• Permission: Read-only</div>
-                <div>• Role: Source of truth</div>
+              <div className="text-[11px] text-blue-300/80 font-mono">
+                Status: <strong>Read-Only</strong>
               </div>
             </div>
 
             {/* Origin Card */}
-            <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-5 space-y-3">
+            <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="border-purple-500/40 text-purple-400 font-mono text-xs">
-                  Tier 2: Origin (Your Fork)
-                </Badge>
-                <Layers className="w-4 h-4 text-purple-400" />
+                <span className="text-xs font-mono font-bold text-purple-400">Place 2: Your Fork</span>
+                <GitFork className="w-4 h-4 text-purple-400" />
               </div>
-              <h4 className="text-base font-bold text-foreground">Your Cloud Copy</h4>
+              <h4 className="text-sm font-bold text-foreground">Your Personal Photocopy</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Your server-side fork on GitHub (e.g. <code className="text-purple-300">your-username/react</code>). You have <strong>full write access</strong>. It acts as the staging ground for PRs.
+                Your own cloud duplicate. You can write, test, and save changes here without affecting the library book.
               </p>
-              <div className="pt-2 text-[11px] font-mono text-purple-300/80 border-t border-purple-500/20 space-y-1">
-                <div>• Location: GitHub Cloud</div>
-                <div>• Permission: Full Read/Write</div>
-                <div>• Role: Pull Request staging</div>
+              <div className="text-[11px] text-purple-300/80 font-mono">
+                Status: <strong>Your Cloud Copy</strong>
               </div>
             </div>
 
             {/* Local Card */}
-            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-3">
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 font-mono text-xs">
-                  Tier 3: Local Workstation
-                </Badge>
-                <Terminal className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-mono font-bold text-emerald-400">Place 3: Your Laptop</span>
+                <Laptop className="w-4 h-4 text-emerald-400" />
               </div>
-              <h4 className="text-base font-bold text-foreground">Your Computer (SSD)</h4>
+              <h4 className="text-sm font-bold text-foreground">Your Study Desk</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                The cloned repository on your physical machine. Contains the working tree, staging index, and .git history. Where all coding and testing happens.
+                Where you write the code in VS Code, run tests, and save progress. Completely private and offline.
               </p>
-              <div className="pt-2 text-[11px] font-mono text-emerald-300/80 border-t border-emerald-500/20 space-y-1">
-                <div>• Location: Local Machine</div>
-                <div>• Permission: Full Local Ownership</div>
-                <div>• Role: Code editing & commits</div>
+              <div className="text-[11px] text-emerald-300/80 font-mono">
+                Status: <strong>Private Offline Workspace</strong>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 6. COMPLETE WORKFLOW TO LEARN MODULE MATRIX */}
-        <section className="pt-8 border-t border-border/60 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-2xl font-bold tracking-tight">Workflow Stage to Learn Module Matrix</h3>
-              <p className="text-sm text-muted-foreground">
-                Every stage in this workflow corresponds to an in-depth lesson in FirstPR's Learn Hub.
-              </p>
-            </div>
-            <Button
-              onClick={() => navigate("/learn")}
-              variant="outline"
-              className="gap-2 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-mono text-xs shrink-0"
-            >
-              <BookOpen className="w-4 h-4" />
-              Explore All Modules
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {workflowSteps.map((step) => (
-              <div
-                key={step.id}
-                onClick={() => navigate(`/learn/${step.learnModuleId}`)}
-                className="p-4 rounded-xl border border-border/70 bg-card hover:border-emerald-500/50 hover:bg-card/90 transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-muted-foreground font-bold">{step.stageBadge}</span>
-                    <Badge variant="outline" className="text-[10px] border-emerald-500/30 text-emerald-400 group-hover:bg-emerald-500/10">
-                      Mod {step.learnModuleId}
-                    </Badge>
-                  </div>
-                  <h5 className="font-semibold text-sm text-foreground group-hover:text-emerald-300 transition-colors">
-                    {step.title}
-                  </h5>
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {step.learnLessonSummary}
-                  </p>
-                </div>
-
-                <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between text-xs font-mono text-emerald-400">
-                  <span>Start Module {step.learnModuleId}</span>
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 7. BOTTOM CALL TO ACTION BANNER */}
-        <section className="rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-card to-card p-8 md:p-12 text-center relative overflow-hidden">
-          <div className="max-w-2xl mx-auto space-y-4 relative z-10">
+        {/* 6. BOTTOM CTA: START LEARNING */}
+        <section className="rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-card to-card p-8 md:p-10 text-center relative overflow-hidden">
+          <div className="max-w-xl mx-auto space-y-4 relative z-10">
             <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 font-mono text-xs">
-              READY FOR ACTION?
+              READY TO PRACTICE?
             </Badge>
-            <h3 className="text-3xl font-extrabold tracking-tight">
-              Turn Visual Understanding into Muscle Memory
+            <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+              Start Your First Open Source Contribution
             </h3>
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              Take the interactive 12-module beginner course with step-by-step checklists, or jump straight into the sandboxed terminal simulator to practice real Git commands.
+            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+              Take the structured 12-module beginner course with step-by-step guidance, or test commands in the terminal lab.
             </p>
             <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
               <Button
@@ -660,23 +539,15 @@ export default function WorkflowPage() {
                 className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-11 px-6 shadow-lg shadow-emerald-500/20 text-sm gap-2"
               >
                 <BookOpen className="w-4 h-4" />
-                Start Learn Hub Course
+                Go to Learn Hub (Free Course)
               </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate("/lab")}
-                className="h-11 px-6 text-sm gap-2"
+                className="h-11 px-5 text-sm gap-2"
               >
                 <Terminal className="w-4 h-4 text-emerald-400" />
-                Launch Git Lab Terminal
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => navigate("/issues")}
-                className="h-11 px-4 text-sm gap-1.5 text-muted-foreground hover:text-foreground"
-              >
-                <GitBranch className="w-4 h-4" />
-                Find Good First Issues
+                Launch Git Terminal
               </Button>
             </div>
           </div>

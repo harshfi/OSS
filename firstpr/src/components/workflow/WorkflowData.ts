@@ -38,8 +38,12 @@ export interface LocalWorkingState {
 export interface Step {
   id: number;
   stageBadge: string;
+  beginnerTitle: string;
   title: string;
   subtitle: string;
+  analogy: string;
+  safetyGuarantee: string;
+  whereIsMyCode: string;
   command?: string;
   commandExplanation?: string;
   commandFlags?: CommandFlag[];
@@ -69,13 +73,17 @@ const baseGraph: GraphState = {
 export const workflowSteps: Step[] = [
   {
     id: 1,
-    stageBadge: "Stage 1: Fork",
+    stageBadge: "Step 1",
+    beginnerTitle: "Make Your Safe Cloud Copy",
     title: "Fork the Upstream Repository",
-    subtitle: "Create your cloud-hosted workspace on GitHub",
+    subtitle: "Create a personal duplicate of the project in your own GitHub account",
+    analogy: "Like clicking 'Make a Copy' on a shared Google Doc. You get your very own document to experiment with, while the author's original file stays 100% untouched.",
+    safetyGuarantee: "Zero risk! You cannot break the original project. You don't have write permissions there anyway, so it's impossible to harm it.",
+    whereIsMyCode: "On GitHub in your account (no code downloaded to your laptop yet).",
     command: "gh repo fork original-owner/project --clone=false",
-    commandExplanation: "Creates a server-side mirror in your personal GitHub account with full write permissions while keeping upstream reference tracking.",
+    commandExplanation: "Creates a copy in your personal GitHub account so you have full permission to push code and test ideas.",
     commandFlags: [
-      { flag: "--clone=false", description: "Creates only the remote fork in GitHub; we clone explicitly in the next step." }
+      { flag: "--clone=false", description: "Creates only the cloud copy on GitHub for now; we'll download it in the next step." }
     ],
     stdout: [
       "✓ Created fork your-username/project",
@@ -94,7 +102,7 @@ export const workflowSteps: Step[] = [
     learnModuleTitle: "Module 05: Forking a repository",
     learnLessonSummary: "Hands-on walkthrough of GitHub repository forking, permissions, and initial remote topology.",
     highlight: ["upstream", "origin"],
-    edge: { from: "upstream", to: "origin", label: "Server-side Fork", active: true },
+    edge: { from: "upstream", to: "origin", label: "Cloud Copy (Fork)", active: true },
     graph: {
       upstream: baseGraph,
       origin: baseGraph,
@@ -109,20 +117,23 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 2,
-    stageBadge: "Stage 2: Clone",
-    title: "Clone Your Fork to Your Local Computer",
-    subtitle: "Download the codebase and full Git history to your machine",
+    stageBadge: "Step 2",
+    beginnerTitle: "Download Code to Your Laptop",
+    title: "Clone Your Fork to Your Computer",
+    subtitle: "Download the files so you can edit them in VS Code or your favorite editor",
+    analogy: "Like downloading the document to your laptop desktop. Now you can read the files, install packages, and write code even when you are offline.",
+    safetyGuarantee: "All files sit privately on your computer. Nothing is sent to the internet until you decide to push.",
+    whereIsMyCode: "On your laptop's hard drive and in your cloud fork.",
     command: "git clone https://github.com/your-username/project.git && cd project",
-    commandExplanation: "Downloads the complete repository files and .git object history from your GitHub fork into a local directory.",
+    commandExplanation: "Downloads the complete project files and folder structure from your GitHub fork onto your laptop.",
     commandFlags: [
-      { flag: "git clone <url>", description: "Fetches all commits, trees, and blobs and checks out the default branch." },
-      { flag: "cd project", description: "Changes current terminal directory into the cloned project folder." }
+      { flag: "git clone <url>", description: "Downloads all files, commit history, and branches." },
+      { flag: "cd project", description: "Enters the project folder on your computer." }
     ],
     stdout: [
       "Cloning into 'project'...",
       "remote: Enumerating objects: 1240, done.",
       "remote: Counting objects: 100% (342/342), done.",
-      "remote: Compressing objects: 100% (180/180), done.",
       "Receiving objects: 100% (1240/1240), 2.45 MiB | 8.20 MiB/s, done.",
       "Resolving deltas: 100% (712/712), done.",
     ],
@@ -133,12 +144,12 @@ export const workflowSteps: Step[] = [
       "Checks out the working tree files and sets HEAD to refs/heads/main.",
     ],
     proTip: "Set up SSH keys instead of HTTPS if you use Two-Factor Authentication (2FA) on GitHub. It eliminates repeated personal access token prompts.",
-    pitfall: "Cloning the upstream repository instead of your fork. If you clone upstream, your remote 'origin' will point to the original repo, preventing you from pushing your branches.",
+    pitfall: "Cloning the original author's repository instead of your fork. If you clone upstream, your remote 'origin' will point to the original repo, preventing you from pushing your branches.",
     learnModuleId: "05",
     learnModuleTitle: "Module 05: Forking & Cloning",
     learnLessonSummary: "Complete guide on Git clones, SSH vs HTTPS, and local workspace directory architecture.",
     highlight: ["origin", "local"],
-    edge: { from: "origin", to: "local", label: "Clone Objects", active: true },
+    edge: { from: "origin", to: "local", label: "Download (Clone)", active: true },
     graph: {
       upstream: baseGraph,
       origin: baseGraph,
@@ -156,21 +167,23 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 3,
-    stageBadge: "Stage 3: Upstream",
+    stageBadge: "Step 3",
+    beginnerTitle: "Connect to Original Project",
     title: "Connect the Upstream Remote",
-    subtitle: "Establish a direct synchronization link to the original project",
+    subtitle: "Give your laptop a link to the original project so you can receive future updates",
+    analogy: "Like bookmarking the original author's website. Whenever they publish new improvements, you can grab them with a single click so your laptop never falls behind.",
+    safetyGuarantee: "This link is strictly read-only. It only pulls updates down to you; it can never push or alter the original project.",
+    whereIsMyCode: "On your laptop, now linked to both your fork and the original repo.",
     command: "git remote add upstream https://github.com/original-owner/project.git",
-    commandExplanation: "Registers the original parent repository as a secondary remote named 'upstream' so you can pull future updates.",
+    commandExplanation: "Tells your local Git about the original project (called 'upstream') so you can sync future bug fixes and features.",
     commandFlags: [
-      { flag: "remote add", description: "Registers a new remote name and target URL in local .git/config." },
-      { flag: "upstream", description: "Standard community naming convention for the canonical parent repository." }
+      { flag: "remote add", description: "Registers a new remote web address in your project settings." },
+      { flag: "upstream", description: "Standard community nickname for the original project repository." }
     ],
     stdout: [
       "$ git remote -v",
-      "origin    https://github.com/your-username/project.git (fetch)",
-      "origin    https://github.com/your-username/project.git (push)",
-      "upstream  https://github.com/original-owner/project.git (fetch)",
-      "upstream  https://github.com/original-owner/project.git (push)",
+      "origin    https://github.com/your-username/project.git (fetch & push)",
+      "upstream  https://github.com/original-owner/project.git (fetch only)",
     ],
     explain: "By default, your local repo only knows about 'origin' (your fork). Adding 'upstream' establishes a direct bridge to the original repository so you can fetch fresh maintainer code at any time.",
     underTheHood: [
@@ -184,7 +197,7 @@ export const workflowSteps: Step[] = [
     learnModuleTitle: "Module 06: Keeping in sync",
     learnLessonSummary: "Mastering remote topologies: difference between origin and upstream remotes and how to inspect them.",
     highlight: ["local", "upstream"],
-    edge: { from: "local", to: "upstream", label: "Register Remote", active: true },
+    edge: { from: "local", to: "upstream", label: "Sync Link (Upstream)", active: true },
     graph: {
       upstream: baseGraph,
       origin: baseGraph,
@@ -205,20 +218,22 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 4,
-    stageBadge: "Stage 4: Branch",
+    stageBadge: "Step 4",
+    beginnerTitle: "Create a Dedicated Workspace",
     title: "Sync Main & Create Feature Branch",
-    subtitle: "Always isolate changes on a dedicated branch; never touch main",
+    subtitle: "Never work directly on main; create an isolated branch for your fix",
+    analogy: "Like placing a sheet of tracing paper over the original blueprint. You sketch your changes on the tracing paper, keeping the original blueprint 100% clean and untouched.",
+    safetyGuarantee: "Your 'main' branch stays pristine. If you make a mistake on your feature branch, you can delete it with zero risk.",
+    whereIsMyCode: "On your laptop, inside a new isolated branch.",
     command: "git checkout main && git pull upstream main && git checkout -b feat/fix-nav-contrast",
-    commandExplanation: "Pulls latest commits from the upstream project into main, then cuts an isolated feature branch.",
+    commandExplanation: "Grabs any fresh updates from the project, then creates a new draft branch called 'feat/fix-nav-contrast'.",
     commandFlags: [
-      { flag: "pull upstream main", description: "Fetches new upstream commits and fast-forwards your local main branch." },
-      { flag: "-b <branch>", description: "Creates a new branch pointer and immediately switches HEAD to it." }
+      { flag: "pull upstream main", description: "Brings any newly merged commits into your local copy." },
+      { flag: "-b <branch-name>", description: "Creates a brand new branch and switches to it immediately." }
     ],
     stdout: [
       "Switched to branch 'main'",
-      "From https://github.com/original-owner/project",
-      " * branch            main       -> FETCH_HEAD",
-      "Already up to date.",
+      "Already up to date with upstream/main.",
       "Switched to a new branch 'feat/fix-nav-contrast'",
     ],
     explain: "Open source moves quickly. Always sync your local main with upstream before branching. Isolating your work on a feature branch prevents merge conflicts and lets you submit multiple independent PRs.",
@@ -257,19 +272,22 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 5,
-    stageBadge: "Stage 5: Code",
+    stageBadge: "Step 5",
+    beginnerTitle: "Write Code in Your Editor",
     title: "Implement Your Changes & Verify",
-    subtitle: "Edit files in your IDE, verify diffs, and run test suites",
+    subtitle: "Open VS Code, edit the files, and run tests locally",
+    analogy: "Writing the draft of your essay. You can edit paragraphs, fix typos, and preview the results until you're completely satisfied.",
+    safetyGuarantee: "Your edits are 100% private on your laptop. No one can see them yet, and you haven't uploaded anything.",
+    whereIsMyCode: "Modified only in your laptop's editor (working directory).",
     command: "git status && git diff",
-    commandExplanation: "Inspects which files were modified and reviews the exact line-by-line diff before staging.",
+    commandExplanation: "Shows you exactly which files you changed and what lines were added or removed.",
     commandFlags: [
-      { flag: "git status", description: "Shows modified, staged, and untracked files in your working directory." },
-      { flag: "git diff", description: "Outputs unified line-by-line additions (+) and deletions (-) in unstaged files." }
+      { flag: "git status", description: "Shows files you have modified or created." },
+      { flag: "git diff", description: "Shows green (+) additions and red (-) deletions in your files." }
     ],
     stdout: [
       "On branch feat/fix-nav-contrast",
       "Changes not staged for commit:",
-      "  (use \"git add <file>...\" to update what will be committed)",
       "	modified:   src/components/Navbar.tsx",
       "	modified:   src/styles/theme.css",
       "",
@@ -311,14 +329,18 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 6,
-    stageBadge: "Stage 6: Commit",
+    stageBadge: "Step 6",
+    beginnerTitle: "Package Your Changes",
     title: "Stage Files & Create Atomic Commit",
-    subtitle: "Take a permanent snapshot with a concise Conventional Commit message",
+    subtitle: "Seal your changes into a permanent snapshot with a friendly message",
+    analogy: "Like hitting a video game save checkpoint and writing a sticky note explaining what you accomplished. You can always rewind back to this moment.",
+    safetyGuarantee: "This snapshot is saved exclusively on your laptop's local Git history. Still zero cloud exposure.",
+    whereIsMyCode: "Committed into your laptop's local Git history.",
     command: "git add src/components/Navbar.tsx src/styles/theme.css && git commit -m \"fix(nav): improve contrast ratio for WCAG AA compliance\"",
-    commandExplanation: "Adds selected files to the staging index, then records an immutable commit object in local history.",
+    commandExplanation: "Puts the modified files into the 'staging box', then takes a permanent snapshot labeled with your message.",
     commandFlags: [
-      { flag: "git add <files>", description: "Stages specified files into the index (avoids blind 'git add .')." },
-      { flag: "-m \"<message>\"", description: "Assigns a clear, imperative commit message following conventional standards." }
+      { flag: "git add <files>", description: "Selects specific files to include in this snapshot." },
+      { flag: "-m \"<message>\"", description: "Attaches a clear summary of what this snapshot does." }
     ],
     stdout: [
       "[feat/fix-nav-contrast a7c8e91] fix(nav): improve contrast ratio for WCAG AA compliance",
@@ -364,22 +386,22 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 7,
-    stageBadge: "Stage 7: Push",
+    stageBadge: "Step 7",
+    beginnerTitle: "Upload to Your GitHub Fork",
     title: "Push Branch to Your Fork (Origin)",
-    subtitle: "Upload your commit objects from your local computer to GitHub",
+    subtitle: "Send your local commits up to your personal cloud repository on GitHub",
+    analogy: "Like uploading your saved document up to your personal Google Drive or cloud backup. Now your work is safely backed up on GitHub.",
+    safetyGuarantee: "You are uploading only to YOUR personal fork. The original project is still untouched.",
+    whereIsMyCode: "On your laptop AND safely backed up in your GitHub fork.",
     command: "git push -u origin feat/fix-nav-contrast",
-    commandExplanation: "Uploads commits to your remote fork ('origin') and sets up remote branch tracking.",
+    commandExplanation: "Uploads your feature branch and its commits from your laptop to your GitHub account ('origin').",
     commandFlags: [
-      { flag: "-u (--set-upstream)", description: "Links local branch to origin/feat/fix-nav-contrast for easy subsequent pulls/pushes." },
-      { flag: "origin", description: "The destination remote (your personal GitHub fork)." },
-      { flag: "feat/fix-nav-contrast", description: "The specific branch to push." }
+      { flag: "-u", description: "Links your laptop branch to your GitHub branch for quick future pushes." },
+      { flag: "origin", description: "Your personal GitHub fork (the target destination)." }
     ],
     stdout: [
       "Enumerating objects: 7, done.",
-      "Counting objects: 100% (7/7), done.",
-      "Compressing objects: 100% (4/4), done.",
-      "Writing objects: 100% (4/4), 582 bytes | 582.00 KiB/s, done.",
-      "Total 4 (delta 3), reused 0 (delta 0), pack-reused 0",
+      "Writing objects: 100% (4/4), 582 bytes, done.",
       "To https://github.com/your-username/project.git",
       " * [new branch]      feat/fix-nav-contrast -> feat/fix-nav-contrast",
       "branch 'feat/fix-nav-contrast' set up to track 'origin/feat/fix-nav-contrast'.",
@@ -396,7 +418,7 @@ export const workflowSteps: Step[] = [
     learnModuleTitle: "Module 10: Pushing to your fork",
     learnLessonSummary: "Remote branch tracking, resolving authentication challenges, and understanding push mechanics.",
     highlight: ["local", "origin"],
-    edge: { from: "local", to: "origin", label: "Push Packfile", active: true },
+    edge: { from: "local", to: "origin", label: "Upload (Push)", active: true },
     graph: {
       upstream: baseGraph,
       origin: {
@@ -435,15 +457,19 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 8,
-    stageBadge: "Stage 8: Pull Request",
+    stageBadge: "Step 8",
+    beginnerTitle: "Ask Maintainers to Review",
     title: "Open a Pull Request on Upstream",
-    subtitle: "Ask the maintainers to review and pull your commits into canonical main",
+    subtitle: "Politely submit your work so the project owners can review and merge it",
+    analogy: "Like sending a message to the original document author: 'Hey! I found this issue and drafted a clean fix on my copy. Would you like to review and include it in your project?'",
+    safetyGuarantee: "The maintainers review every line before accepting. Nothing changes in the official project until they click 'Approve & Merge'.",
+    whereIsMyCode: "Under review on GitHub's official Pull Request page.",
     command: "gh pr create --repo original-owner/project --base main --head your-username:feat/fix-nav-contrast --title \"fix(nav): improve contrast ratio\" --body \"Fixes #142\"",
-    commandExplanation: "Submits a Pull Request to the upstream project linking your fork's branch into upstream main.",
+    commandExplanation: "Opens a Pull Request proposing to merge your branch into the original project's main branch.",
     commandFlags: [
-      { flag: "--base main", description: "The destination branch in the upstream project." },
-      { flag: "--head <user>:<branch>", description: "The source branch residing in your personal fork." },
-      { flag: "--body", description: "Markdown text describing changes, motivations, and closing keywords ('Fixes #142')." }
+      { flag: "--base main", description: "The destination branch in the original project." },
+      { flag: "--head <user>:<branch>", description: "Your branch residing in your personal fork." },
+      { flag: "--body", description: "Your friendly explanation of what you fixed and why." }
     ],
     stdout: [
       "Creating pull request for your-username:feat/fix-nav-contrast into main in original-owner/project",
@@ -462,7 +488,7 @@ export const workflowSteps: Step[] = [
     learnModuleTitle: "Module 11: Opening a Pull Request",
     learnLessonSummary: "Writing high-converting PR descriptions, filling PR templates, linking issues, and passing CI checks.",
     highlight: ["origin", "upstream"],
-    edge: { from: "origin", to: "upstream", label: "Pull Request #482", active: true },
+    edge: { from: "origin", to: "upstream", label: "Propose (Pull Request #482)", active: true },
     graph: {
       upstream: baseGraph,
       origin: {
@@ -501,15 +527,19 @@ export const workflowSteps: Step[] = [
   },
   {
     id: 9,
-    stageBadge: "Stage 9: Merge & Clean",
+    stageBadge: "Step 9",
+    beginnerTitle: "Merged & Celebrated!",
     title: "Address Feedback, Merge & Clean Up",
-    subtitle: "Complete review iterations, pull merged commits into main, and tidy up",
+    subtitle: "The maintainers approve and merge your PR into the official project!",
+    analogy: "The author accepts your draft! Your changes are now woven into the official book used by thousands or millions of developers worldwide.",
+    safetyGuarantee: "Your work is now permanent in the project. You can safely delete your temporary branch.",
+    whereIsMyCode: "Official part of the upstream codebase for everyone to use!",
     command: "git checkout main && git pull upstream main && git branch -d feat/fix-nav-contrast",
-    commandExplanation: "Switches back to main, downloads the merged commit from upstream, and safely removes the local feature branch.",
+    commandExplanation: "Switches back to main, pulls down the newly merged code, and deletes your temporary feature branch.",
     commandFlags: [
-      { flag: "checkout main", description: "Switches local HEAD back to the primary branch." },
-      { flag: "pull upstream main", description: "Brings the newly merged commits into your local main." },
-      { flag: "-d <branch>", description: "Deletes the local branch safely now that its commits have been incorporated." }
+      { flag: "checkout main", description: "Switches back to your local primary branch." },
+      { flag: "pull upstream main", description: "Downloads your newly merged commit from the official project." },
+      { flag: "-d <branch>", description: "Deletes your temporary feature branch cleanly." }
     ],
     stdout: [
       "Switched to branch 'main'",
@@ -517,8 +547,8 @@ export const workflowSteps: Step[] = [
       "Fast-forward",
       " src/components/Navbar.tsx | 18 +++++++++++++++---",
       " src/styles/theme.css      | 18 +++++++++++++-----",
-      " 2 files changed, 28 insertions(+), 8 deletions(-)",
-      "Deleted branch feat/fix-nav-contrast (was a7c8e91).",
+      "Deleted branch feat/fix-nav-contrast.",
+      "🎉 Congratulations! You are now an open-source contributor!",
     ],
     explain: "Review comments are completely routine in open source! Once the maintainers approve and merge your PR, you pull the latest upstream main branch and delete your feature branch to keep your environment pristine.",
     underTheHood: [
@@ -532,7 +562,7 @@ export const workflowSteps: Step[] = [
     learnModuleTitle: "Module 12: The Code Review",
     learnLessonSummary: "Navigating review feedback, pushing incremental fixes, and post-merge maintenance routines.",
     highlight: ["upstream", "local"],
-    edge: { from: "upstream", to: "local", label: "Fast-forward Sync", active: true },
+    edge: { from: "upstream", to: "local", label: "Sync Merged Code (Pull)", active: true },
     graph: {
       upstream: {
         ...baseGraph,
