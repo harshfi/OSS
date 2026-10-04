@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Terminal } from "@/components/terminal/Terminal";
 import { executeCommand, scenarios } from "./LabEngine";
-import type { RepoState, CommandAnalysis, CommandTokenBreakdown } from "./LabEngine";
+import type { RepoState, CommandAnalysis } from "./LabEngine";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +35,6 @@ import {
   gitCheatSheetCommands,
   searchCheatSheet,
   type CheatSheetCategory,
-  type CheatSheetCommand,
 } from "./gitCheatSheetData";
 import { X, ExternalLink } from "lucide-react";
 

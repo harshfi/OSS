@@ -39,7 +39,7 @@ export function AppShell() {
     { name: "GSoC", path: "/gsoc" },
     { name: "LFX", path: "/lfx" },
     { name: "Plan", path: "/programs" },
-    { name: "AI Policy", path: "/ai-policy" },
+    { name: "AI in OSS", path: "/ai-policy" },
   ];
 
   return (
