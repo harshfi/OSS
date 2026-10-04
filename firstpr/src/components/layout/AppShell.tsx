@@ -32,6 +32,7 @@ export function AppShell() {
 
   const navItems = [
     { name: "Learn", path: "/learn" },
+    { name: "Workflow", path: "/workflow" },
     { name: "Lab", path: "/lab" },
     { name: "Rescue", path: "/rescue" },
     { name: "Issues", path: "/issues" },

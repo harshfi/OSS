@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { modules } from "@/components/learn/ModuleData";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Circle, Play } from "lucide-react";
+import { CheckCircle2, Circle, Play, Sparkles, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useProgress } from "@/stores/progress";
 
@@ -12,11 +12,36 @@ export default function LearnHub() {
   
   return (
     <div className="container max-w-5xl mx-auto px-4 py-12">
-      <div className="mb-12 text-center">
+      <div className="mb-10 text-center">
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">Learning Path</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Master the open-source workflow step-by-step. Start here if you've never contributed before.
         </p>
+      </div>
+
+      {/* Workflow Visualizer Banner Link */}
+      <div className="mb-10 p-4 sm:p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3 text-left">
+          <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 text-emerald-400">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              Visual Thinker? Explore the Interactive 3-Tier Workflow
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Watch code travel from upstream fork to local feature branch and merged Pull Request in real time.
+            </p>
+          </div>
+        </div>
+        <Button
+          onClick={() => navigate("/workflow")}
+          variant="outline"
+          className="shrink-0 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-mono text-xs gap-1.5"
+        >
+          <span>Open Workflow Visualizer</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
