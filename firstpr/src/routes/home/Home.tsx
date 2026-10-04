@@ -77,11 +77,16 @@ export default function Home() {
           >
             <ShinyButton 
               onClick={() => navigate("/learn")} 
-              className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 transform transition-transform hover:scale-105 active:scale-95"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 text-lg font-medium rounded-full transform transition-transform hover:scale-105 active:scale-95 shadow-lg shadow-primary/25"
             >
               Start the journey
             </ShinyButton>
-            <Button size="lg" variant="outline" onClick={() => navigate("/lab")} className="rounded-full px-8 h-12 text-lg transform transition-transform hover:scale-105 hover:bg-foreground hover:text-background active:scale-95">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => navigate("/lab")} 
+              className="rounded-full px-8 h-12 text-lg font-medium transform transition-transform hover:scale-105 hover:bg-foreground hover:text-background active:scale-95"
+            >
               Try the terminal
             </Button>
           </motion.div>
