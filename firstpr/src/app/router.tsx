@@ -67,6 +67,10 @@ export const router = createBrowserRouter([
         element: <ProgramsPlannerPage />,
       },
       {
+        path: "plan",
+        element: <ProgramsPlannerPage />,
+      },
+      {
         path: "ai-policy",
         element: <AiPolicyPage />,
       },

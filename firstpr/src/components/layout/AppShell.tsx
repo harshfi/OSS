@@ -53,7 +53,9 @@ export function AppShell() {
             </Link>
             <nav className="hidden md:flex gap-2">
               {navItems.map((item) => {
-                const isActive = currentPath.startsWith(item.path);
+                const isActive = item.path === "/programs"
+                  ? currentPath.startsWith("/programs") || currentPath.startsWith("/plan")
+                  : currentPath.startsWith(item.path);
                 return (
                   <Link 
                     key={item.path}
