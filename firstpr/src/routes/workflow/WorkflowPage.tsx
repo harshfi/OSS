@@ -197,8 +197,8 @@ export default function WorkflowPage() {
               </Button>
             </div>
 
-            {/* Friendly Step Scrubber */}
-            <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
+            {/* Friendly Step Scrubber with Sequence Arrows */}
+            <div className="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
               {workflowSteps.map((step, idx) => {
                 const isActive = idx === currentStepIndex;
                 const isCompleted = idx < currentStepIndex;
@@ -215,23 +215,27 @@ export default function WorkflowPage() {
                 ][idx];
 
                 return (
-                  <button
-                    key={step.id}
-                    onClick={() => {
-                      setCurrentStepIndex(idx);
-                      setIsPlaying(false);
-                    }}
-                    className={cn(
-                      "px-2.5 py-1 rounded-md text-xs font-sans transition-all flex items-center gap-1 shrink-0 border",
-                      isActive
-                        ? "bg-emerald-500 text-black border-emerald-400 font-bold shadow-sm shadow-emerald-500/30"
-                        : isCompleted
-                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
-                        : "bg-card border-border/60 text-muted-foreground hover:text-foreground"
+                  <div key={step.id} className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => {
+                        setCurrentStepIndex(idx);
+                        setIsPlaying(false);
+                      }}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md text-xs font-sans transition-all flex items-center gap-1 border",
+                        isActive
+                          ? "bg-emerald-500 text-black border-emerald-400 font-bold shadow-sm shadow-emerald-500/30"
+                          : isCompleted
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
+                          : "bg-card border-border/60 text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      <span>{shortLabel}</span>
+                    </button>
+                    {idx < workflowSteps.length - 1 && (
+                      <ChevronRight className="w-3 h-3 text-muted-foreground/35 shrink-0" />
                     )}
-                  >
-                    <span>{shortLabel}</span>
-                  </button>
+                  </div>
                 );
               })}
             </div>
