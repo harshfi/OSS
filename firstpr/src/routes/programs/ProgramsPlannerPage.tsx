@@ -18,7 +18,6 @@ import {
   CheckCircle2, 
   ArrowRight, 
   Download, 
-  Globe, 
   Cpu, 
   BookOpen, 
   Target, 
@@ -35,7 +34,6 @@ import {
 import { toast } from "sonner";
 import { 
   ALL_OSS_PROGRAMS, 
-  EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT, 
   ACCEPTANCE_PLAYBOOK_STEPS,
   MONTH_PLANS_2026,
   type Program
@@ -43,7 +41,7 @@ import {
 import { generateAndDownloadIcs } from "./calendarExport";
 import { cn } from "@/lib/utils";
 
-type FilterTab = "all" | "european" | "paid" | "students" | "anyone" | "ai" | "systems";
+type FilterTab = "all" | "paid" | "students" | "anyone" | "ai" | "systems";
 
 const CURRENT_SYSTEM_MONTH = new Date().getMonth();
 
@@ -104,7 +102,6 @@ export default function ProgramsPlannerPage() {
       if (!matchesSearch) return false;
 
       // 2. Tab filter
-      if (activeTab === "european") return program.isEuropean;
       if (activeTab === "paid") return program.stipend.isPaid;
       if (activeTab === "students") return program.eligibility.requiresStudent;
       if (activeTab === "anyone") return !program.eligibility.requiresStudent;
@@ -136,7 +133,7 @@ export default function ProgramsPlannerPage() {
         <div className="container max-w-6xl mx-auto px-4 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono font-medium mb-4">
             <Trophy className="w-3.5 h-3.5" />
-            <span>GLOBAL & EUROPEAN OPEN SOURCE PROGRAMS • 2026 ROADMAP</span>
+            <span>GLOBAL OPEN SOURCE PROGRAMS • 2026 ROADMAP</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-sans mb-4">
@@ -147,7 +144,7 @@ export default function ProgramsPlannerPage() {
           </h1>
 
           <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
-            Complete intelligence, stipends, eligibility rules, and deadlines for <strong>European Summer of Code (ESoC)</strong>, <strong>Google Summer of Code (GSoC)</strong>, <strong>LFX Mentorship</strong>, <strong>Outreachy</strong>, and 14+ premier open-source initiatives.
+            Complete intelligence, stipends, eligibility rules, and deadlines for <strong>Google Summer of Code (GSoC)</strong>, <strong>LFX Mentorship</strong>, <strong>Outreachy</strong>, and 15+ premier open-source initiatives worldwide.
           </p>
 
           {/* Quick Stats Highlights */}
@@ -161,8 +158,8 @@ export default function ProgramsPlannerPage() {
               <div className="text-xs text-muted-foreground mt-0.5">Paid Stipends & Grants</div>
             </div>
             <div className="p-3.5 rounded-xl border border-border/60 bg-card/50 backdrop-blur-sm">
-              <div className="text-2xl font-mono font-extrabold text-purple-400">🇪🇺 ESoC & EU</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Applied AI Flagship</div>
+              <div className="text-2xl font-mono font-extrabold text-purple-400">12 Months</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Annual Target Roadmap</div>
             </div>
             <div className="p-3.5 rounded-xl border border-border/60 bg-card/50 backdrop-blur-sm">
               <div className="text-2xl font-mono font-extrabold text-amber-400">100% Free</div>
@@ -179,21 +176,22 @@ export default function ProgramsPlannerPage() {
               <Download className="w-4 h-4" />
               Download 2026 Deadlines (.ics Calendar)
             </Button>
-            <a href="#esoc-spotlight">
+            <a href="#master-timeline">
               <Button
                 variant="outline"
-                className="h-11 px-5 border-blue-500/40 text-blue-400 bg-blue-500/5 hover:bg-blue-500/15 gap-2 text-sm"
+                className="h-11 px-5 border-emerald-500/40 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/15 gap-2 text-sm"
               >
-                <span>🇪🇺 Explore European Summer of Code</span>
+                <Calendar className="w-4 h-4" />
+                <span>12-Month Target Timeline</span>
               </Button>
             </a>
-            <a href="#master-timeline">
+            <a href="#all-programs">
               <Button
                 variant="outline"
                 className="h-11 px-5 border-border hover:bg-muted/60 gap-2 text-sm"
               >
-                <Calendar className="w-4 h-4 text-emerald-400" />
-                <span>2026 Season Timeline</span>
+                <Trophy className="w-4 h-4 text-emerald-400" />
+                <span>Explore All Programs</span>
               </Button>
             </a>
           </div>
@@ -210,18 +208,14 @@ export default function ProgramsPlannerPage() {
               Live Verified
             </Badge>
           </AlertTitle>
-          <AlertDescription className="mt-2 text-xs text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-2.5">
+          <AlertDescription className="mt-2 text-xs text-muted-foreground grid grid-cols-1 md:grid-cols-3 gap-2.5">
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span><strong>European Summer of Code (ESoC):</strong> Dedicated applied AI tracks with pan-European regional hubs (France, Germany, Italy) providing paid developer stipends.</span>
+              <span><strong>Google Summer of Code (GSoC):</strong> Standard 12-week schedule with optional extended timeline up to 22 weeks; Purchasing Power Parity stipends ($750 – $6,000).</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
               <span><strong>LFX Mentorship (Linux Foundation):</strong> 2026 mentee stipend is standardized at $1,300 for India/APAC; up to $3,000 for North America/Western Europe.</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span><strong>Google Summer of Code (GSoC):</strong> Standard 12-week schedule with optional extended timeline up to 22 weeks; Purchasing Power Parity stipends ($750 – $6,000).</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
@@ -231,99 +225,8 @@ export default function ProgramsPlannerPage() {
         </Alert>
       </section>
 
-      {/* 3. EUROPEAN SUMMER OF CODE (ESoC) SPOTLIGHT SECTION */}
-      <section id="esoc-spotlight" className="container max-w-6xl mx-auto px-4 pt-12">
-        <div className="rounded-2xl border-2 border-blue-500/40 bg-gradient-to-br from-blue-500/10 via-card to-card p-6 md:p-8 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
-            <Globe className="w-40 h-40 text-blue-400" />
-          </div>
-
-          <div className="relative z-10 space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-xs font-mono font-bold mb-3">
-                  <span>{EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.badge}</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
-                  {EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.name}
-                </h2>
-                <p className="text-sm md:text-base text-blue-200/90 mt-1">
-                  {EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.heroTagline}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 shrink-0">
-                <Button
-                  onClick={() => {
-                    const esocProg = ALL_OSS_PROGRAMS.find((p) => p.id === "esoc");
-                    if (esocProg) setSelectedProgram(esocProg);
-                  }}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs h-10 px-4 shadow-md shadow-blue-500/20 gap-1.5"
-                >
-                  <span>ESoC Deep-Dive Strategy</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Button>
-                <a
-                  href={EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.officialUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    variant="outline"
-                    className="border-blue-500/40 text-blue-300 hover:bg-blue-500/10 text-xs h-10 px-3.5 gap-1.5"
-                  >
-                    <span>Visit esoc.dev</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </Button>
-                </a>
-              </div>
-            </div>
-
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-4xl">
-              {EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.description}
-            </p>
-
-            {/* 4 Pillars Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2">
-              {EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.keyDifferentiators.map((diff, idx) => (
-                <div key={idx} className="p-4 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-1.5">
-                  <div className="text-blue-400 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                    <span>{diff.title}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {diff.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Application Walkthrough Banner */}
-            <div className="p-4 rounded-xl border border-border bg-card/60 flex flex-col lg:flex-row lg:items-center justify-between gap-4 text-xs">
-              <div className="space-y-1">
-                <span className="font-bold text-foreground flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-                  <span>5-Step ESoC Application Protocol:</span>
-                </span>
-                <div className="flex flex-wrap items-center gap-2 text-muted-foreground pt-1">
-                  {EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.applicationSteps.map((step, i) => (
-                    <span key={i} className="inline-flex items-center gap-1.5 bg-muted/60 px-2.5 py-1 rounded-md text-[11px] font-mono">
-                      <span className="text-blue-400 font-bold">{i + 1}.</span>
-                      <span>{step}</span>
-                      {i < EUROPEAN_SUMMER_OF_CODE_SPOTLIGHT.applicationSteps.length - 1 && (
-                        <ArrowRight className="w-3 h-3 text-muted-foreground/40 ml-1 hidden sm:inline" />
-                      )}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. MASTER INTERACTIVE PROGRAMS EXPLORER */}
-      <section className="container max-w-6xl mx-auto px-4 pt-12 space-y-6">
+      {/* 3. MASTER INTERACTIVE PROGRAMS EXPLORER */}
+      <section id="all-programs" className="container max-w-6xl mx-auto px-4 pt-12 space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -363,7 +266,6 @@ export default function ProgramsPlannerPage() {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
           {[
             { id: "all", label: "All Programs", count: ALL_OSS_PROGRAMS.length },
-            { id: "european", label: "🇪🇺 European Programs", count: ALL_OSS_PROGRAMS.filter((p) => p.isEuropean).length },
             { id: "paid", label: "💰 Paid Stipends", count: ALL_OSS_PROGRAMS.filter((p) => p.stipend.isPaid).length },
             { id: "students", label: "🎓 Students Only", count: ALL_OSS_PROGRAMS.filter((p) => p.eligibility.requiresStudent).length },
             { id: "anyone", label: "🌍 Open to Anyone (No Degree)", count: ALL_OSS_PROGRAMS.filter((p) => !p.eligibility.requiresStudent).length },
@@ -398,9 +300,7 @@ export default function ProgramsPlannerPage() {
               key={program.id}
               className={cn(
                 "relative flex flex-col justify-between border-2 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5",
-                program.id === "esoc"
-                  ? "border-blue-500/50 bg-gradient-to-b from-blue-500/10 via-card to-card"
-                  : program.featured
+                program.featured
                   ? "border-emerald-500/40 bg-gradient-to-b from-emerald-500/5 via-card to-card"
                   : "border-border/70 bg-card/60"
               )}
@@ -609,7 +509,6 @@ export default function ProgramsPlannerPage() {
           {[
             { id: "all", label: "All Programs (12 Months)" },
             { id: "gsoc", label: "Google Summer of Code (GSoC)" },
-            { id: "esoc", label: "European Summer of Code (ESoC 🇪🇺)" },
             { id: "lfx", label: "LFX Mentorship (Linux Foundation)" },
             { id: "outreachy", label: "Outreachy" },
             { id: "beginner", label: "Beginner & Sprints (Hacktoberfest / 24 PRs)" }
@@ -649,7 +548,6 @@ export default function ProgramsPlannerPage() {
               
               const matchesFilter = timelineProgramFilter === "all" || (
                 timelineProgramFilter === "gsoc" && m.programs.some(p => p.programId === "gsoc") ||
-                timelineProgramFilter === "esoc" && m.programs.some(p => p.programId === "esoc" || p.isEuropean) ||
                 timelineProgramFilter === "lfx" && m.programs.some(p => p.programId === "lfx") ||
                 timelineProgramFilter === "outreachy" && m.programs.some(p => p.programId === "outreachy") ||
                 timelineProgramFilter === "beginner" && m.programs.some(p => ["hacktoberfest", "twenty-four-pull-requests", "fossasia-codeheat", "osoc-be"].includes(p.programId))
