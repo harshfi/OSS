@@ -908,3 +908,902 @@ export const ACCEPTANCE_PLAYBOOK_STEPS = [
     firstPrLinkText: "Practice in Git Lab"
   }
 ];
+
+export interface MonthProgramDeadline {
+  programId: string;
+  name: string;
+  badge: string;
+  dateRange: string;
+  actionText?: string;
+  actionUrl?: string;
+  isUrgent?: boolean;
+  isEuropean?: boolean;
+}
+
+export interface MonthPlan {
+  monthIndex: number; // 0 to 11
+  monthName: string; // "January", "February", ...
+  shortName: string; // "Jan", "Feb", ...
+  quarter: "Q1" | "Q2" | "Q3" | "Q4";
+  year: number;
+  focusTag: string;
+  phaseType: "recon" | "proposals" | "evaluation" | "bonding" | "coding" | "midterms" | "wrapup" | "celebration";
+  headline: string;
+  summary: string;
+  programs: MonthProgramDeadline[];
+  targets: string[];
+  checklist: string[];
+  proTip: {
+    author: string;
+    role: string;
+    advice: string;
+  };
+  firstPrAction: {
+    title: string;
+    description: string;
+    link: string;
+    linkText: string;
+  };
+}
+
+export const MONTH_PLANS_2026: MonthPlan[] = [
+  {
+    monthIndex: 0,
+    monthName: "January",
+    shortName: "Jan",
+    quarter: "Q1",
+    year: 2026,
+    focusTag: "Early Recon & Bitcoin / CERN",
+    phaseType: "recon",
+    headline: "Pre-Season Reconnaissance & European Science Fellowships",
+    summary: "The quietest month on GitHub is your highest-leverage advantage. While other candidates wait for official organization announcements, start scoping repositories, configuring your local toolchain, and targeting winter science deadlines.",
+    programs: [
+      {
+        programId: "summer-of-bitcoin",
+        name: "Summer of Bitcoin",
+        badge: "Applications Open",
+        dateRange: "Jan 1 – Feb 15",
+        actionText: "Apply on SummerOfBitcoin.org",
+        actionUrl: "https://www.summerofbitcoin.org",
+        isUrgent: true
+      },
+      {
+        programId: "cern-openlab",
+        name: "CERN Summer Student & Openlab",
+        badge: "Hard Deadline Jan 31",
+        dateRange: "Closes Jan 31",
+        actionText: "CERN Careers Portal",
+        actionUrl: "https://openlab.cern",
+        isUrgent: true,
+        isEuropean: true
+      },
+      {
+        programId: "sok",
+        name: "Season of KDE",
+        badge: "Mentoring Starts",
+        dateRange: "Jan 15 Kickoff",
+        actionText: "KDE Community Wiki",
+        actionUrl: "https://season.kde.org"
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Spring)",
+        badge: "Applications Review",
+        dateRange: "Closes mid-Jan",
+        actionText: "LFX Portal",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      }
+    ],
+    targets: [
+      "Select 2 technical domains (e.g. Applied AI, Cloud Native/Kubernetes, Systems Rust).",
+      "Setup local development environment with Git SSH keys, GPG signing, and Docker.",
+      "Explore 2024/2025 accepted GSoC organizations to identify evergreen open-source projects.",
+      "Submit at least 1 warm-up PR (fixing documentation typos or broken test fixtures)."
+    ],
+    checklist: [
+      "Audit your GitHub profile: clear bio, pinned repositories, and contact info.",
+      "Clone 2 candidate repositories and run their test suites locally.",
+      "Join target project communication hubs (Discord, Slack, Zulip, or Matrix).",
+      "Read the repo's CONTRIBUTING.md, CODE_OF_CONDUCT.md, and recent merged PRs.",
+      "Complete CERN Openlab or Summer of Bitcoin application forms if eligible."
+    ],
+    proTip: {
+      author: "Alexandre Moreau",
+      role: "GSoC & ESoC Maintainer",
+      advice: "Candidates who appear in January before organizations are officially announced have a 3x higher acceptance rate. Maintainers remember who genuinely cared about the codebase before stipends were on the table."
+    },
+    firstPrAction: {
+      title: "Master Git Workflow & Safety",
+      description: "Learn the 3 Safe Places mental model so you never lose code or panic during rebase.",
+      link: "/workflow",
+      linkText: "View Interactive Workflow"
+    }
+  },
+  {
+    monthIndex: 1,
+    monthName: "February",
+    shortName: "Feb",
+    quarter: "Q1",
+    year: 2026,
+    focusTag: "GSoC Orgs Drop & Outreachy",
+    phaseType: "recon",
+    headline: "Google Announces Official Orgs & Outreachy May Round Opens",
+    summary: "The open source calendar explodes into action late February. Google reveals the 175+ accepted mentoring organizations. Immediately triage the list, find matching tech stacks, and start introducing yourself in public channels.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Orgs Announced Feb 26",
+        dateRange: "Feb 26 Org Reveal",
+        actionText: "Explore GSoC 2026 Orgs",
+        actionUrl: "/gsoc",
+        isUrgent: true
+      },
+      {
+        programId: "outreachy",
+        name: "Outreachy (May Cohort)",
+        badge: "Initial Apps Open",
+        dateRange: "Feb 2 – Feb 16",
+        actionText: "Outreachy Portal",
+        actionUrl: "https://www.outreachy.org",
+        isUrgent: true
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Spring)",
+        badge: "Term Commences",
+        dateRange: "Starts Mar 1",
+        actionText: "LFX Mentorships",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      },
+      {
+        programId: "ospp",
+        name: "Open Source Promotion Plan (OSPP)",
+        badge: "Org Registration",
+        dateRange: "Feb 10 – Mar 10",
+        actionText: "OSPP China Portal",
+        actionUrl: "https://summer-ospp.ac.cn"
+      }
+    ],
+    targets: [
+      "Filter the newly announced GSoC organizations by your programming languages.",
+      "Shortlist exactly 1 primary organization and 1 backup organization.",
+      "Introduce yourself in the project's public chatroom with your technical background.",
+      "Submit an issue comment proposing a concrete fix for a Good First Issue."
+    ],
+    checklist: [
+      "Read the organization's official GSoC 2026 Ideas List in detail.",
+      "Ask in public channels: 'Is idea #3 still open, and where should I look in the codebase?'.",
+      "Do NOT send private direct messages to mentors or admins.",
+      "Submit your initial contribution PR (a test case, doc clarification, or lint fix).",
+      "If applying to Outreachy, complete the eligibility essays before mid-February."
+    ],
+    proTip: {
+      author: "Elena Rostova",
+      role: "Linux Foundation Project Lead",
+      advice: "Do not post 'Hello, I want to contribute to GSoC, please guide me'. Instead say: 'I cloned the repo, reproduced issue #142 on Ubuntu 24.04, and found the logic error in parser.go:88. Would you prefer approach A or B?'. That wins instant respect."
+    },
+    firstPrAction: {
+      title: "Find Good First Issues",
+      description: "Search curated issues tagged by difficulty and language across top open source projects.",
+      link: "/issues",
+      linkText: "Browse Good First Issues"
+    }
+  },
+  {
+    monthIndex: 2,
+    monthName: "March",
+    shortName: "Mar",
+    quarter: "Q1",
+    year: 2026,
+    focusTag: "ESoC Batches & Proposal Sprint",
+    phaseType: "proposals",
+    headline: "ESoC Project Batches Drop & GSoC Proposal Submissions Open",
+    summary: "The most critical 30 days of the year for open-source fellowships. European Summer of Code releases applied AI project listings on esoc.dev, and the GSoC submission portal officially opens. Draft, polish, and submit your architectural proposals.",
+    programs: [
+      {
+        programId: "esoc",
+        name: "European Summer of Code (ESoC)",
+        badge: "AI Project Batches Open",
+        dateRange: "March 1 Launch",
+        actionText: "Explore esoc.dev Projects",
+        actionUrl: "https://www.esoc.dev",
+        isUrgent: true,
+        isEuropean: true
+      },
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Proposals Open Mar 17",
+        dateRange: "Mar 17 – Apr 7",
+        actionText: "Proposal Guidelines",
+        actionUrl: "/gsoc",
+        isUrgent: true
+      },
+      {
+        programId: "hyperledger-mentorship",
+        name: "Hyperledger Mentorship",
+        badge: "Applications Open",
+        dateRange: "Mar 1 – Apr 10",
+        actionText: "Hyperledger Wiki",
+        actionUrl: "https://wiki.hyperledger.org/display/INTERN"
+      },
+      {
+        programId: "processing-fellowship",
+        name: "Processing Foundation Fellowship",
+        badge: "Annual Open Call",
+        dateRange: "Closes late March",
+        actionText: "Processing Foundation",
+        actionUrl: "https://processingfoundation.org"
+      }
+    ],
+    targets: [
+      "Review European Summer of Code AI & decentralized project batches on esoc.dev.",
+      "Draft a 10-page technical proposal using the Unrejectable Proposal Blueprint.",
+      "Include technical architecture diagrams (Mermaid / ASCII) and a 12-week breakdown.",
+      "Have at least 1-2 merged pull requests in the target repository to prove commit capability."
+    ],
+    checklist: [
+      "Share your proposal Google Doc with mentors for feedback at least 7 days before cut-off.",
+      "Ensure mentor comments are enabled in the Google Doc sharing settings.",
+      "Incorporate mentor feedback into the proposal draft.",
+      "Reference your prior merged PRs inside Section 4 of your proposal.",
+      "Submit draft directly through the official GSoC / ESoC portal before deadline week."
+    ],
+    proTip: {
+      author: "Dr. Stefan Weber",
+      role: "European Open Source AI Consortium",
+      advice: "Mentors rank proposals based on feasibility and proof of competence. If your proposal includes concrete benchmarks, architecture diagrams, and links to your previous PRs, you will beat 95% of candidates who just write generic buzzwords."
+    },
+    firstPrAction: {
+      title: "GSoC Proposal Blueprint",
+      description: "Review the exact 4-part structure that secures top mentor rankings and acceptance.",
+      link: "/gsoc",
+      linkText: "View Proposal Blueprint"
+    }
+  },
+  {
+    monthIndex: 3,
+    monthName: "April",
+    shortName: "Apr",
+    quarter: "Q2",
+    year: 2026,
+    focusTag: "GSoC Deadline & ESoC Matching",
+    phaseType: "evaluation",
+    headline: "GSoC Hard Submission Cutoff & European Hub Review Sprints",
+    summary: "April begins with the high-stakes GSoC deadline (April 7 at 18:00 UTC sharp). Afterward, organizations enter an intensive review and ranking period. Maintain community presence and continue submitting small PRs while mentors evaluate.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Hard Cutoff Apr 7 (18:00 UTC)",
+        dateRange: "Closes Apr 7",
+        actionText: "GSoC Student Guide",
+        actionUrl: "https://google.github.io/gsocguides/student/",
+        isUrgent: true
+      },
+      {
+        programId: "esoc",
+        name: "European Summer of Code (ESoC)",
+        badge: "Regional Hub Matching",
+        dateRange: "Closes Apr 25",
+        actionText: "Visit esoc.dev",
+        actionUrl: "https://www.esoc.dev",
+        isUrgent: true,
+        isEuropean: true
+      },
+      {
+        programId: "osoc-be",
+        name: "open Summer of code (oSOC Belgium)",
+        badge: "Student Applications Open",
+        dateRange: "Apr 1 – May 1",
+        actionText: "oSOC Belgium Site",
+        actionUrl: "https://osoc.be",
+        isEuropean: true
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Summer)",
+        badge: "Summer Term Apps Open",
+        dateRange: "Apr 15 – May 15",
+        actionText: "LFX Mentorship Portal",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      }
+    ],
+    targets: [
+      "Submit final PDF proposal to the Google Summer of Code portal before April 7.",
+      "Complete ESoC contributor verification and preliminary PR on host European repositories.",
+      "Stay active in project communication channels while maintainers score proposals.",
+      "Prepare your summer development workstation (Docker environments, GPUs, dependencies)."
+    ],
+    checklist: [
+      "Verify PDF proposal uploaded properly with non-corrupted font rendering.",
+      "Do NOT ask mentors 'Did I get selected?' during the private evaluation window.",
+      "Review incoming PRs from other contributors to demonstrate peer collaboration.",
+      "Apply for LFX Summer 2026 Linux Foundation opportunities opening mid-April.",
+      "Explore oSOC Belgium if based in Europe or interested in open data."
+    ],
+    proTip: {
+      author: "Priya Sharma",
+      role: "CNCF & GSoC Mentor",
+      advice: "The biggest mistake applicants make is vanishing the minute they submit their proposal. When mentors have two equally good proposals, they invariably award the slot to the person who stayed in Discord and helped review issues."
+    },
+    firstPrAction: {
+      title: "Interactive Git Lab",
+      description: "Practice interactive rebases, atomic commit splitting, and conflict resolution in sandbox.",
+      link: "/lab",
+      linkText: "Practice in Git Lab"
+    }
+  },
+  {
+    monthIndex: 4,
+    monthName: "May",
+    shortName: "May",
+    quarter: "Q2",
+    year: 2026,
+    focusTag: "Selection Results & Bonding",
+    phaseType: "bonding",
+    headline: "Accepted Contributors Announced & Community Bonding Kicks Off",
+    summary: "Google announces accepted contributors on May 8. ESoC teams finalize developer allocations. The Community Bonding period begins immediately—align expectations with your mentor, set up milestones, and prepare for kickoff.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Results Announced May 8",
+        dateRange: "May 8 Reveal",
+        actionText: "Check Selection List",
+        actionUrl: "https://summerofcode.withgoogle.com",
+        isUrgent: true
+      },
+      {
+        programId: "esoc",
+        name: "European Summer of Code (ESoC)",
+        badge: "Kickoff & Mentor Allocation",
+        dateRange: "May 12 – May 25",
+        actionText: "ESoC Community Hub",
+        actionUrl: "https://www.esoc.dev",
+        isEuropean: true
+      },
+      {
+        programId: "outreachy",
+        name: "Outreachy (May Cohort)",
+        badge: "Internships Begin",
+        dateRange: "Starts late May",
+        actionText: "Outreachy Dashboard",
+        actionUrl: "https://www.outreachy.org"
+      },
+      {
+        programId: "summer-of-bitcoin",
+        name: "Summer of Bitcoin",
+        badge: "Mentorship Kickoff",
+        dateRange: "May 15 Kickoff",
+        actionText: "Summer of Bitcoin",
+        actionUrl: "https://www.summerofbitcoin.org"
+      }
+    ],
+    targets: [
+      "Schedule your kickoff video call with designated mentor(s).",
+      "Agree on communication cadence (weekly 1:1, async daily standups, timezone overlaps).",
+      "Break down proposal deliverables into GitHub Milestones and project issues.",
+      "Begin official coding on May 25 with atomic, well-tested commits."
+    ],
+    checklist: [
+      "Set up meeting calendar invites and document notes link.",
+      "Verify code repository permissions, branch protection rules, and CI secrets.",
+      "Publish your 'Week 0' contributor introduction blog post.",
+      "If not selected: ask for constructive feedback gracefully and transition to LFX or ESoC.",
+      "Submit first small preparatory PR before official coding begins."
+    ],
+    proTip: {
+      author: "Marcus Lindqvist",
+      role: "Debian & ESoC Mentor",
+      advice: "Over-communicate in week 1. Tell your mentor: 'I plan to work on issue #101 today, will submit a draft PR by Thursday, and will summarize blockers in Slack on Friday.' Predictability is the #1 trait mentors value."
+    },
+    firstPrAction: {
+      title: "Module 05: The Unrejectable PR",
+      description: "Learn how to format PR descriptions, link issues, and craft clean Conventional Commits.",
+      link: "/learn/05",
+      linkText: "Study Module 05"
+    }
+  },
+  {
+    monthIndex: 5,
+    monthName: "June",
+    shortName: "Jun",
+    quarter: "Q2",
+    year: 2026,
+    focusTag: "Summer Coding Sprints & LFX",
+    phaseType: "coding",
+    headline: "Peak Summer Coding Sprints & LFX Summer Term Commences",
+    summary: "Full speed ahead. GSoC, ESoC, and Summer of Bitcoin contributors push daily code. LFX Mentorship Summer Term begins across Linux Kernel, CNCF, and PyTorch projects. Keep PR sizes small and maintain high test coverage.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Coding Weeks 1 to 5",
+        dateRange: "Full Month Sprint",
+        actionText: "Contributor Dashboard",
+        actionUrl: "https://summerofcode.withgoogle.com",
+        isUrgent: false
+      },
+      {
+        programId: "esoc",
+        name: "European Summer of Code (ESoC)",
+        badge: "AI Model Development Sprint",
+        dateRange: "Weeks 1 – 6",
+        actionText: "esoc.dev Portal",
+        actionUrl: "https://www.esoc.dev",
+        isEuropean: true
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Summer)",
+        badge: "Summer Term Kickoff",
+        dateRange: "Starts June 1",
+        actionText: "LFX Summer Projects",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org",
+        isUrgent: true
+      },
+      {
+        programId: "ospp",
+        name: "OSPP China",
+        badge: "Student Development Begins",
+        dateRange: "Starts mid-June",
+        actionText: "OSPP Tasks",
+        actionUrl: "https://summer-ospp.ac.cn"
+      }
+    ],
+    targets: [
+      "Ship small, incremental pull requests every 3–4 days rather than one giant branch.",
+      "Keep feature branches rebased against the upstream default branch.",
+      "Write unit and integration tests for every new module authored.",
+      "Publish bi-weekly progress updates on your personal technical blog."
+    ],
+    checklist: [
+      "Never let a pull request exceed 400 lines of diff if possible.",
+      "Maintain 100% passing tests in GitHub Actions CI prior to asking for review.",
+      "Document architectural design decisions in ADRs or Markdown docs.",
+      "Flag potential timeline slips to your mentor at least 10 days in advance.",
+      "Actively review open community issues related to your feature area."
+    ],
+    proTip: {
+      author: "Sarah Jenkins",
+      role: "Kubernetes SIG Contributor & LFX Mentor",
+      advice: "A 2,000-line pull request is a nightmare for busy maintainers to review and will sit unmerged for weeks. Split your work into logical layers: data models first, then core logic, then API endpoints, then UI."
+    },
+    firstPrAction: {
+      title: "Safe Sync & Upstream Workflow",
+      description: "Review the correct git fetch & rebase commands to avoid messy merge bubbles.",
+      link: "/workflow",
+      linkText: "Inspect Sync Architecture"
+    }
+  },
+  {
+    monthIndex: 6,
+    monthName: "July",
+    shortName: "Jul",
+    quarter: "Q3",
+    year: 2026,
+    focusTag: "Midterm Evaluations & oSOC",
+    phaseType: "midterms",
+    headline: "Midterm Milestone Reviews & European Innovation Sprints",
+    summary: "The formal halfway point of summer open-source programs. GSoC and ESoC midterm evaluations take place between July 13 and July 18. Successful candidates receive their first milestone stipend disbursements.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Midterms July 13 – 18",
+        dateRange: "July 13 – 18",
+        actionText: "Submit Evaluation",
+        actionUrl: "https://summerofcode.withgoogle.com",
+        isUrgent: true
+      },
+      {
+        programId: "esoc",
+        name: "European Summer of Code (ESoC)",
+        badge: "Midterm Benchmarks",
+        dateRange: "Mid-July Evaluation",
+        actionText: "Hub Milestone Review",
+        actionUrl: "https://www.esoc.dev",
+        isUrgent: true,
+        isEuropean: true
+      },
+      {
+        programId: "osoc-be",
+        name: "open Summer of code (oSOC Belgium)",
+        badge: "Intensive 4-Week Sprint",
+        dateRange: "Full July Sprint",
+        actionText: "oSOC Live Demo Day",
+        actionUrl: "https://osoc.be",
+        isEuropean: true
+      },
+      {
+        programId: "summer-of-bitcoin",
+        name: "Summer of Bitcoin",
+        badge: "Midterm Demos",
+        dateRange: "July 20 – 25",
+        actionText: "Bitcoin Projects",
+        actionUrl: "https://www.summerofbitcoin.org"
+      }
+    ],
+    targets: [
+      "Complete all Milestone 1 deliverables outlined in your original proposal.",
+      "Submit your midterm contributor evaluation form to Google / European hub.",
+      "Confirm initial stipend disbursement details with your banking institution.",
+      "Rescale remaining scope for the second half of summer in consultation with your mentor."
+    ],
+    checklist: [
+      "Ensure all code merged during Phase 1 is covered by automated integration tests.",
+      "Provide constructive, respectful feedback on your mentor's support in the survey.",
+      "Conduct a live mid-term code walkthrough demonstration with project leads.",
+      "If behind schedule, formally descope nice-to-have features to protect core requirements.",
+      "Write a mid-term retrospective blog post showcasing working software."
+    ],
+    proTip: {
+      author: "David Vanecek",
+      role: "Red Hat Senior Principal Software Engineer",
+      advice: "Midterm evaluations are pass/fail. Mentors do not expect perfection, but they do expect honesty. If you encountered unforeseen technical roadblocks, tell them immediately and adjust the roadmap together."
+    },
+    firstPrAction: {
+      title: "FirstPR Git Rescue Center",
+      description: "Instant commands to recover detached HEADs, fix bad merges, or undo botched rebases.",
+      link: "/rescue",
+      linkText: "Open Git Rescue"
+    }
+  },
+  {
+    monthIndex: 7,
+    monthName: "August",
+    shortName: "Aug",
+    quarter: "Q3",
+    year: 2026,
+    focusTag: "Final Code Delivery & Outreachy",
+    phaseType: "wrapup",
+    headline: "Final Code Submissions & Outreachy Winter Cohort Applications",
+    summary: "The final sprint for standard 12-week contributors. Complete code cleanup, finish documentation, write final evaluation reports, and submit before the August 31 cutoff. Simultaneously, Outreachy opens applications for its winter round.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Final Code Due Aug 24 – 31",
+        dateRange: "Aug 24 – 31",
+        actionText: "Submit Final Work",
+        actionUrl: "https://summerofcode.withgoogle.com",
+        isUrgent: true
+      },
+      {
+        programId: "esoc",
+        name: "European Summer of Code (ESoC)",
+        badge: "Final Project Delivery",
+        dateRange: "Aug 20 – 31",
+        actionText: "European Hub Submission",
+        actionUrl: "https://www.esoc.dev",
+        isUrgent: true,
+        isEuropean: true
+      },
+      {
+        programId: "outreachy",
+        name: "Outreachy (Dec Cohort)",
+        badge: "Initial Apps Open Aug 10",
+        dateRange: "Aug 10 – Aug 25",
+        actionText: "Outreachy Winter Apps",
+        actionUrl: "https://www.outreachy.org",
+        isUrgent: true
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Fall)",
+        badge: "Fall Term Applications Open",
+        dateRange: "Aug 15 – Sept 1",
+        actionText: "LFX Fall Listings",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      }
+    ],
+    targets: [
+      "Submit all remaining pull requests for your core deliverables.",
+      "Author the official Final Work Product submission page (GitHub Gist or blog post).",
+      "Include list of merged commits, pull requests, open issues, and future work items.",
+      "Submit final contributor evaluation before Google / ESoC system deadlines."
+    ],
+    checklist: [
+      "Verify your final submission URL is public and accessible without login.",
+      "Ensure all merged code is documented in README, user guides, or API references.",
+      "Tag project maintainers for final review approvals.",
+      "If interested in winter internships, submit Outreachy initial essays before late August.",
+      "Send a heartfelt thank-you message to your mentors for their time and guidance."
+    ],
+    proTip: {
+      author: "Nadia Eghbal",
+      role: "Open Source Researcher & Author",
+      advice: "Your final GSoC/ESoC submission report is a permanent artifact linked on Google's archives forever. Treat it like your premier engineering portfolio piece. Include architecture diagrams, demo GIFs, and performance metrics."
+    },
+    firstPrAction: {
+      title: "Module 06: Open Source Portfolio",
+      description: "Transform your summer pull requests into compelling engineering resume highlights.",
+      link: "/learn/06",
+      linkText: "Study Module 06"
+    }
+  },
+  {
+    monthIndex: 8,
+    monthName: "September",
+    shortName: "Sep",
+    quarter: "Q3",
+    year: 2026,
+    focusTag: "Results, LFX Fall & Hacktober Prep",
+    phaseType: "celebration",
+    headline: "GSoC Final Results Announced & Hacktoberfest Pre-Registration",
+    summary: "Google officially certifies successful 2026 contributors on September 4, and final stipend installments are paid out. LFX Fall Mentorship kicks off, while the global open-source community gears up for Hacktoberfest in October.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (GSoC)",
+        badge: "Final Results Sept 4",
+        dateRange: "Sept 4 Results",
+        actionText: "View Certificate Portal",
+        actionUrl: "https://summerofcode.withgoogle.com",
+        isUrgent: true
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Fall)",
+        badge: "Fall Term Kickoff",
+        dateRange: "Sept 1 – Nov 30",
+        actionText: "LFX Fall Dashboard",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      },
+      {
+        programId: "season-of-docs",
+        name: "Google Season of Docs",
+        badge: "Final Evaluations",
+        dateRange: "Mid September",
+        actionText: "GSoD Case Studies",
+        actionUrl: "https://developers.google.com/season-of-docs"
+      },
+      {
+        programId: "hacktoberfest",
+        name: "Hacktoberfest 2026",
+        badge: "Pre-Registration Opens",
+        dateRange: "Late September",
+        actionText: "Hacktoberfest Official",
+        actionUrl: "https://hacktoberfest.com"
+      }
+    ],
+    targets: [
+      "Download official GSoC / ESoC completion certificate and tax/stipend receipts.",
+      "Add completion credentials to your LinkedIn, Resume, and GitHub README profile.",
+      "Transition from student contributor to ongoing community peer or triage volunteer.",
+      "Scout 3–5 repositories participating in upcoming Hacktoberfest."
+    ],
+    checklist: [
+      "Verify second and final stipend installment posted to your account.",
+      "Publish your complete summer experience post-mortem blog post.",
+      "Remain active in the repository: review newcomer PRs and fix minor regressions.",
+      "Bookmark interesting open source projects to contribute to during October.",
+      "Sign up on the Hacktoberfest portal when registration opens."
+    ],
+    proTip: {
+      author: "Chris Wanstrath",
+      role: "Open Source Creator",
+      advice: "The most impactful contributors don't disappear after graduation. When an ex-student stays in the repo to review incoming PRs from the next generation, maintainers nominate them for core committer status."
+    },
+    firstPrAction: {
+      title: "Good First Issue Finder",
+      description: "Locate beginner-friendly issues across 10,000+ active open-source repositories.",
+      link: "/issues",
+      linkText: "Find Next Issues"
+    }
+  },
+  {
+    monthIndex: 9,
+    monthName: "October",
+    shortName: "Oct",
+    quarter: "Q4",
+    year: 2026,
+    focusTag: "Hacktoberfest & FOSS Sprints",
+    phaseType: "celebration",
+    headline: "Hacktoberfest Worldwide Celebration & FOSSASIA Codeheat",
+    summary: "The world's largest open source festival kicks off. For 31 days, hundreds of thousands of developers submit pull requests across participating repositories. Perfect timing for beginners to score their first PRs or explore new frameworks.",
+    programs: [
+      {
+        programId: "hacktoberfest",
+        name: "Hacktoberfest 2026",
+        badge: "Live All Month (Oct 1 – 31)",
+        dateRange: "Oct 1 – 31",
+        actionText: "Register on Hacktoberfest",
+        actionUrl: "https://hacktoberfest.com",
+        isUrgent: true
+      },
+      {
+        programId: "fossasia-codeheat",
+        name: "FOSSASIA Codeheat",
+        badge: "Annual Contest Begins",
+        dateRange: "Oct 1 Kickoff",
+        actionText: "Codeheat Contest Site",
+        actionUrl: "https://codeheat.org",
+        isUrgent: true
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Fall)",
+        badge: "Midterm Sprints",
+        dateRange: "Mid-October",
+        actionText: "LFX Dashboard",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      },
+      {
+        programId: "github-universe",
+        name: "GitHub Universe",
+        badge: "Open Source Keynotes",
+        dateRange: "Late October",
+        actionText: "GitHub Universe Live",
+        actionUrl: "https://githubuniverse.com"
+      }
+    ],
+    targets: [
+      "Submit 4 high-quality, approved pull requests to participating public GitHub repos.",
+      "Avoid spam or cosmetic PRs (e.g. adding whitespace or trivial typo edits).",
+      "Contribute meaningful bug fixes, unit tests, or accessibility improvements.",
+      "Support fellow contributors by testing their PR branches locally."
+    ],
+    checklist: [
+      "Ensure target repos have the `hacktoberfest` topic or maintainers apply the label.",
+      "Check PR status on the official Hacktoberfest tracking dashboard.",
+      "Wait out the mandatory 7-day review waiting period for spam verification.",
+      "Participate in local or virtual Hacktoberfest meetups and hackathons.",
+      "Claim your digital tree planting or badge reward upon completing 4 PRs."
+    ],
+    proTip: {
+      author: "Quincy Larson",
+      role: "freeCodeCamp Founder",
+      advice: "Never make spam PRs just to complete a t-shirt or badge counter. Maintainers are volunteers under immense load in October. If you fix a real bug in a library you use, maintainers will gladly approve your contribution."
+    },
+    firstPrAction: {
+      title: "FirstPR Safe Workflow Guide",
+      description: "Follow atomic commit practices and clean PR formatting to avoid rejection in October.",
+      link: "/workflow",
+      linkText: "Review Safe Workflow"
+    }
+  },
+  {
+    monthIndex: 10,
+    monthName: "November",
+    shortName: "Nov",
+    quarter: "Q4",
+    year: 2026,
+    focusTag: "Extended Wrap-Up & KDE",
+    phaseType: "wrapup",
+    headline: "Extended GSoC Projects Conclude & Season of KDE Opens",
+    summary: "Extended 22-week GSoC contributors submit final deliverables. Organizations begin post-program assessments and outline preliminary ideas for 2027. Season of KDE opens applications for its winter mentoring cohort.",
+    programs: [
+      {
+        programId: "gsoc",
+        name: "Google Summer of Code (Extended)",
+        badge: "22-Week Wrap-Up Nov 10",
+        dateRange: "Nov 10 – Nov 17",
+        actionText: "Extended GSoC Dashboard",
+        actionUrl: "https://summerofcode.withgoogle.com"
+      },
+      {
+        programId: "sok",
+        name: "Season of KDE 2027",
+        badge: "Proposals Open",
+        dateRange: "Nov 15 – Dec 15",
+        actionText: "KDE Season Portal",
+        actionUrl: "https://season.kde.org",
+        isUrgent: true
+      },
+      {
+        programId: "fossasia-codeheat",
+        name: "FOSSASIA Codeheat",
+        badge: "Leaderboard Sprints",
+        dateRange: "Active through Nov",
+        actionText: "Codeheat Standings",
+        actionUrl: "https://codeheat.org"
+      },
+      {
+        programId: "lfx",
+        name: "LFX Mentorship (Spring 2027)",
+        badge: "Project Scouting",
+        dateRange: "Late Nov Prep",
+        actionText: "LFX Projects",
+        actionUrl: "https://mentorship.lfx.linuxfoundation.org"
+      }
+    ],
+    targets: [
+      "Submit final work reports if enrolled in extended 22-week GSoC projects.",
+      "Review KDE community repositories for Season of KDE (Plasma, Krita, Digikam, Kate).",
+      "Join KDE Matrix / IRC channels and connect with potential mentors.",
+      "Explore Linux Kernel and CNCF repositories for LFX Spring 2027 mentorships."
+    ],
+    checklist: [
+      "Submit Season of KDE proposal before mid-December deadline.",
+      "Help organizations triage incoming issues filed during Hacktoberfest.",
+      "Refactor merged summer code based on real production user feedback.",
+      "Begin shortlisting target organizations for next year's GSoC and ESoC programs.",
+      "Maintain active commit streak by contributing to upstream maintenance."
+    ],
+    proTip: {
+      author: "Adriaan de Groot",
+      role: "KDE Community Veteran",
+      advice: "November is the best time to connect with maintainers. The summer frenzy is over, Hacktoberfest PRs are triaged, and maintainers have real bandwidth to mentor motivated newcomers one-on-one."
+    },
+    firstPrAction: {
+      title: "Module 04: Community Etiquette",
+      description: "How to introduce yourself in Matrix/IRC channels without sounding like a spam bot.",
+      link: "/learn/04",
+      linkText: "Study Module 04"
+    }
+  },
+  {
+    monthIndex: 11,
+    monthName: "December",
+    shortName: "Dec",
+    quarter: "Q4",
+    year: 2026,
+    focusTag: "24 Pull Requests & Winter Cohorts",
+    phaseType: "celebration",
+    headline: "24 Pull Requests Holiday Sprints & Outreachy Winter Kickoff",
+    summary: "Wrap up the year by giving back. 24 Pull Requests challenges developers to send one open-source contribution every day until Christmas. Outreachy December interns begin their full-time 3-month paid internships.",
+    programs: [
+      {
+        programId: "twenty-four-pull-requests",
+        name: "24 Pull Requests",
+        badge: "Dec 1 – 24 Challenge",
+        dateRange: "Dec 1 – 24",
+        actionText: "Join 24 Pull Requests",
+        actionUrl: "https://24pullrequests.com",
+        isUrgent: true
+      },
+      {
+        programId: "outreachy",
+        name: "Outreachy (Dec Cohort)",
+        badge: "Internships Begin Dec 1",
+        dateRange: "Dec 2026 – Mar 2027",
+        actionText: "Outreachy Cohort",
+        actionUrl: "https://www.outreachy.org"
+      },
+      {
+        programId: "sok",
+        name: "Season of KDE 2027",
+        badge: "Projects Announced",
+        dateRange: "Late Dec Reveal",
+        actionText: "Season of KDE Wiki",
+        actionUrl: "https://season.kde.org"
+      },
+      {
+        programId: "summer-of-bitcoin",
+        name: "Summer of Bitcoin 2027",
+        badge: "Pre-Season Teaser",
+        dateRange: "Late December",
+        actionText: "Summer of Bitcoin",
+        actionUrl: "https://www.summerofbitcoin.org"
+      }
+    ],
+    targets: [
+      "Send at least 3–5 pull requests during the 24 Pull Requests holiday sprint.",
+      "Send personalized thank-you messages to maintainers who reviewed your PRs in 2026.",
+      "Review your annual GitHub contribution graph and celebrate your growth.",
+      "Draft your 2027 open-source goals (target programs, languages to learn, PR goals)."
+    ],
+    checklist: [
+      "Participate in 24 Pull Requests by improving open source documentation and fixes.",
+      "Clean up open PRs and close abandoned draft branches in your forks.",
+      "Star and sponsor the open source libraries you relied on throughout the year.",
+      "Prepare your January application pipeline for CERN Openlab and Summer of Bitcoin.",
+      "Share your year-in-review open source accomplishments with the community."
+    ],
+    proTip: {
+      author: "Andrew Nesbitt",
+      role: "Creator of 24 Pull Requests & Libraries.io",
+      advice: "Open source runs on human goodwill. Sending a simple comment on an issue saying: 'Thank you for building this library, it made my project possible' can make a maintainer's entire holiday season."
+    },
+    firstPrAction: {
+      title: "Interactive Git Lab",
+      description: "Keep your muscle memory sharp with Git rebase, cherry-pick, and stash scenarios.",
+      link: "/lab",
+      linkText: "Practice in Git Lab"
+    }
+  }
+];
+
