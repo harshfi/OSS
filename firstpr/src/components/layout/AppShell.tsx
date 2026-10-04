@@ -36,7 +36,6 @@ export function AppShell() {
     { name: "Lab", path: "/lab" },
     { name: "Rescue", path: "/rescue" },
     { name: "Issues", path: "/issues" },
-    { name: "Explore", path: "/orgs" },
     { name: "GSoC", path: "/gsoc" },
     { name: "LFX", path: "/lfx" },
     { name: "Plan", path: "/programs" },
@@ -100,7 +99,6 @@ export function AppShell() {
         {[
           { name: "Learn", path: "/learn" },
           { name: "Lab", path: "/lab" },
-          { name: "Explore", path: "/orgs" },
           { name: "Me", path: "/progress" },
         ].map((item) => {
           const isActive = currentPath.startsWith(item.path);

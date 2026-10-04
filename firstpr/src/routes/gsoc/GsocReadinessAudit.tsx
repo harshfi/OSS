@@ -77,7 +77,7 @@ export function GsocReadinessAudit() {
     if (score >= 85) {
       return {
         label: "Top 5% Contender",
-        badgeColor: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+        badgeColor: "bg-primary/20 text-primary border-primary/30",
         message: "You have completed the essential trust-building steps. Maintainers already know who you are and have seen your code merged. Keep communication active during the review window."
       };
     } else if (score >= 60) {
@@ -106,11 +106,11 @@ export function GsocReadinessAudit() {
   return (
     <section id="readiness-audit" className="mb-24 scroll-mt-20">
       <div className="mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono uppercase tracking-wider mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold uppercase tracking-wider mb-3">
           <Gauge className="w-3.5 h-3.5" />
           The Acceptance Predictor
         </div>
-        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground font-mono">
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
           Interactive GSoC Readiness Audit
         </h2>
         <p className="text-muted-foreground text-lg max-w-3xl mt-2">
@@ -129,23 +129,23 @@ export function GsocReadinessAudit() {
                 onClick={() => toggleItem(item.id)}
                 className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer flex items-start gap-4 ${
                   isChecked
-                    ? "bg-card border-emerald-500/50 shadow-sm"
-                    : "bg-card/30 border-border/50 hover:bg-card/60 hover:border-border"
+                    ? "bg-card border-primary shadow-sm"
+                    : "bg-card border-border/50 hover:bg-muted/50 hover:border-border"
                 }`}
               >
-                <div className="mt-0.5 text-emerald-400 shrink-0">
+                <div className="mt-0.5 text-primary shrink-0">
                   {isChecked ? (
-                    <CheckSquare className="w-5 h-5 text-emerald-400" />
+                    <CheckSquare className="w-5 h-5 text-primary" />
                   ) : (
                     <Square className="w-5 h-5 text-muted-foreground/60" />
                   )}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`font-mono text-sm font-semibold ${isChecked ? "text-foreground" : "text-muted-foreground"}`}>
+                    <span className={`text-sm font-semibold ${isChecked ? "text-foreground" : "text-muted-foreground"}`}>
                       {item.label}
                     </span>
-                    <Badge variant="outline" className="font-mono text-[10px] text-muted-foreground shrink-0">
+                    <Badge variant="outline" className="text-[10px] text-muted-foreground shrink-0 font-semibold">
                       +{item.points} pts
                     </Badge>
                   </div>
@@ -161,12 +161,12 @@ export function GsocReadinessAudit() {
         {/* Live Score & Verdict Display */}
         <div className="lg:col-span-5">
           <div className="sticky top-20">
-            <Card className="bg-card/70 border-border/80 backdrop-blur-md p-6 md:p-8 relative overflow-hidden shadow-2xl">
+            <Card className="bg-card border-border shadow-sm p-6 md:p-8 relative overflow-hidden">
               <div className="flex items-center justify-between mb-6">
-                <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                <span className="font-semibold text-xs uppercase tracking-wider text-muted-foreground">
                   Readiness Rating
                 </span>
-                <Badge variant="outline" className={`font-mono text-xs ${verdict.badgeColor}`}>
+                <Badge variant="outline" className={`font-semibold text-xs ${verdict.badgeColor}`}>
                   {verdict.label}
                 </Badge>
               </div>
@@ -174,25 +174,25 @@ export function GsocReadinessAudit() {
               {/* Score Number and Bar */}
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-5xl font-black font-mono tracking-tight text-foreground">
+                  <span className="text-5xl font-bold tracking-tight text-foreground">
                     {totalScore}%
                   </span>
-                  <span className="text-muted-foreground text-sm font-mono">
+                  <span className="text-muted-foreground text-sm font-semibold">
                     / 100% Prepared
                   </span>
                 </div>
 
-                <div className="w-full bg-muted/60 h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-muted h-2.5 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500 rounded-full"
+                    className="h-full bg-primary transition-all duration-500 rounded-full"
                     style={{ width: `${totalScore}%` }}
                   />
                 </div>
               </div>
 
               {/* Diagnosis Message */}
-              <div className="p-4 rounded-xl bg-background/60 border border-border/60 mb-6">
-                <div className="text-xs font-mono font-semibold uppercase text-emerald-400 mb-1 flex items-center gap-1.5">
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/40 mb-6">
+                <div className="text-xs font-bold uppercase text-primary mb-1 flex items-center gap-1.5">
                   <TrendingUp className="w-3.5 h-3.5" /> Maintainer Diagnosis:
                 </div>
                 <p className="text-xs text-foreground/90 leading-relaxed">
@@ -200,14 +200,14 @@ export function GsocReadinessAudit() {
                 </p>
               </div>
 
-              <div className="space-y-2 text-xs font-mono text-muted-foreground">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex items-center justify-between py-1 border-b border-border/40">
-                  <span>Audit Items Completed:</span>
+                  <span className="font-semibold">Audit Items Completed:</span>
                   <span className="text-foreground font-bold">{checkedIds.length} of {AUDIT_ITEMS.length}</span>
                 </div>
                 <div className="flex items-center justify-between py-1 border-b border-border/40">
-                  <span>Golden Prerequisite:</span>
-                  <span className="text-emerald-400 font-bold">1+ Merged PR</span>
+                  <span className="font-semibold">Golden Prerequisite:</span>
+                  <span className="text-primary font-bold">1+ Merged PR</span>
                 </div>
               </div>
             </Card>

@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   Trophy, 
   ExternalLink, 
@@ -26,11 +27,28 @@ import { Link } from "react-router-dom";
 
 export default function GsocInsightsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
     if (!window.location.hash) {
       window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-20% 0px -40% 0px" }
+    );
+
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
   }, []);
 
   const navLinks = [
@@ -104,28 +122,56 @@ export default function GsocInsightsPage() {
           })}
         </div>
       </header>
+      {/* Layout with Sidebar */}
+      <div className="container mx-auto px-4 max-w-7xl flex flex-col lg:flex-row gap-12 pb-24">
+        {/* Sticky Sidebar Navigation */}
+        <aside className="lg:w-64 shrink-0 hidden lg:block">
+          <div className="sticky top-24 space-y-8">
+            <nav className="flex flex-col gap-1.5" aria-label="Page Sections">
+              <h3 className="font-semibold text-sm mb-2 text-foreground px-2">Table of Contents</h3>
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive = activeSection === link.href.slice(1);
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isActive 
+                        ? "text-primary bg-primary/10" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{link.label}</span>
+                  </a>
+                );
+              })}
+            </nav>
 
-      {/* Sticky Secondary Anchor Nav */}
-      <nav aria-label="Page Sections" className="sticky top-14 z-30 bg-background/90 backdrop-blur-md border-y border-border/60 py-3 mb-16">
-        <div className="container mx-auto px-4 max-w-6xl flex items-center gap-2 overflow-x-auto hide-scrollbar">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors whitespace-nowrap"
-              >
-                <Icon className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{link.label}</span>
-              </a>
-            );
-          })}
-        </div>
-      </nav>
+            <div className="pt-4 border-t border-border/50 px-2">
+              <Card className="bg-primary/5 border-primary/20 shadow-none overflow-hidden relative">
+                <CardContent className="p-4 flex flex-col gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-foreground">Find Your Org</h4>
+                    <p className="text-xs text-muted-foreground mt-1 mb-3">Browse past GSoC organizations and find a good fit.</p>
+                  </div>
+                  <Link to="/gsoc/orgs">
+                    <Button size="sm" className="w-full font-semibold">
+                      View All Orgs
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </aside>
 
-      {/* Main Content Sections */}
-      <main className="container mx-auto px-4 max-w-6xl">
+        {/* Main Content Sections */}
+        <main className="flex-1 min-w-0 max-w-4xl space-y-24">
         {/* 1. Selection Rubric & Reality Check */}
         <GsocSelectionRubric />
 
@@ -242,6 +288,7 @@ export default function GsocInsightsPage() {
           </div>
         </section>
       </main>
+      </div>
     </div>
   );
 }

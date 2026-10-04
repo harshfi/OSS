@@ -109,13 +109,13 @@ export function GsocProposalGuide() {
 
   return (
     <section id="proposal-blueprint" className="mb-24 scroll-mt-20">
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold uppercase tracking-wider mb-3">
             <FileText className="w-3.5 h-3.5" />
             The Winning Proposal Blueprint
           </div>
-          <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground font-mono">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
             Anatomy of an Accepted Proposal
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mt-2">
@@ -125,10 +125,10 @@ export function GsocProposalGuide() {
 
         <button
           onClick={handleCopy}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500 text-black font-mono font-bold text-xs hover:bg-emerald-400 transition-all cursor-pointer shrink-0 shadow-lg shadow-emerald-500/20"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all cursor-pointer shrink-0 shadow-sm"
         >
           {copiedTemplate ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copiedTemplate ? "Template Copied!" : "Copy Full Markdown Template"}
+          {copiedTemplate ? "Template Copied!" : "Copy Markdown Template"}
         </button>
       </div>
 
@@ -143,19 +143,19 @@ export function GsocProposalGuide() {
                 onClick={() => setActiveSection(idx)}
                 className={`w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? "bg-card border-emerald-500/60 shadow-[0_0_15px_-5px_rgba(34,197,94,0.2)]"
-                    : "bg-card/40 border-border/50 hover:bg-card/70 hover:border-border"
+                    ? "bg-card border-primary shadow-sm"
+                    : "bg-card border-border/50 hover:bg-muted/50 hover:border-border"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono text-xs text-muted-foreground">Section 0{idx + 1}</span>
+                  <span className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Section 0{idx + 1}</span>
                   {isSelected && (
-                    <Badge variant="outline" className="font-mono text-[10px] border-emerald-500/40 text-emerald-400">
+                    <Badge variant="outline" className="text-[10px] border-primary/50 text-primary bg-primary/10 font-bold">
                       Active Guide
                     </Badge>
                   )}
                 </div>
-                <div className="font-mono font-bold text-sm text-foreground">
+                <div className="font-bold text-sm text-foreground">
                   {sec.title}
                 </div>
                 <div className="text-xs text-muted-foreground line-clamp-1 mt-1">
@@ -166,15 +166,14 @@ export function GsocProposalGuide() {
           })}
         </div>
 
-        {/* Section Breakdown and Real Sample Excerpt */}
         <div className="lg:col-span-7">
-          <Card className="h-full bg-card/60 border-border/70 backdrop-blur-md flex flex-col justify-between">
+          <Card className="h-full bg-card border-border shadow-sm flex flex-col justify-between">
             <CardContent className="p-6 md:p-8 space-y-6">
               <div>
-                <Badge variant="secondary" className="font-mono text-xs mb-3 text-emerald-400 bg-emerald-500/10">
+                <Badge variant="secondary" className="text-xs mb-3 text-primary bg-primary/10">
                   Required Proposal Section
                 </Badge>
-                <h3 className="text-2xl font-bold font-mono text-foreground mb-2">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
                   {PROPOSAL_SECTIONS[activeSection].title}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -183,13 +182,13 @@ export function GsocProposalGuide() {
               </div>
 
               <div>
-                <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Key Elements Mentors Grade:
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-primary" /> Key Elements Mentors Grade:
                 </h4>
                 <div className="space-y-2">
                   {PROPOSAL_SECTIONS[activeSection].keyDetails.map((detail, di) => (
-                    <div key={di} className="text-xs text-foreground/90 p-3 rounded-lg bg-background/50 border border-border/40 flex items-start gap-2.5">
-                      <span className="text-emerald-400 font-mono font-bold">•</span>
+                    <div key={di} className="text-xs text-foreground/90 p-3 rounded-lg bg-muted/30 border border-border/40 flex items-start gap-2.5">
+                      <span className="text-primary font-bold">•</span>
                       <span>{detail}</span>
                     </div>
                   ))}
@@ -197,10 +196,10 @@ export function GsocProposalGuide() {
               </div>
 
               <div>
-                <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-                  <FileCode className="w-3.5 h-3.5 text-blue-400" /> Real Excerpt Example:
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+                  <FileCode className="w-4 h-4 text-blue-500" /> Real Excerpt Example:
                 </h4>
-                <div className="p-4 rounded-lg bg-background/90 border border-border/70 font-mono text-xs text-foreground/80 leading-relaxed whitespace-pre-line">
+                <div className="p-4 rounded-lg bg-muted/30 border border-border/40 font-mono text-xs text-foreground/80 leading-relaxed whitespace-pre-line">
                   {PROPOSAL_SECTIONS[activeSection].sampleExcerpt}
                 </div>
               </div>
