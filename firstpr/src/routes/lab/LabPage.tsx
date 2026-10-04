@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Terminal } from "@/components/terminal/Terminal";
 import { executeCommand, scenarios } from "./LabEngine";
-import type { RepoState, CommandAnalysis } from "./LabEngine";
+import type { RepoState, CommandAnalysis, CommandTokenBreakdown } from "./LabEngine";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,175 +25,46 @@ import {
   ShieldCheck,
   Globe,
   Search,
+  Target,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 
+import {
+  gitCheatSheetCommands,
+  searchCheatSheet,
+  type CheatSheetCategory,
+  type CheatSheetCommand,
+} from "./gitCheatSheetData";
+import { X, ExternalLink } from "lucide-react";
+
 type OutputLine = { text: string; isError?: boolean };
 
-type QuickCommand = {
-  category: "Setup" | "Repository" | "Branching" | "Committing" | "Publishing" | "Syncing" | "Undo";
-  cmd: string;
-  name: string;
-  summary: string;
-  realWorldEffect: string;
-};
+const cheatSheetCategories: CheatSheetCategory[] = [
+  "All",
+  "Setup & Config",
+  "Create & Clone",
+  "Staging & Committing",
+  "Branching & Merging",
+  "Sharing & Remotes",
+  "Inspection & Logs",
+  "Undo & Reset",
+  "Stashing",
+  "Rebase & Advanced",
+];
 
-const allGitCommands: QuickCommand[] = [
-  // Setup
-  {
-    category: "Setup",
-    name: "Set Author Name",
-    cmd: 'git config --global user.name "Your Name"',
-    summary: "Configures the author name stamped onto every commit you create.",
-    realWorldEffect: "Saves to your local ~/.gitconfig file. Open source maintainers see this in the Git log.",
-  },
-  {
-    category: "Setup",
-    name: "Set Author Email",
-    cmd: 'git config --global user.email "your.email@example.com"',
-    summary: "Links your commits to your GitHub account so your profile avatar shows up on PRs.",
-    realWorldEffect: "GitHub matches this email to award green contribution squares on your profile.",
-  },
-  {
-    category: "Setup",
-    name: "View Config Settings",
-    cmd: "git config --list",
-    summary: "Displays all active Git configuration keys, user names, and emails.",
-    realWorldEffect: "Inspects your global and local Git settings without modifying anything.",
-  },
-
-  // Repository
-  {
-    category: "Repository",
-    name: "Clone Repository",
-    cmd: "git clone https://github.com/your-username/repo.git",
-    summary: "Downloads a full copy of a GitHub repository to your local computer.",
-    realWorldEffect: "Creates a folder on your drive and sets up the 'origin' remote pointing to your fork.",
-  },
-  {
-    category: "Repository",
-    name: "Add Upstream Remote",
-    cmd: "git remote add upstream https://github.com/maintainer/repo.git",
-    summary: "Connects your local project to the original maintainer's repository.",
-    realWorldEffect: "Allows you to pull and fetch official updates to keep your fork up to date.",
-  },
-  {
-    category: "Repository",
-    name: "List Remotes",
-    cmd: "git remote -v",
-    summary: "Shows all connected remote repositories and their URLs.",
-    realWorldEffect: "Verifies whether 'origin' (your fork) and 'upstream' (maintainer repo) are mapped.",
-  },
-
-  // Branching
-  {
-    category: "Branching",
-    name: "Create & Switch Branch",
-    cmd: "git checkout -b feature-name",
-    summary: "Creates a new feature branch and immediately switches your workspace to it.",
-    realWorldEffect: "Isolates your code changes from 'main' so your Pull Request stays focused and clean.",
-  },
-  {
-    category: "Branching",
-    name: "Switch to Existing Branch",
-    cmd: "git checkout main",
-    summary: "Switches your working directory and HEAD pointer to an existing branch.",
-    realWorldEffect: "Swaps all files in your folder to match the state of that branch.",
-  },
-  {
-    category: "Branching",
-    name: "List Branches",
-    cmd: "git branch",
-    summary: "Lists all local branches in your repository with an asterisk on current HEAD.",
-    realWorldEffect: "Shows your local branches. Use 'git branch -a' to also see remote GitHub branches.",
-  },
-
-  // Committing
-  {
-    category: "Committing",
-    name: "Check Workspace Status",
-    cmd: "git status",
-    summary: "Shows which files are modified, staged for commit, or untracked.",
-    realWorldEffect: "Safe inspection command. Always run this before staging or committing.",
-  },
-  {
-    category: "Committing",
-    name: "Stage Specific File",
-    cmd: "git add filename.txt",
-    summary: "Moves a single modified file into the Git Staging Area (Index).",
-    realWorldEffect: "Tells Git: 'Include this specific file in the upcoming commit snapshot'.",
-  },
-  {
-    category: "Committing",
-    name: "Stage All Files",
-    cmd: "git add .",
-    summary: "Stages all new, modified, and deleted files in the workspace.",
-    realWorldEffect: "Gathers all current changes into the staging area ready to commit.",
-  },
-  {
-    category: "Committing",
-    name: "Save Commit Snapshot",
-    cmd: 'git commit -m "feat: add greeting message"',
-    summary: "Saves a permanent snapshot of staged files to your local repository history.",
-    realWorldEffect: "Creates a local commit with a SHA hash. Does NOT publish to GitHub yet until pushed.",
-  },
-  {
-    category: "Committing",
-    name: "View Commit History",
-    cmd: "git log",
-    summary: "Displays the chronological list of commits in your current branch.",
-    realWorldEffect: "Shows authors, timestamps, commit hashes, and commit messages.",
-  },
-
-  // Publishing
-  {
-    category: "Publishing",
-    name: "Push to GitHub Fork",
-    cmd: "git push origin feature-name",
-    summary: "Uploads your local commits to your remote fork on GitHub.",
-    realWorldEffect: "Creates the branch on github.com and triggers the 'Compare & pull request' banner.",
-  },
-
-  // Syncing
-  {
-    category: "Syncing",
-    name: "Fetch Upstream Changes",
-    cmd: "git fetch upstream",
-    summary: "Downloads new commits from the maintainer's repository without touching working files.",
-    realWorldEffect: "Updates your local cached refs for upstream/main safely in the background.",
-  },
-  {
-    category: "Syncing",
-    name: "Rebase onto Upstream",
-    cmd: "git rebase upstream/main",
-    summary: "Replays your branch commits cleanly on top of the latest upstream code.",
-    realWorldEffect: "Prevents merge conflicts and keeps the project Git history linear and clean.",
-  },
-  {
-    category: "Syncing",
-    name: "Pull Upstream Changes",
-    cmd: "git pull upstream main",
-    summary: "Fetches and immediately merges maintainer changes into your active branch.",
-    realWorldEffect: "Updates your current working files with latest changes from upstream.",
-  },
-
-  // Undo
-  {
-    category: "Undo",
-    name: "Discard File Changes",
-    cmd: "git restore filename.txt",
-    summary: "Reverts uncommitted modifications in a file back to the last commit.",
-    realWorldEffect: "Throws away un-staged edits in your working directory.",
-  },
-  {
-    category: "Undo",
-    name: "Amend Last Commit",
-    cmd: 'git commit --amend -m "Updated commit message"',
-    summary: "Modifies the latest commit's message or includes newly staged files.",
-    realWorldEffect: "Rewrites the top commit. Only do this before pushing to GitHub.",
-  },
+const popularSearchIntents = [
+  "command to add file",
+  "how to undo commit",
+  "create feature branch",
+  "push branch to github",
+  "save work to stash",
+  "squash commits rebase",
+  "discard file edits",
+  "set author email",
+  "clone repository",
+  "sync with upstream",
 ];
 
 export default function LabPage() {
@@ -207,9 +78,9 @@ export default function LabPage() {
   const [completed, setCompleted] = useState(false);
   const [latestAnalysis, setLatestAnalysis] = useState<CommandAnalysis | null>(null);
   const [presetInput, setPresetInput] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<string>("inspector");
+  const [activeTab, setActiveTab] = useState<string>("mission");
   const [guideSearch, setGuideSearch] = useState<string>("");
-  const [guideCategory, setGuideCategory] = useState<string>("All");
+  const [guideCategory, setGuideCategory] = useState<CheatSheetCategory>("All");
 
   // Initialize when scenario changes
   useEffect(() => {
@@ -224,6 +95,7 @@ export default function LabPage() {
     setCompleted(false);
     setLatestAnalysis(null);
     setPresetInput("");
+    setActiveTab("mission");
   }, [scenario]);
 
   const handleCommand = (cmd: string) => {
@@ -233,6 +105,13 @@ export default function LabPage() {
 
     if (res.out[0] === "__CLEAR__") {
       setOutput([]);
+    } else if (res.out[0] === "__NEXT_SCENARIO__") {
+      if (scenarioId < scenarios.length) {
+        setScenarioId((s) => s + 1);
+        toast.success(`Advancing to Scenario ${scenarioId + 1}`);
+      } else {
+        toast.info("You've completed all scenarios!");
+      }
     } else {
       const newOutput: OutputLine[] = res.out.map((t) => ({ text: t }));
       if (res.error) newOutput.push({ text: res.error, isError: true });
@@ -243,14 +122,18 @@ export default function LabPage() {
 
     if (res.analysis) {
       setLatestAnalysis(res.analysis);
-      setActiveTab("inspector");
+      if (res.analysis.status === "incorrect" || res.analysis.status === "out-of-sequence") {
+        toast.error("Command Error / Out of Sequence", {
+          description: "Click the 'Command Inspector' tab to see what to write instead.",
+        });
+      }
     }
 
     const isGoalMet = scenario.checkGoal(res.state);
     if (isGoalMet && !completed) {
       setCompleted(true);
       toast.success(`🎉 Great work! Scenario ${scenario.id} completed!`, {
-        description: "You are ready for the next open source challenge.",
+        description: "You completed all tasks in the proper open-source sequence.",
       });
     }
   };
@@ -262,30 +145,36 @@ export default function LabPage() {
     setCompleted(false);
     setLatestAnalysis(null);
     setPresetInput("");
+    setActiveTab("mission");
     toast.info("Lab environment reset.");
   };
 
   const completedStepsCount = scenario.steps.filter((st) => st.check(state)).length;
   const progressPercent = Math.round((completedStepsCount / scenario.steps.length) * 100);
+  const activeStepIndex = scenario.steps.findIndex((st) => !st.check(state));
+  const activeStep = activeStepIndex !== -1 ? scenario.steps[activeStepIndex] : null;
 
   const copyToTerminal = (command: string) => {
     setPresetInput(command);
     toast.success("Command copied into terminal prompt!");
   };
 
-  const filteredCommands = allGitCommands.filter((c) => {
-    const matchesCat = guideCategory === "All" || c.category === guideCategory;
-    const matchesSearch =
-      c.cmd.toLowerCase().includes(guideSearch.toLowerCase()) ||
-      c.name.toLowerCase().includes(guideSearch.toLowerCase()) ||
-      c.summary.toLowerCase().includes(guideSearch.toLowerCase());
-    return matchesCat && matchesSearch;
-  });
+  const searchResults = searchCheatSheet(guideSearch, guideCategory, gitCheatSheetCommands);
+
+  // Category counts based on current search query
+  const categoryCounts = cheatSheetCategories.reduce((acc, cat) => {
+    if (cat === "All") {
+      acc[cat] = searchCheatSheet(guideSearch, "All", gitCheatSheetCommands).length;
+    } else {
+      acc[cat] = searchCheatSheet(guideSearch, cat, gitCheatSheetCommands).length;
+    }
+    return acc;
+  }, {} as Record<CheatSheetCategory, number>);
 
   return (
-    <div className="container mx-auto p-4 flex flex-col h-[calc(100vh-5.5rem)] max-w-7xl">
+    <div className="container mx-auto p-3 md:p-4 flex flex-col min-h-[calc(100vh-5.5rem)] max-w-7xl pb-12">
       {/* Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3 shrink-0">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
             <TerminalIcon className="w-5 h-5" />
@@ -301,7 +190,7 @@ export default function LabPage() {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground hidden sm:block">
-              Scenario {scenario.id} of {scenarios.length}: {scenario.title} — Runs in browser memory without modifying your real GitHub account.
+              Scenario {scenario.id} of {scenarios.length}: {scenario.title} — Step-by-step interactive tasks with command meanings.
             </p>
           </div>
         </div>
@@ -335,9 +224,9 @@ export default function LabPage() {
       </div>
 
       {/* Main Workspace Grid */}
-      <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
-        {/* Terminal Window (55%) */}
-        <div className="lg:w-[55%] h-full flex flex-col min-h-[360px]">
+      <div className="flex flex-col lg:flex-row gap-4 flex-1 items-start min-h-0">
+        {/* Terminal Window (50% on Desktop, Sticky) */}
+        <div className="w-full lg:w-[50%] h-[580px] lg:h-[calc(100vh-6.5rem)] lg:sticky lg:top-3 flex flex-col min-h-[460px] shrink-0">
           <Terminal
             onCommand={handleCommand}
             output={output}
@@ -346,117 +235,307 @@ export default function LabPage() {
           />
         </div>
 
-        {/* Learning, Analysis & State Panel (45%) */}
-        <div className="lg:w-[45%] h-full flex flex-col gap-3 overflow-hidden">
-          {/* Scenario Overview Card */}
-          <Card className="border-border/60 shadow-sm shrink-0">
-            <CardHeader className="p-4 pb-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge variant={completed ? "default" : "secondary"} className="text-xs">
-                    {completed ? "Completed ✓" : `Step ${completedStepsCount} of ${scenario.steps.length}`}
-                  </Badge>
-                  <CardTitle className="text-base font-semibold">{scenario.title}</CardTitle>
-                </div>
-                {completed && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
-              </div>
-              <CardDescription className="text-xs mt-1 text-foreground/80">
-                {scenario.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 pt-2 space-y-3">
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Scenario Progress</span>
-                  <span className="font-semibold text-foreground">{progressPercent}%</span>
-                </div>
-                <Progress value={progressPercent} className="h-1.5" />
-              </div>
-
-              {/* Step Checklist */}
-              <div className="space-y-1.5">
-                {scenario.steps.map((st) => {
-                  const isDone = st.check(state);
-                  return (
-                    <div
-                      key={st.id}
-                      className={`flex items-center justify-between p-2 rounded-md text-xs border transition-colors ${
-                        isDone
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
-                          : "bg-muted/40 border-border/50 text-muted-foreground"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        <div
-                          className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
-                            isDone ? "bg-emerald-500 text-white" : "border border-muted-foreground/40"
-                          }`}
-                        >
-                          {isDone && <Check className="w-3 h-3 stroke-[3]" />}
-                        </div>
-                        <span className={isDone ? "line-through opacity-80" : "font-medium text-foreground"}>
-                          {st.label}
-                        </span>
-                      </div>
-                      {!isDone && (
-                        <button
-                          onClick={() => copyToTerminal(st.exampleCommand)}
-                          className="flex items-center gap-1 text-[11px] font-mono text-primary hover:underline ml-2 shrink-0"
-                          title="Click to paste into terminal"
-                        >
-                          <Copy className="w-3 h-3" />
-                          <span>Paste</span>
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {completed && (
-                <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center justify-between">
-                  <div className="text-xs">
-                    <p className="font-semibold text-emerald-600 dark:text-emerald-400">
-                      Scenario Complete!
-                    </p>
-                    <p className="text-muted-foreground">You mastered this Git open-source step.</p>
-                  </div>
-                  <Button
-                    size="sm"
-                    disabled={scenarioId === scenarios.length}
-                    onClick={() => setScenarioId((s) => Math.min(scenarios.length, s + 1))}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                  >
-                    Next Scenario <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Interactive Tabs for Live Feedback & Repo State */}
+        {/* Learning, Analysis & State Panel (50% on Desktop, Smooth Scrollable Tabs) */}
+        <div className="w-full lg:w-[50%] flex flex-col gap-3 min-h-[500px] lg:max-h-[calc(100vh-6.5rem)] lg:overflow-y-auto pr-1 sm:pr-2 pb-6 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900/50">
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
-            className="flex-1 flex flex-col min-h-0"
+            className="flex flex-col gap-3 w-full"
           >
-            <TabsList className="grid grid-cols-3 w-full shrink-0">
-              <TabsTrigger value="inspector" className="text-xs flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-primary" />
-                <span>Command Inspector</span>
+            <TabsList className="grid grid-cols-4 w-full shrink-0 bg-muted/70 p-1 border">
+              <TabsTrigger value="mission" className="text-xs flex items-center justify-center gap-1.5 py-2 font-medium data-[state=active]:font-bold">
+                <Target className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="truncate">Current Mission</span>
               </TabsTrigger>
-              <TabsTrigger value="state" className="text-xs flex items-center gap-1.5">
-                <GitBranch className="w-3.5 h-3.5" />
-                <span>Live Repo State</span>
+              <TabsTrigger value="inspector" className="text-xs flex items-center justify-center gap-1.5 py-2 relative font-medium data-[state=active]:font-bold">
+                <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="truncate">Inspector</span>
+                {latestAnalysis && latestAnalysis.status === "incorrect" && (
+                  <span className="w-2 h-2 rounded-full bg-rose-500 absolute top-1 right-1 animate-ping" />
+                )}
               </TabsTrigger>
-              <TabsTrigger value="cheatsheet" className="text-xs flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>All Commands Brief</span>
+              <TabsTrigger value="state" className="text-xs flex items-center justify-center gap-1.5 py-2 font-medium data-[state=active]:font-bold">
+                <GitBranch className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Repo State</span>
+              </TabsTrigger>
+              <TabsTrigger value="cheatsheet" className="text-xs flex items-center justify-center gap-1.5 py-2 font-medium data-[state=active]:font-bold">
+                <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">All Commands</span>
               </TabsTrigger>
             </TabsList>
 
-            {/* TAB 1: Real-time Command Explainer & Feedback */}
-            <TabsContent value="inspector" className="flex-1 overflow-y-auto mt-2 space-y-3 pr-1">
+            {/* TAB 1: CURRENT MISSION & STEPS */}
+            <TabsContent value="mission" className="space-y-4 focus-visible:outline-none mt-0">
+              <Card className="border-border/80 shadow-md bg-card/95">
+                <CardHeader className="p-4 pb-3 bg-muted/30 border-b space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Badge variant={completed ? "default" : "secondary"} className="text-xs font-semibold">
+                        {completed ? "Completed ✓" : `Step ${completedStepsCount} of ${scenario.steps.length}`}
+                      </Badge>
+                      <CardTitle className="text-base font-bold tracking-tight">{scenario.title}</CardTitle>
+                    </div>
+                    {completed && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+                  </div>
+                  <CardDescription className="text-xs text-foreground/80 leading-relaxed">
+                    {scenario.description}
+                  </CardDescription>
+
+                  {/* Progress Bar */}
+                  <div className="pt-1 space-y-1.5">
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span className="font-medium">Scenario Progress</span>
+                      <span className="font-bold text-foreground font-mono">{progressPercent}% ({completedStepsCount}/{scenario.steps.length} tasks)</span>
+                    </div>
+                    <Progress value={progressPercent} className="h-2 bg-muted rounded-full" />
+                  </div>
+                </CardHeader>
+
+                <CardContent className="p-4 space-y-4">
+                  {/* ACTIVE MISSION CARD (When Scenario Not Yet Completed) */}
+                  {activeStep && !completed && (
+                    <div className="p-4 rounded-xl border-2 border-primary/50 bg-gradient-to-b from-primary/15 via-background to-card space-y-3.5 relative shadow-lg">
+                      <div className="flex items-center justify-between gap-2 border-b border-primary/20 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="relative flex h-2.5 w-2.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                          </span>
+                          <Badge className="bg-primary text-primary-foreground text-[11px] uppercase font-bold tracking-wider py-0.5 px-2.5 shadow-sm">
+                            Active Mission • Task {activeStepIndex + 1} of {scenario.steps.length}
+                          </Badge>
+                        </div>
+                        <span className="text-[11px] font-semibold text-primary/90 flex items-center gap-1">
+                          Run in Terminal <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+
+                      <div>
+                        <h4 className="text-base font-bold text-foreground flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-primary shrink-0" />
+                          {activeStep.taskTitle || activeStep.label}
+                        </h4>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          {activeStep.instruction}
+                        </p>
+                      </div>
+
+                      {/* PROMINENT TARGET COMMAND BOX WITH 1-CLICK PASTE */}
+                      <div className="p-3.5 rounded-lg bg-zinc-950 border-2 border-emerald-500/50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-inner">
+                        <div className="space-y-0.5 min-w-0 flex-1">
+                          <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-400/80">
+                            Command to run in terminal:
+                          </div>
+                          <div className="font-mono text-sm sm:text-base text-emerald-400 font-bold break-all selection:bg-emerald-500 selection:text-black">
+                            {activeStep.exampleCommand}
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => copyToTerminal(activeStep.exampleCommand)}
+                          className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold shrink-0 gap-1.5 shadow-md px-3.5 transition-all active:scale-95"
+                        >
+                          <Copy className="w-4 h-4" />
+                          <span>Paste in Terminal</span>
+                        </Button>
+                      </div>
+
+                      {/* WHAT THIS COMMAND MEANS */}
+                      <div className="p-3 rounded-lg bg-background/90 border border-border/90 space-y-2 text-xs shadow-sm">
+                        <div className="font-bold text-primary flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                          <BookOpen className="w-3.5 h-3.5" />
+                          <span>What this command means:</span>
+                        </div>
+                        <p className="text-foreground font-medium text-xs leading-relaxed">
+                          {activeStep.commandMeaning}
+                        </p>
+
+                        {/* PART BY PART TOKENS BREAKDOWN */}
+                        {activeStep.breakdown && activeStep.breakdown.length > 0 && (
+                          <div className="pt-2 border-t border-border/60">
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                              Command Parts & Flags Anatomy:
+                            </span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {activeStep.breakdown.map((b, i) => (
+                                <div
+                                  key={i}
+                                  className={`px-2 py-1 rounded border text-[11px] flex items-center gap-1.5 ${
+                                    b.isFlag
+                                      ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300 font-medium"
+                                      : "bg-muted/80 border-border text-foreground"
+                                  }`}
+                                >
+                                  <code className="font-mono font-bold text-primary">{b.token}</code>
+                                  <span className="text-[10px] text-muted-foreground">→ {b.meaning}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* WHY THIS STEP & ORDER */}
+                      <div className="p-2.5 rounded-lg bg-muted/40 border border-border/70 text-[11px] space-y-1">
+                        <div className="font-bold text-primary flex items-center gap-1">
+                          <Info className="w-3.5 h-3.5" /> Why this order in open source:
+                        </div>
+                        <p className="text-muted-foreground leading-normal">
+                          {activeStep.whyDoThis}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* STEP CHECKLIST WITH COMMAND PREVIEWS */}
+                  <div className="space-y-2 pt-1">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+                      <span>All Tasks in Scenario ({completedStepsCount}/{scenario.steps.length})</span>
+                      <span className="font-normal text-muted-foreground/80">Follow in sequence</span>
+                    </div>
+
+                    {scenario.steps.map((st, idx) => {
+                      const isDone = st.check(state);
+                      const isActive = idx === activeStepIndex;
+
+                      return (
+                        <div
+                          key={st.id}
+                          className={`p-3 rounded-lg border text-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+                            isDone
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+                              : isActive
+                              ? "bg-primary/10 border-primary/60 text-foreground ring-2 ring-primary/30 shadow-sm"
+                              : "bg-muted/30 border-border/40 text-muted-foreground opacity-70"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                            <div
+                              className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-mono text-[11px] font-bold ${
+                                isDone
+                                  ? "bg-emerald-500 text-white"
+                                  : isActive
+                                  ? "bg-primary text-primary-foreground"
+                                  : "border border-muted-foreground/40 text-muted-foreground"
+                              }`}
+                            >
+                              {isDone ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : idx + 1}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className={`font-semibold text-xs ${isDone ? "line-through opacity-80" : "text-foreground"}`}>
+                                {st.label}
+                              </div>
+                              <div className="text-[11px] text-primary/90 font-mono break-all font-semibold">
+                                {st.exampleCommand}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 flex items-center gap-1.5 self-end sm:self-center">
+                            {isDone ? (
+                              <Badge variant="outline" className="text-[10px] border-emerald-500/30 text-emerald-400 bg-emerald-500/10 py-0.5 px-2">
+                                Done ✓
+                              </Badge>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant={isActive ? "default" : "outline"}
+                                onClick={() => copyToTerminal(st.exampleCommand)}
+                                className={`h-7 text-xs font-mono gap-1 px-2.5 ${
+                                  isActive ? "bg-primary text-primary-foreground font-bold shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                }`}
+                              >
+                                <Copy className="w-3 h-3" />
+                                <span>Paste</span>
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* SCENARIO COMPLETED BANNER */}
+                  {completed && (
+                    <div className="p-4 bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-card border-2 border-emerald-500/40 rounded-xl space-y-3 shadow-md">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
+                            <CheckCircle2 className="w-4 h-4" /> All Tasks Solved!
+                          </div>
+                          <h3 className="text-base font-bold text-foreground mt-2">
+                            Scenario {scenario.id} Complete!
+                          </h3>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                            You successfully mastered and executed all commands for this stage in open source sequence.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-1">
+                        {scenarioId < scenarios.length ? (
+                          <Button
+                            size="sm"
+                            onClick={() => setScenarioId((s) => s + 1)}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold h-9 gap-1.5 flex-1 shadow"
+                          >
+                            <span>Next Scenario {scenarioId + 1}</span>
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => navigate("/workflow")}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold h-9 gap-1.5 flex-1 shadow"
+                          >
+                            <span>Explore Full Git Workflow</span>
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleReset}
+                          className="text-xs h-9"
+                        >
+                          <RefreshCcw className="w-3.5 h-3.5 mr-1" /> Replay
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* HINTS SECTION */}
+                  <div className="pt-2 border-t space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-muted-foreground flex items-center gap-1">
+                        <HelpCircle className="w-3.5 h-3.5" /> Hints ({hintLevel}/{scenario.hints.length})
+                      </span>
+                      {hintLevel < scenario.hints.length && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setHintLevel((h) => h + 1)}
+                          className="h-6 text-xs text-primary font-semibold hover:bg-primary/10"
+                        >
+                          Reveal Hint +
+                        </Button>
+                      )}
+                    </div>
+                    {scenario.hints.slice(0, hintLevel).map((hint, i) => (
+                      <div
+                        key={i}
+                        className="text-xs text-foreground/90 p-2.5 bg-muted/60 border rounded-md font-mono"
+                      >
+                        💡 {hint}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* TAB 2: COMMAND INSPECTOR */}
+            <TabsContent value="inspector" className="space-y-3 focus-visible:outline-none mt-0">
               <AnimatePresence mode="wait">
                 {latestAnalysis ? (
                   <motion.div
@@ -511,7 +590,7 @@ export default function LabPage() {
                           </Badge>
                         </div>
                       </CardHeader>
-                      <CardContent className="p-4 pt-2 space-y-3">
+                      <CardContent className="p-4 pt-2 space-y-3.5">
                         {/* Syntax confirmation pill */}
                         <div className="flex items-center gap-2 text-xs">
                           {latestAnalysis.syntaxValid ? (
@@ -614,21 +693,48 @@ export default function LabPage() {
                           </div>
                         )}
 
-                        {/* What the command does */}
-                        <div>
-                          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-                            What does this command do?
-                          </h4>
+                        {/* What the command means */}
+                        <div className="p-3 rounded-lg bg-muted/40 border space-y-2">
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                            <BookOpen className="w-3.5 h-3.5 text-primary" />
+                            <span>Command Meaning & Function:</span>
+                          </div>
                           <p className="text-xs md:text-sm font-medium text-foreground leading-relaxed">
-                            {latestAnalysis.summary}
+                            {latestAnalysis.commandMeaning || latestAnalysis.summary}
                           </p>
+
+                          {/* Token Breakdown */}
+                          {latestAnalysis.breakdown && latestAnalysis.breakdown.length > 0 && (
+                            <div className="pt-2 border-t border-border/50 space-y-1.5">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                                Token-by-Token Meaning:
+                              </span>
+                              <div className="space-y-1">
+                                {latestAnalysis.breakdown.map((token, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center justify-between p-1.5 rounded bg-background border border-border/70 text-xs"
+                                  >
+                                    <code className={`font-mono font-bold px-1.5 py-0.5 rounded text-[11px] ${
+                                      token.isFlag ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" : "bg-primary/10 text-primary"
+                                    }`}>
+                                      {token.token}
+                                    </code>
+                                    <span className="text-muted-foreground text-[11px] text-right">
+                                      {token.meaning}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         {/* Breakdown of arguments & flags */}
                         {latestAnalysis.details && latestAnalysis.details.length > 0 && (
                           <div>
                             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
-                              Flag & Argument Breakdown:
+                              Key Notes:
                             </h4>
                             <ul className="space-y-1">
                               {latestAnalysis.details.map((d, i) => (
@@ -695,7 +801,7 @@ export default function LabPage() {
                     <div>
                       <h4 className="text-sm font-semibold text-foreground">Interactive Command Inspector</h4>
                       <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
-                        Type any Git command in the terminal on the left. The inspector will tell you if the syntax is valid, what the code does, and what happens on real GitHub!
+                        Type any Git command in the terminal on the left. The inspector will tell you if the syntax is valid, what the code means, and what happens on real GitHub!
                       </p>
                     </div>
                     <div className="pt-2 flex flex-wrap justify-center gap-2">
@@ -711,37 +817,10 @@ export default function LabPage() {
                   </div>
                 )}
               </AnimatePresence>
-
-              {/* Hints Box */}
-              <div className="pt-1">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                    <HelpCircle className="w-3.5 h-3.5" /> Hints ({hintLevel}/{scenario.hints.length})
-                  </span>
-                  {hintLevel < scenario.hints.length && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setHintLevel((h) => h + 1)}
-                      className="h-6 text-xs text-primary"
-                    >
-                      Reveal Hint +
-                    </Button>
-                  )}
-                </div>
-                {scenario.hints.slice(0, hintLevel).map((hint, i) => (
-                  <div
-                    key={i}
-                    className="text-xs text-foreground/90 p-2.5 bg-muted/60 border rounded-md mb-2 font-mono"
-                  >
-                    💡 {hint}
-                  </div>
-                ))}
-              </div>
             </TabsContent>
 
-            {/* TAB 2: Live Repo Graph & State */}
-            <TabsContent value="state" className="flex-1 overflow-y-auto mt-2 pr-1">
+            {/* TAB 3: LIVE REPO STATE */}
+            <TabsContent value="state" className="space-y-3 focus-visible:outline-none mt-0">
               <Card className="border-border/60">
                 <CardHeader className="p-4 pb-2">
                   <CardTitle className="text-xs uppercase text-muted-foreground font-semibold flex items-center justify-between">
@@ -881,92 +960,266 @@ export default function LabPage() {
               </Card>
             </TabsContent>
 
-            {/* TAB 3: All Commands in Brief */}
-            <TabsContent value="cheatsheet" className="flex-1 overflow-y-auto mt-2 pr-1 space-y-3">
-              {/* Practice Safety Note */}
-              <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1">
-                <div className="flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                  <span>Sandbox Practice vs. Real GitHub:</span>
+            {/* TAB 4: CHEATSHEET & ALL COMMANDS */}
+            <TabsContent value="cheatsheet" className="space-y-3.5 focus-visible:outline-none mt-0">
+              {/* Official Reference & Sandbox Safety Note */}
+              <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-500/10 via-primary/5 to-card border border-emerald-500/30 text-xs space-y-1.5 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 font-bold text-emerald-700 dark:text-emerald-400">
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <span>Official Git Cheat Sheet & Sandbox Practice:</span>
+                  </div>
+                  <a
+                    href="https://git-scm.com/cheat-sheet"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+                  >
+                    <span>git-scm.com/cheat-sheet</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
                 <p className="text-foreground/80 text-[11px] leading-relaxed">
-                  Everything you execute here runs inside an isolated in-browser virtual environment. <strong>Nothing will modify your actual personal GitHub repositories, accounts, or computer files.</strong> Use this sandbox freely to practice, make mistakes, and learn!
+                  Complete reference of all Git commands from the official GitHub & Git-SCM cheat sheet with plain English meanings, use cases, and token breakdowns. Type any command or search intent below!
                 </p>
               </div>
 
-              {/* Filter & Search */}
-              <div className="space-y-2">
-                <div className="relative">
-                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search all Git commands (e.g. clone, branch, push)..."
-                    value={guideSearch}
-                    onChange={(e) => setGuideSearch(e.target.value)}
-                    className="w-full bg-muted/40 border border-border/80 rounded-md pl-8 pr-3 py-1.5 text-xs outline-none focus:border-primary"
-                  />
+              {/* Filter & Smart Intent Search Bar */}
+              <div className="space-y-2.5 bg-card/60 p-3 rounded-xl border border-border/80">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 absolute left-3 top-2.5 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder='Search by command or intent (e.g. "command to add file", "how to undo commit", "git stash")...'
+                      value={guideSearch}
+                      onChange={(e) => setGuideSearch(e.target.value)}
+                      className="w-full bg-background border border-border/80 rounded-lg pl-9 pr-8 py-2 text-xs outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm"
+                    />
+                    {guideSearch && (
+                      <button
+                        onClick={() => setGuideSearch("")}
+                        className="absolute right-2.5 top-2.5 text-muted-foreground hover:text-foreground p-0.5"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (!guideSearch.trim()) {
+                        toast.info("Showing all commands.");
+                      } else {
+                        toast.success(`Search completed for "${guideSearch}"`);
+                      }
+                    }}
+                    className="h-9 px-3.5 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-bold shrink-0 shadow-sm gap-1.5"
+                  >
+                    <Search className="w-3.5 h-3.5" />
+                    <span>Search</span>
+                  </Button>
                 </div>
 
-                {/* Category Pills */}
-                <div className="flex flex-wrap gap-1">
-                  {["All", "Setup", "Repository", "Branching", "Committing", "Publishing", "Syncing", "Undo"].map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setGuideCategory(cat)}
-                      className={`px-2 py-0.5 rounded text-[10px] font-medium border transition-colors ${
-                        guideCategory === cat
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted/40 text-muted-foreground hover:text-foreground border-border/50"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                {/* Popular Search Intents Quick Chips */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+                    Quick Intent Search:
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {popularSearchIntents.map((intent) => (
+                      <button
+                        key={intent}
+                        onClick={() => {
+                          setGuideSearch(intent);
+                          setGuideCategory("All");
+                        }}
+                        className={`text-[10px] px-2 py-0.5 rounded-md border transition-all ${
+                          guideSearch.toLowerCase() === intent.toLowerCase()
+                            ? "bg-primary text-primary-foreground font-bold border-primary shadow-sm"
+                            : "bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border-border/60"
+                        }`}
+                      >
+                        "{intent}"
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category Pills with Dynamic Count Badges */}
+                <div className="pt-1 border-t border-border/50">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                    Filter by Stage & Category:
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {cheatSheetCategories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setGuideCategory(cat)}
+                        className={`px-2 py-1 rounded-md text-[11px] font-medium border transition-all flex items-center gap-1.5 ${
+                          guideCategory === cat
+                            ? "bg-primary text-primary-foreground font-bold border-primary shadow-sm"
+                            : "bg-muted/40 text-muted-foreground hover:text-foreground border-border/50 hover:bg-muted/70"
+                        }`}
+                      >
+                        <span>{cat}</span>
+                        <span
+                          className={`text-[9px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                            guideCategory === cat
+                              ? "bg-primary-foreground/20 text-primary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {categoryCounts[cat] || 0}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Command List Cards */}
-              <div className="space-y-2.5">
-                {filteredCommands.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 rounded-lg bg-card border border-border/70 hover:border-border transition-colors space-y-2 text-xs"
+              {/* Match Header */}
+              <div className="flex items-center justify-between text-xs px-1 text-muted-foreground font-medium">
+                <div>
+                  {guideSearch ? (
+                    <span>
+                      Found <strong className="text-foreground">{searchResults.length}</strong> matching commands for{" "}
+                      <span className="text-primary font-mono font-bold">"{guideSearch}"</span>
+                    </span>
+                  ) : (
+                    <span>
+                      Showing <strong className="text-foreground">{searchResults.length}</strong> commands in{" "}
+                      <strong className="text-foreground">{guideCategory}</strong>
+                    </span>
+                  )}
+                </div>
+                {(guideSearch || guideCategory !== "All") && (
+                  <button
+                    onClick={() => {
+                      setGuideSearch("");
+                      setGuideCategory("All");
+                    }}
+                    className="text-[11px] text-primary hover:underline font-semibold"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal">
+                    Reset Filters
+                  </button>
+                )}
+              </div>
+
+              {/* Command List Cards */}
+              <div className="space-y-3">
+                {searchResults.map(({ command: item }, idx) => (
+                  <div
+                    key={item.id || idx}
+                    className="p-4 rounded-xl bg-card border border-border/80 hover:border-primary/50 transition-all space-y-3 text-xs shadow-sm"
+                  >
+                    {/* Header */}
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[10px] font-semibold bg-primary/10 text-primary border-primary/30 py-0.5">
                           {item.category}
                         </Badge>
-                        <span className="font-semibold text-foreground">{item.name}</span>
+                        <span className="font-bold text-sm text-foreground">{item.name}</span>
                       </div>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-6 text-[11px] font-mono px-2"
-                        onClick={() => copyToTerminal(item.cmd)}
-                      >
-                        <Copy className="w-3 h-3 mr-1" /> Paste
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-[9px] text-muted-foreground font-mono">
+                          {item.cheatSheetRef}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          onClick={() => copyToTerminal(item.cmd)}
+                          className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 gap-1 shadow-sm active:scale-95 transition-all"
+                        >
+                          <Copy className="w-3 h-3" />
+                          <span>Paste to Terminal</span>
+                        </Button>
+                      </div>
                     </div>
 
-                    <div className="p-1.5 rounded bg-muted/60 font-mono text-[11px] text-primary break-all border border-border/40">
-                      {item.cmd}
+                    {/* Code Box */}
+                    <div className="p-3 rounded-lg bg-zinc-950 font-mono text-xs sm:text-sm text-emerald-400 font-bold break-all border border-emerald-500/30 flex items-center justify-between gap-2 shadow-inner">
+                      <span>{item.cmd}</span>
                     </div>
 
-                    <p className="text-foreground/90 text-xs">
-                      {item.summary}
-                    </p>
+                    {/* Command Meaning */}
+                    <div className="p-2.5 rounded-lg bg-background/90 border border-border/70 space-y-1">
+                      <div className="text-[11px] font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider">
+                        <BookOpen className="w-3.5 h-3.5" /> What this command means & does:
+                      </div>
+                      <p className="text-foreground font-medium text-xs leading-relaxed">
+                        {item.commandMeaning}
+                      </p>
+                    </div>
 
-                    <div className="text-[10px] text-muted-foreground pt-1 border-t border-border/40 flex items-start gap-1">
-                      <span className="font-semibold text-foreground shrink-0">On Real GitHub:</span>
-                      <span>{item.realWorldEffect}</span>
+                    {/* When & Why to Use It */}
+                    {item.useCase && (
+                      <div className="p-2.5 rounded-lg bg-muted/40 border border-border/60 text-[11px] space-y-1">
+                        <div className="font-bold text-foreground flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500" /> When & why to use it:
+                        </div>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {item.useCase}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Token Breakdown Chips */}
+                    {item.breakdown && item.breakdown.length > 0 && (
+                      <div className="pt-2 border-t border-border/50">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                          Command Parts & Flags Anatomy:
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {item.breakdown.map((b, bi) => (
+                            <div
+                              key={bi}
+                              className={`px-2 py-1 rounded border text-[11px] flex items-center gap-1.5 ${
+                                b.isFlag
+                                  ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300 font-medium"
+                                  : "bg-muted/80 border-border text-foreground"
+                              }`}
+                            >
+                              <code className="font-mono font-bold text-primary">{b.token}</code>
+                              <span className="text-[10px] text-muted-foreground">→ {b.meaning}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Real-World vs Sandbox Effect */}
+                    <div className="text-[11px] text-muted-foreground pt-1.5 border-t border-border/40 flex items-start gap-1">
+                      <Globe className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-foreground">Real GitHub: </strong>
+                        <span>{item.realWorldEffect}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
 
-                {filteredCommands.length === 0 && (
-                  <div className="p-6 text-center text-xs text-muted-foreground">
-                    No commands matched "{guideSearch}".
+                {searchResults.length === 0 && (
+                  <div className="p-8 text-center text-xs text-muted-foreground border rounded-xl bg-muted/20 border-dashed space-y-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
+                      <Search className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-foreground">No matching Git commands found</h4>
+                      <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                        We couldn't find any commands matching "{guideSearch}" in category "{guideCategory}".
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setGuideSearch("");
+                        setGuideCategory("All");
+                      }}
+                      className="text-xs"
+                    >
+                      Clear Search & View All Commands
+                    </Button>
                   </div>
                 )}
               </div>

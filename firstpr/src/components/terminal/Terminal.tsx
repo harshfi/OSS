@@ -82,13 +82,17 @@ export function Terminal({ onCommand, output, cwd, presetInput }: TerminalProps)
           <div 
             key={i} 
             className={`whitespace-pre-wrap break-all ${
-              line.isError 
-                ? "text-red-400 bg-red-950/20 px-2 py-0.5 rounded border-l-2 border-red-500" 
+              line.isError || line.text.startsWith("❌") || line.text.startsWith("error:") || line.text.startsWith("fatal:")
+                ? "text-rose-400 bg-rose-950/25 px-2 py-0.5 rounded border-l-2 border-rose-500 font-medium" 
                 : line.text.startsWith("user@machine") 
                   ? "text-cyan-300 font-semibold"
-                  : line.text.startsWith("[") 
-                    ? "text-amber-300"
-                    : "text-zinc-300"
+                  : line.text.startsWith("✅") || line.text.startsWith("✨") || line.text.startsWith("🎉")
+                    ? "text-emerald-400 font-medium"
+                    : line.text.startsWith("👉") || line.text.startsWith("💡") || line.text.startsWith("⚠️")
+                      ? "text-amber-300 font-medium"
+                      : line.text.startsWith("[") 
+                        ? "text-amber-300"
+                        : "text-zinc-300"
             }`}
           >
             {line.text}
