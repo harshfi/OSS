@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, ScrollRestoration } from "react-router-dom";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePrefs } from "@/stores/prefs";
 import { useCommand } from "@/stores/command";
@@ -124,6 +124,7 @@ export function AppShell() {
         })}
       </nav>
       
+      <ScrollRestoration />
       <CommandPalette />
     </div>
   );
