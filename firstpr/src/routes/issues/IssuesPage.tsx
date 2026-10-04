@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, ExternalLink, MessageCircle, Clock, CheckSquare, Copy, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
-import { toast } from "sonner";
+import { Search, ExternalLink, MessageCircle, Clock, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 type Issue = {
@@ -28,13 +27,6 @@ type FetchError = {
 };
 
 function IssueCard({ issue }: { issue: Issue }) {
-  const claimComment = `Hi! I'd like to work on this. Plan: `;
-
-  const copyClaim = () => {
-    navigator.clipboard.writeText(claimComment);
-    toast.success("Claim comment copied to clipboard!");
-  };
-
   return (
     <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }}>
       <Card className="flex flex-col h-full">
@@ -61,22 +53,10 @@ function IssueCard({ issue }: { issue: Issue }) {
           <div className="text-sm text-muted-foreground flex items-center gap-4">
             <span className="flex items-center gap-1"><MessageCircle className="w-4 h-4" /> {issue.comments} comments</span>
           </div>
-          
-          <div className="mt-4 p-3 bg-muted/50 rounded-md text-sm">
-            <div className="font-medium flex items-center gap-2 mb-2"><CheckSquare className="w-4 h-4 text-primary" /> Read before you claim</div>
-            <ul className="list-disc list-inside text-muted-foreground space-y-1">
-              <li>I have read the CONTRIBUTING.md</li>
-              <li>I can dedicate time this week</li>
-              <li>I understand the stack</li>
-            </ul>
-          </div>
         </CardContent>
-        <CardFooter className="flex justify-between border-t pt-4">
+        <CardFooter className="flex justify-start border-t pt-4">
           <Button variant="outline" size="sm" onClick={() => window.open(issue.html_url, '_blank', 'noopener noreferrer')}>
             View <ExternalLink className="w-3 h-3 ml-2" />
-          </Button>
-          <Button size="sm" onClick={copyClaim}>
-            <Copy className="w-3 h-3 mr-2" /> Claim
           </Button>
         </CardFooter>
       </Card>
@@ -174,7 +154,7 @@ export function IssuesPage() {
       <div className="mb-8 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold tracking-tight mb-4">Find an Issue</h1>
         <p className="text-xl text-muted-foreground">
-          Live stream of beginner-friendly issues from GitHub. Claim one and make your first PR.
+          Live stream of beginner-friendly issues from GitHub. Find one and make your first PR.
         </p>
       </div>
 
