@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, ChevronRight, Info, AlertTriangle } from "lucide-react";
 import { useProgress } from "@/stores/progress";
+import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
 
 export default function ModulePage() {
   const { id } = useParams<{ id: string }>();
@@ -173,6 +174,21 @@ function BlockRenderer({ block }: { block: Block }) {
           ))}
         </div>
       );
+
+    case "Diagram":
+      if (typeof block.stepIndex === 'number') {
+        return (
+          <div className="my-8">
+            <WorkflowVisualizer 
+              stepIndex={block.stepIndex} 
+              showControls={false} 
+              compact={true} 
+              className="bg-transparent shadow-none border-none p-0 mx-0 max-w-none" 
+            />
+          </div>
+        );
+      }
+      return null;
 
     default:
       return <div className="p-4 bg-destructive/10 text-destructive rounded-md">Unsupported block type: {block.type}</div>;

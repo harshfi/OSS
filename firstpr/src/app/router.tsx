@@ -6,7 +6,6 @@ import ModulePage from "@/routes/learn/ModulePage";
 import WorkflowPage from "@/routes/workflow/WorkflowPage";
 import LabPage from "@/routes/lab/LabPage";
 import RescuePage from "@/routes/rescue/RescuePage";
-import OrgExplorerPage from "@/routes/orgs/OrgExplorerPage";
 import ProgramsPlannerPage from "@/routes/programs/ProgramsPlannerPage";
 import GsocInsightsPage from "@/routes/gsoc/GsocInsightsPage";
 import GsocAllOrgsPage from "@/routes/gsoc/GsocAllOrgsPage";
@@ -45,10 +44,6 @@ export const router = createBrowserRouter([
       {
         path: "issues",
         element: <IssuesPage />,
-      },
-      {
-        path: "orgs",
-        element: <OrgExplorerPage />,
       },
       {
         path: "gsoc",

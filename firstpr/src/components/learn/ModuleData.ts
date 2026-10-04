@@ -17,6 +17,7 @@ export interface Block {
   variant?: "info" | "warning" | "success" | "destructive"; // for callouts
   items?: any[]; // for lists, cards, games
   language?: string; // for code
+  stepIndex?: number; // for diagram workflow steps
 }
 
 export interface Module {
@@ -130,11 +131,21 @@ export const modules: Module[] = [
         content: "A fork is your own copy of the repository that lives on your account. You have full read and write access to your fork."
       },
       {
+        id: "m5-1-diagram",
+        type: "Diagram",
+        stepIndex: 0
+      },
+      {
         id: "m5-2",
         type: "Code",
         title: "Clone your fork",
         language: "bash",
         content: "git clone https://github.com/YOUR-USERNAME/repository-name.git\ncd repository-name"
+      },
+      {
+        id: "m5-3-diagram",
+        type: "Diagram",
+        stepIndex: 1
       }
     ]
   },
@@ -154,6 +165,11 @@ export const modules: Module[] = [
         title: "Add upstream remote",
         language: "bash",
         content: "git remote add upstream https://github.com/ORIGINAL-OWNER/repository-name.git\ngit fetch upstream"
+      },
+      {
+        id: "m6-3-diagram",
+        type: "Diagram",
+        stepIndex: 2
       }
     ]
   },
@@ -175,7 +191,12 @@ export const modules: Module[] = [
         content: "git checkout -b fix-broken-link"
       },
       {
-        id: "m7-3",
+        id: "m7-3-diagram",
+        type: "Diagram",
+        stepIndex: 3
+      },
+      {
+        id: "m7-4",
         type: "Callout",
         variant: "info",
         title: "Naming conventions",
@@ -199,6 +220,11 @@ export const modules: Module[] = [
         title: "Stage and commit",
         language: "bash",
         content: "git add .\ngit commit -m \"Fix broken link in README\""
+      },
+      {
+        id: "m8-3-diagram",
+        type: "Diagram",
+        stepIndex: 5
       }
     ]
   },
@@ -234,7 +260,12 @@ export const modules: Module[] = [
         content: "Your commits are still only on your local computer. You need to push them to your fork on GitHub (origin)."
       },
       {
-        id: "m10-2",
+        id: "m10-2-diagram",
+        type: "Diagram",
+        stepIndex: 6
+      },
+      {
+        id: "m10-3",
         type: "Code",
         title: "Push your branch",
         language: "bash",
@@ -253,7 +284,12 @@ export const modules: Module[] = [
         content: "Go to the original repository on GitHub. You should see a green button saying 'Compare & pull request'. Click it!"
       },
       {
-        id: "m11-2",
+        id: "m11-2-diagram",
+        type: "Diagram",
+        stepIndex: 7
+      },
+      {
+        id: "m11-3",
         type: "Checklist",
         items: [
           "Reference the issue number (e.g., 'Fixes #123')",
@@ -281,7 +317,12 @@ export const modules: Module[] = [
         content: "# Make the requested changes in your editor\ngit add .\ngit commit -m \"Address review comments\"\ngit push origin fix-broken-link"
       },
       {
-        id: "m12-3",
+        id: "m12-3-diagram",
+        type: "Diagram",
+        stepIndex: 8
+      },
+      {
+        id: "m12-4",
         type: "Callout",
         variant: "success",
         title: "Merge!",
