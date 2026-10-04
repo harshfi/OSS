@@ -38,6 +38,10 @@ app.get('/api/issues', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`API Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`API Server running on port ${PORT}`);
+  });
+}
+
+export default app;
