@@ -41,27 +41,27 @@ export function CommandPalette() {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Navigation">
-          <CommandItem onSelect={() => runCommand(() => navigate("/"))}>
+          <CommandItem value="Home" onSelect={() => runCommand(() => navigate("/"))}>
             <Book className="mr-2 h-4 w-4" />
             <span>Home</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate("/learn"))}>
+          <CommandItem value="Learn" onSelect={() => runCommand(() => navigate("/learn"))}>
             <Book className="mr-2 h-4 w-4" />
             <span>Learn</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate("/lab"))}>
+          <CommandItem value="Terminal Lab" onSelect={() => runCommand(() => navigate("/lab"))}>
             <Terminal className="mr-2 h-4 w-4" />
             <span>Terminal Lab</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate("/workflow"))}>
+          <CommandItem value="Workflow Visualizer" onSelect={() => runCommand(() => navigate("/workflow"))}>
             <GitPullRequest className="mr-2 h-4 w-4" />
             <span>Workflow Visualizer</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate("/issues"))}>
+          <CommandItem value="Find an Issue" onSelect={() => runCommand(() => navigate("/issues"))}>
             <Search className="mr-2 h-4 w-4" />
             <span>Find an Issue</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate("/rescue"))}>
+          <CommandItem value="Git Rescue" onSelect={() => runCommand(() => navigate("/rescue"))}>
             <Search className="mr-2 h-4 w-4" />
             <span>Git Rescue</span>
           </CommandItem>
@@ -69,7 +69,7 @@ export function CommandPalette() {
         <CommandSeparator />
         <CommandGroup heading="Learning Modules">
           {modules.map((mod) => (
-            <CommandItem key={mod.id} onSelect={() => runCommand(() => navigate(`/learn/${mod.id}`))}>
+            <CommandItem key={mod.id} value={mod.title} onSelect={() => runCommand(() => navigate(`/learn/${mod.id}`))}>
               <Play className="mr-2 h-4 w-4" />
               <span>{mod.title}</span>
             </CommandItem>
@@ -78,7 +78,7 @@ export function CommandPalette() {
         <CommandSeparator />
         <CommandGroup heading="Git Rescue">
           {situationsData.map((sit) => (
-            <CommandItem key={`rescue-${sit.id}`} onSelect={() => runCommand(() => navigate(`/rescue?issue=${sit.id}`))}>
+            <CommandItem key={`rescue-${sit.id}`} value={`Rescue: ${sit.title}`} onSelect={() => runCommand(() => navigate(`/rescue?issue=${sit.id}`))}>
               <Search className="mr-2 h-4 w-4 text-red-500" />
               <span>Rescue: {sit.title}</span>
             </CommandItem>
@@ -86,7 +86,7 @@ export function CommandPalette() {
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
-          <CommandItem onSelect={() => runCommand(() => navigate("/progress"))}>
+          <CommandItem value="My Progress" onSelect={() => runCommand(() => navigate("/progress"))}>
             <Settings className="mr-2 h-4 w-4" />
             <span>My Progress</span>
           </CommandItem>
