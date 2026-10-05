@@ -25,7 +25,11 @@ import {
   Award,
   Sparkles,
   GraduationCap,
+  ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
+import { WhatsappIcon, WHATSAPP_COMMUNITY_URL } from "@/components/icons/WhatsappIcon";
+
 
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -567,6 +571,104 @@ export default function Home() {
             </motion.div>
           </div>
         </div>
+      </section>
+
+      {/* 5.6 WhatsApp Community Showcase Section */}
+      <section className="container mx-auto px-4 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="relative rounded-3xl p-8 md:p-12 overflow-hidden border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-background to-teal-500/10 shadow-[0_0_50px_-15px_rgba(37,211,102,0.25)]"
+        >
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-500/15 rounded-full blur-[100px] pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
+            {/* Left Content */}
+            <div className="space-y-6 text-center lg:text-left flex-1">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                <WhatsappIcon className="w-4 h-4 fill-current" />
+                <span>Official FirstPR WhatsApp Community</span>
+              </div>
+
+              <div className="space-y-3">
+                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-foreground">
+                  Learn, Build & Crack Programs <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600 dark:from-emerald-400 dark:via-teal-300 dark:to-cyan-400 bg-clip-text text-transparent">Together</span>
+                </h2>
+                <p className="text-foreground/80 text-sm md:text-base max-w-2xl font-medium leading-relaxed">
+                  Join hundreds of open source enthusiasts, mentors, and successful GSoC & LFX scholars. Get instantaneous answers to your doubts, merge conflict help, and curated issue alerts.
+                </p>
+              </div>
+
+              {/* Feature Points */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto lg:mx-0 text-xs text-foreground/90 font-medium">
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-card/60 backdrop-blur-sm border border-border/60">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>Direct Q&A with Harsh Tripathi & Mentors</span>
+                </div>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-card/60 backdrop-blur-sm border border-border/60">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>GSoC '26 & LFX '26 Application Reviews</span>
+                </div>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-card/60 backdrop-blur-sm border border-border/60">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>Daily Handpicked Good First Issues</span>
+                </div>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-card/60 backdrop-blur-sm border border-border/60">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>Live Git & PR Debugging Sessions</span>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                <a
+                  href={WHATSAPP_COMMUNITY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white text-base font-bold shadow-[0_4px_25px_rgba(37,211,102,0.4)] hover:shadow-[0_6px_35px_rgba(37,211,102,0.6)] transform hover:scale-105 active:scale-95 transition-all duration-200"
+                >
+                  <WhatsappIcon className="w-6 h-6 fill-white" />
+                  <span>Join WhatsApp Community</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+                <span className="text-xs text-muted-foreground font-semibold">
+                  ⚡ 100% Free • Direct Access
+                </span>
+              </div>
+            </div>
+
+            {/* Right Interactive Mockup / Badge Box */}
+            <div className="w-full lg:w-80 flex flex-col items-center">
+              <div className="w-full p-6 rounded-2xl bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-emerald-500/30 shadow-xl space-y-4 text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-inner">
+                  <WhatsappIcon className="w-9 h-9 fill-current" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">FirstPR Community</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">WhatsApp Group & Discussion Hub</p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  <span>Community Active Now</span>
+                </div>
+
+                <a
+                  href={WHATSAPP_COMMUNITY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-colors"
+                >
+                  Click to Enter Community
+                </a>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* 6. Numbers Stats */}

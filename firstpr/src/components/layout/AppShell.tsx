@@ -2,10 +2,12 @@ import { Outlet, Link, useLocation, ScrollRestoration } from "react-router-dom";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePrefs } from "@/stores/prefs";
 import { useCommand } from "@/stores/command";
-import { Moon, Sun, Monitor } from "lucide-react";
+import { Moon, Sun, Monitor, Users, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { WhatsappIcon, WHATSAPP_COMMUNITY_URL } from "@/components/icons/WhatsappIcon";
+import { FloatingWhatsappButton } from "@/components/community/FloatingWhatsappButton";
 
 function ThemeToggle() {
   const { theme, setTheme } = usePrefs();
@@ -90,9 +92,86 @@ export function AppShell() {
           </div>
         </div>
       </header>
+      
       <main className="flex-1 flex flex-col">
         <Outlet />
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border/60 bg-muted/20 py-12 px-4 mt-auto">
+        <div className="container mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-3 md:col-span-2">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-lg">FirstPR</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider">
+                Open Source Guide
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              A guided, interactive journey from git basics to cracking top open source programs like GSoC, LFX, and MLH Fellowship.
+            </p>
+            <div className="pt-2">
+              <a
+                href={WHATSAPP_COMMUNITY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-medium text-xs shadow-md transition-all hover:scale-105"
+              >
+                <WhatsappIcon className="w-4 h-4 fill-white" />
+                <span>Join WhatsApp Community</span>
+                <ExternalLink className="w-3 h-3 ml-0.5 opacity-80" />
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-sm mb-3">Learning Tracks</h4>
+            <ul className="space-y-2 text-xs text-muted-foreground">
+              <li><Link to="/learn" className="hover:text-foreground transition-colors">Interactive Modules</Link></li>
+              <li><Link to="/workflow" className="hover:text-foreground transition-colors">Visual Workflow</Link></li>
+              <li><Link to="/lab" className="hover:text-foreground transition-colors">Terminal Lab</Link></li>
+              <li><Link to="/rescue" className="hover:text-foreground transition-colors">Git Rescue Guide</Link></li>
+              <li><Link to="/issues" className="hover:text-foreground transition-colors">Good First Issues</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-sm mb-3">Programs & Community</h4>
+            <ul className="space-y-2 text-xs text-muted-foreground">
+              <li><Link to="/gsoc" className="hover:text-foreground transition-colors">Google Summer of Code</Link></li>
+              <li><Link to="/lfx" className="hover:text-foreground transition-colors">Linux Foundation (LFX)</Link></li>
+              <li><Link to="/programs" className="hover:text-foreground transition-colors">Mentorship Program Matrix</Link></li>
+              <li><Link to="/ai-policy" className="hover:text-foreground transition-colors">AI in Open Source</Link></li>
+              <li>
+                <a
+                  href={WHATSAPP_COMMUNITY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline inline-flex items-center gap-1"
+                >
+                  <WhatsappIcon className="w-3 h-3 fill-current" />
+                  WhatsApp Community
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="container mx-auto max-w-6xl mt-8 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-4">
+          <p>© {new Date().getFullYear()} FirstPR. Built for open source learners worldwide.</p>
+          <div className="flex items-center gap-4">
+            <a
+              href={WHATSAPP_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors flex items-center gap-1"
+            >
+              <Users className="w-3.5 h-3.5" />
+              Community Chat
+            </a>
+          </div>
+        </div>
+      </footer>
       
       {/* Mobile Bottom Nav */}
       <nav className="md:hidden sticky bottom-0 z-50 w-full border-t bg-background flex justify-around p-2">
@@ -124,9 +203,13 @@ export function AppShell() {
           );
         })}
       </nav>
+
+      {/* Floating WhatsApp Action Button */}
+      <FloatingWhatsappButton />
       
       <ScrollRestoration />
       <CommandPalette />
     </div>
   );
 }
+
