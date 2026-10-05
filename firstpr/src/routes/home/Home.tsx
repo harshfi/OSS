@@ -334,24 +334,24 @@ export default function Home() {
                       Harsh Tripathi
                     </CardTitle>
                     <CardDescription className="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                      Product Engineer & Lead Mentor
+                      Open Source Mentor & Engineering Lead
                     </CardDescription>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-4 px-6 pb-6 flex-1 flex flex-col justify-between text-xs">
                   <p className="text-foreground/80 leading-relaxed font-medium">
-                    Product Engineer specializing in designing high-performance applications and scalable backend architectures. Focuses on building RESTful APIs, microservices, and optimizing system performance using advanced Java & JavaScript, data structures, and caching strategies (delivering 40% throughput gains & 35% latency reduction), while mentoring developers in Git mastery, software design, and top programs like GSoC & LFX.
+                    Has mentored <strong>10k+ students and developers</strong> into tech and high-growth engineering roles. Delivered across <strong>50+ software products for multiple small and large bussiness</strong>, coaching developers through Git mechanics, software architecture, helping students to excel in there software carrer and cracking competitive programs like GSoC and LFX.
                   </p>
 
                   {/* Highlight box */}
                   <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-800 dark:text-purple-300 space-y-1">
                     <div className="font-bold flex items-center gap-1.5 text-[11px]">
                       <GraduationCap className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-                      <span>Experience & Mentorship:</span>
+                      <span>Mentorship Track Record:</span>
                     </div>
                     <p className="text-[11px] leading-relaxed text-foreground/80 font-semibold">
-                      ⚡ Product Engineer • High-Scale Backend Systems • GSoC & LFX Guidance • System Architecture
+                      🏆 10k+ Students Mentored • Delivered Across 50+ Projects • GSoC & LFX Strategy • Git Mastery
                     </p>
                   </div>
 
