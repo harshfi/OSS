@@ -1,32 +1,64 @@
-# React + TypeScript + Vite
+# FirstPR 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A guided, animated, hands-on website that takes students from "what is a fork?" to "my first merged pull request" and then to open-source programs like GSoC and LFX. 
 
-Currently, two official plugins are available:
+FirstPR solves the main problem for beginners stalling on the three-copy mental model (upstream/origin/local) and the fear of breaking git by teaching through *showing* and *letting them practice* safely.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+- **Workflow Visualizer**: Interactive 9-step fork-to-PR animation to build a strong mental model.
+- **Terminal Lab**: A simulated shell and virtual git repo running fully in the browser where you can practice scenarios safely.
+- **Learn Hub**: 12-module learning path covering everything from key terms to handling code review.
+- **Rescue**: "I messed up" guides providing fixes to common git mistakes.
+- **Find an issue**: Live GitHub "good first issue" search proxy.
+- **Org Explorer**: Directory of 100 open source organizations filterable by tech stack, tier, and programs.
+- **Programs & Planner**: Track GSoC, LFX, and other open-source programs, stipends, and deadlines.
+- **Git Cheatsheet & PR Checklist**: Essential tools for everyday contributing.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
 
-## Expanding the Oxlint configuration
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS v4, shadcn/ui
+- **Animation**: motion
+- **State Management**: Zustand, TanStack Query
+- **Routing**: React Router
+- **Backend**: Node.js, Express (for GitHub search proxy and directory data)
+- **Validation**: Zod
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 🚀 Getting Started
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+### Prerequisites
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- `npm`
+
+### Installation
+
+1. **Fork and clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/firstpr.git
+   cd firstpr
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+   This will start both the Vite frontend (usually on port 5173) and the backend API server (on port 3001) concurrently.
+
+4. Open your browser and navigate to `http://localhost:5173`.
+
+## 🤝 Contributing
+
+We welcome contributions to make FirstPR better! Since this project is meant to teach open source, we are dedicated to making this a great place for your first contribution.
+
+1. Check out the issues page for `good first issue` tags.
+2. Fork the repo, create a branch, make your changes, and open a Pull Request!
+
+## 📜 License
+
+This project is open source and available under the MIT License.
