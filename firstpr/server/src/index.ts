@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getGoodFirstIssues } from './services/github';
+import { getGoodFirstIssues } from './services/github.js';
 
 dotenv.config();
 

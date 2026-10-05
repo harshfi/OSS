@@ -1,4 +1,4 @@
-import { issueCache } from '../cache';
+import { issueCache } from '../cache.js';
 
 type FetchIssuesParams = {
   lang?: string;
@@ -117,7 +117,7 @@ export async function getGoodFirstIssues(params: FetchIssuesParams) {
         throw { status: 500, message: `GitHub API error: ${response.statusText}` };
       }
 
-      const data = await response.json();
+      const data = await response.json() as any;
       
       const items = data.items.map((item: any) => {
         let repo = '';
