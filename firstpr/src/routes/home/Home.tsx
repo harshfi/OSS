@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import type { Variants } from "motion/react";
@@ -13,9 +14,9 @@ import { WorkflowVisualizer } from "@/components/workflow/WorkflowVisualizer";
 import { GridBeam } from "@/components/ui/grid-beam";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { Marquee } from "@/components/ui/marquee";
 import { ShinyButton } from "@/components/ui/shiny-button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   TerminalSquare,
   BookOpen,
@@ -25,6 +26,8 @@ import {
   Award,
   Sparkles,
   GraduationCap,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -56,8 +59,54 @@ function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+const ORGANIZATIONS = [
+  "React",
+  "Vue",
+  "Mozilla",
+  "Linux Foundation",
+  "Apache",
+  "CNCF",
+  "Python",
+  "Kubernetes",
+  "Node.js",
+  "Django",
+  "Rust",
+  "FreeCodeCamp",
+  "PostgreSQL",
+  "TensorFlow",
+  "Home Assistant",
+  "Zulip",
+];
+
 export default function Home() {
   const navigate = useNavigate();
+
+  const orgScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkOrgScroll = useCallback(() => {
+    if (!orgScrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = orgScrollRef.current;
+    setCanScrollLeft(scrollLeft > 5);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+  }, []);
+
+  useEffect(() => {
+    checkOrgScroll();
+    const handleResize = () => checkOrgScroll();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [checkOrgScroll]);
+
+  const handleOrgSlide = (direction: "left" | "right") => {
+    if (!orgScrollRef.current) return;
+    const scrollAmount = 320;
+    orgScrollRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
 
   // Animation for staggered text reveal
   const textRevealVariants: Variants = {
@@ -600,20 +649,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. Marquee for Orgs */}
-      <section className="container mx-auto px-4 overflow-hidden border-b border-border/50 pb-16">
+      {/* 7. Organizations Carousel Slider */}
+      <section className="container mx-auto px-4 border-b border-border/50 pb-16">
         <div className="text-center mb-8">
           <p className="text-muted-foreground uppercase tracking-wider text-sm font-semibold">
             Contribute to amazing organizations
           </p>
         </div>
-        <Marquee className="max-w-5xl mx-auto" pauseOnHover>
-          {["React", "Vue", "Mozilla", "Linux Foundation", "Apache", "CNCF", "Python", "Kubernetes", "Node.js"].map((org) => (
-            <div key={org} className="mx-8 px-6 py-3 rounded-full bg-muted/50 border border-border/50 text-foreground font-semibold">
-              {org}
-            </div>
-          ))}
-        </Marquee>
+
+        <div className="relative max-w-5xl mx-auto flex items-center group">
+          {/* Left Slide Button */}
+          <button
+            type="button"
+            onClick={() => handleOrgSlide("left")}
+            disabled={!canScrollLeft}
+            aria-label="Slide organizations left"
+            className={cn(
+              "absolute left-1 sm:left-2 z-20 flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full",
+              "bg-background/90 hover:bg-background border border-border/70 text-foreground shadow-md backdrop-blur-md",
+              "transition-all duration-200 active:scale-95 cursor-pointer hover:scale-105",
+              "disabled:opacity-0 disabled:pointer-events-none disabled:cursor-not-allowed"
+            )}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          {/* Left Edge Gradient Fade */}
+          <div
+            className={cn(
+              "pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-20 z-10 bg-gradient-to-r from-background via-background/80 to-transparent transition-opacity duration-300",
+              canScrollLeft ? "opacity-100" : "opacity-0"
+            )}
+          />
+
+          {/* Scrollable Organizations Track */}
+          <div
+            ref={orgScrollRef}
+            onScroll={checkOrgScroll}
+            className="flex items-center gap-4 overflow-x-auto scroll-smooth py-3 px-12 sm:px-16 no-scrollbar select-none"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {ORGANIZATIONS.map((org) => (
+              <div
+                key={org}
+                className="shrink-0 px-6 py-3 rounded-full bg-muted/50 hover:bg-muted/80 border border-border/50 hover:border-border text-foreground font-semibold text-sm transition-all duration-200 shadow-sm cursor-default"
+              >
+                {org}
+              </div>
+            ))}
+          </div>
+
+          {/* Right Edge Gradient Fade */}
+          <div
+            className={cn(
+              "pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-20 z-10 bg-gradient-to-l from-background via-background/80 to-transparent transition-opacity duration-300",
+              canScrollRight ? "opacity-100" : "opacity-0"
+            )}
+          />
+
+          {/* Right Slide Button */}
+          <button
+            type="button"
+            onClick={() => handleOrgSlide("right")}
+            disabled={!canScrollRight}
+            aria-label="Slide organizations right"
+            className={cn(
+              "absolute right-1 sm:right-2 z-20 flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full",
+              "bg-background/90 hover:bg-background border border-border/70 text-foreground shadow-md backdrop-blur-md",
+              "transition-all duration-200 active:scale-95 cursor-pointer hover:scale-105",
+              "disabled:opacity-0 disabled:pointer-events-none disabled:cursor-not-allowed"
+            )}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
       </section>
 
       {/* 9. FAQ Accordion */}
