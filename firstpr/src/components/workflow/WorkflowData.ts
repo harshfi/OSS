@@ -63,10 +63,10 @@ export interface Step {
 
 const baseGraph: GraphState = {
   commits: [
-    { id: "c1", hash: "9e4a1b0", message: "Initial project setup", branch: "main" },
-    { id: "c2", hash: "3f8d2c1", message: "Release v1.2.0 docs", branch: "main" },
+    { id: "1", hash: "9e4a1b0", message: "Initial project setup", branch: "main" },
+    { id: "2", hash: "3f8d2c1", message: "Release v1.2.0 docs", branch: "main" },
   ],
-  branches: [{ name: "main", commits: ["c1", "c2"] }],
+  branches: [{ name: "main", commits: ["1", "2"] }],
   remotes: [],
 };
 
@@ -248,14 +248,15 @@ export const workflowSteps: Step[] = [
     learnModuleTitle: "Module 07: Branching out",
     learnLessonSummary: "Feature branch strategy, branch naming best practices, and why working on main is dangerous.",
     highlight: ["local"],
+    edge: { from: "upstream", to: "local", label: "git pull upstream main", active: true },
     graph: {
       upstream: baseGraph,
       origin: baseGraph,
       local: {
         ...baseGraph,
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2"] },
         ],
         remotes: [
           { name: "origin", url: "https://github.com/your-username/project.git" },
@@ -311,8 +312,8 @@ export const workflowSteps: Step[] = [
       local: {
         ...baseGraph,
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2"] },
         ],
         remotes: [
           { name: "origin", url: "https://github.com/your-username/project.git" },
@@ -365,11 +366,11 @@ export const workflowSteps: Step[] = [
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
         ],
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2", "c3"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2", "3"] },
         ],
         remotes: [
           { name: "origin", url: "https://github.com/your-username/project.git" },
@@ -425,22 +426,22 @@ export const workflowSteps: Step[] = [
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
         ],
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2", "c3"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2", "3"] },
         ],
       },
       local: {
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
         ],
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2", "c3"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2", "3"] },
         ],
         remotes: [
           { name: "origin", url: "https://github.com/your-username/project.git" },
@@ -495,22 +496,22 @@ export const workflowSteps: Step[] = [
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
         ],
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2", "c3"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2", "3"] },
         ],
       },
       local: {
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "feat/fix-nav-contrast" },
         ],
         branches: [
-          { name: "main", commits: ["c1", "c2"] },
-          { name: "feat/fix-nav-contrast", commits: ["c1", "c2", "c3"] },
+          { name: "main", commits: ["1", "2"] },
+          { name: "feat/fix-nav-contrast", commits: ["1", "2", "3"] },
         ],
         remotes: [
           { name: "origin", url: "https://github.com/your-username/project.git" },
@@ -568,9 +569,9 @@ export const workflowSteps: Step[] = [
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "main" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "main" },
         ],
-        branches: [{ name: "main", commits: ["c1", "c2", "c3"] }],
+        branches: [{ name: "main", commits: ["1", "2", "3"] }],
       },
       origin: {
         ...baseGraph,
@@ -579,9 +580,9 @@ export const workflowSteps: Step[] = [
         ...baseGraph,
         commits: [
           ...baseGraph.commits,
-          { id: "c3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "main" },
+          { id: "3", hash: "a7c8e91", message: "fix(nav): improve contrast ratio", branch: "main" },
         ],
-        branches: [{ name: "main", commits: ["c1", "c2", "c3"] }],
+        branches: [{ name: "main", commits: ["1", "2", "3"] }],
         remotes: [
           { name: "origin", url: "https://github.com/your-username/project.git" },
           { name: "upstream", url: "https://github.com/original-owner/project.git" },
