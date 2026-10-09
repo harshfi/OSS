@@ -191,6 +191,7 @@ export default function ModulePage() {
                 className="w-full h-full max-h-[850px] flex flex-col justify-start overflow-y-auto no-scrollbar py-4"
               >
                 <ModuleAnimationShell 
+                  key={mod.id}
                   moduleId={mod.id} 
                   className="my-auto"
                 />
